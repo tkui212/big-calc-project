@@ -2,7 +2,7 @@ function Vg(points, posX, posY,sizeX,sizeY) {
   /** push every thing right */
   this.mX = posX
   /** push every thing down */
-  this.mY = posY
+  this.mY = posYsgsd,
   this.points=points
   this.p0 = new point(0, 0);
   this.points = this.points.sort((a, b) => a.x - b.x)//sort point by x
