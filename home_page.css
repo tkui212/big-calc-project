@@ -1,0 +1,65 @@
+menu{
+    
+    width: inherit; 
+    margin:0;
+    height: 18%;
+    background-color: lawngreen;
+}
+html, body{
+    background-color: silver;
+    margin:0;
+    height: 100%;
+} 
+/*the log-in element and his sub elements */
+login{ 
+    margin:0;
+    background-color: blueviolet;
+    position: absolute;
+    height: inherit;
+    width: 15%;
+    left:0;
+    text-align: center;
+    
+}
+#login_name{
+    position: absolute;
+    left: 7.5%;
+    top: 17%;
+    
+}
+#login_password{
+    position: absolute;
+    left: 7.5%;
+    top: 40% ;
+}
+/*the logo element*/
+logo{
+    margin:0;
+    background-color: lightcoral;
+    position: absolute;
+    height: inherit;
+    width: 15%;
+    right: 0;
+    text-align: center;
+}
+physic{
+    margin:0;
+    background-color: #777070;
+    position: absolute;
+    height: inherit;
+    width: 35%;
+    left: 15%;
+    text-align: center;
+    font-size: 22mm;
+}
+geometry{
+    margin:0;
+    position: absolute;
+    height: inherit;
+    width: 35%;
+    right: 15%;
+    text-align: center;
+    font-size: 22mm;
+}
+
+
