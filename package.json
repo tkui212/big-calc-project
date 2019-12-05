@@ -1,0 +1,6 @@
+{
+  "dependencies": {
+    "jquery": "^3.4.1",
+    "matter-js": "^0.14.2"
+  }
+}
