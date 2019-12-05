@@ -19,18 +19,21 @@ login{
     width: 15%;
     left:0;
     text-align: center;
+    font-size: 18mm; 
+
     
 }
+login> *{
+    font-size: 5mm;
+}
 #login_name{
-    position: absolute;
-    left: 7.5%;
-    top: 17%;
+    position: relative;
+    width: -webkit-fill-available;
     
 }
 #login_password{
-    position: absolute;
-    left: 7.5%;
-    top: 40% ;
+    position: relative;
+    width: -webkit-fill-available;
 }
 /*the logo element*/
 logo{
@@ -40,6 +43,7 @@ logo{
     height: inherit;
     width: 15%;
     right: 0;
+    font-size: 20mm; 
     text-align: center;
 }
 physic{
@@ -54,6 +58,7 @@ physic{
 }
 geometry{
     margin:0;
+    background-color: lawngreen;
     position: absolute;
     height: inherit;
     width: 35%;
@@ -63,3 +68,10 @@ geometry{
 }
 
 
+p{
+    margin: 0;
+}
+/* #can_plate{
+    
+
+} */
