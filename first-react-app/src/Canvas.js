@@ -11,7 +11,6 @@ export default class Canvas extends Component {
         )
         }
         componentDidMount() {
-            
 var canvas = document.querySelector("#can_plate");
 
 canvas.width = window.innerWidth
@@ -26,7 +25,7 @@ let c = canvas.getContext("2d");
 function create(color, name){ //creating the menu arcs
     this.color=color
     this.rnd_x =50+ Math.random()*(innerWidth-100); //setting random x set-up
-    this.rnd_y =50+ Math.random()*innerHeight ; //setting random y set-up
+    this.rnd_y =50+ Math.random()*(innerHeight-100) ; //setting random y set-up
     this.vx = 3;
     this.vy = 3;
 
