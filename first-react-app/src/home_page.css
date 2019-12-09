@@ -3,6 +3,7 @@ menu{
     margin:0;
     height: 18%;
     background-color: lawngreen;
+    z-index:10;
 }
 
 html, body{
@@ -82,7 +83,10 @@ html, body{
 }
 
 
-
+#can_plate{
+    position:absolute;
+    top:18%;
+}
 
 
 p{

@@ -1,13 +1,13 @@
 import React, {Component} from 'react';
 import './home_page.css';
 export default class Menuos extends Component {
-    constructor(props) {
-         super(props)
-        }
+    // constructor(props) {
+    //      super(props)
+    //     }
 
 //   document.querySelector(`#${this.props.id}awd`).Hide("up", 1);
     render() {
-        if(this.props.id=="login"){
+        if(this.props.id==="login"){
             return (
                 <div id={this.props.id} className="menuos" >
             {this.props.displaytext}
@@ -27,7 +27,5 @@ export default class Menuos extends Component {
                 </div>
                 )
         }
-            const element = (<div>Text from Element</div>)
-        
         }}
 

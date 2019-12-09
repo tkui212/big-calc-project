@@ -1,10 +1,8 @@
 import React from 'react';
-import logo from './logo.svg';
 import './App.css';
 import './home_page.css';
-import Component1 from './Component1';
-import Menuos from './Menuos';
 import Menu from './Menu';
+import Canvas from './Canvas';
 
 function App() {
   return (
@@ -12,7 +10,7 @@ function App() {
       <header className="App-header">
 
       <Menu id="home_menu"/>
-      <canvas id="can_plate" height="540" width="window.innerWidth" style={{border: "solid 1px;", padding: "0;"}}></canvas>
+      <Canvas id="can_plate"></Canvas>
       </header>
     </div>
     
