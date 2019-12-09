@@ -1,29 +1,31 @@
 menu{
-    
-    width: inherit; 
+    width: inherit;
     margin:0;
     height: 18%;
     background-color: lawngreen;
 }
+
 html, body{
     background-color: silver;
     margin:0;
     height: 100%;
 } 
 /*the log-in element and his sub elements */
-login{ 
+#login{ 
     margin:0;
     background-color: blueviolet;
     position: absolute;
     height: inherit;
-    width: 15%;
+    width: 20%;
     left:0;
     text-align: center;
-    font-size: 18mm; 
-
-    
+    font-size: 18mm;
+    overflow: hidden;
 }
-login> *{
+#login:hover{
+    height: fit-content;
+}
+#login> *{
     font-size: 5mm;
 }
 #login_name{
@@ -36,36 +38,51 @@ login> *{
     width: -webkit-fill-available;
 }
 /*the logo element*/
-logo{
+#logo{
     margin:0;
     background-color: lightcoral;
     position: absolute;
     height: inherit;
-    width: 15%;
+    width: 20%;
     right: 0;
-    font-size: 20mm; 
+    font-size: 20mm;
     text-align: center;
+    overflow: hidden;
 }
-physic{
+#logo:hover{
+    height: fit-content;
+}
+#physic{
     margin:0;
     background-color: #777070;
     position: absolute;
     height: inherit;
-    width: 35%;
-    left: 15%;
+    width: 30%;
+    left: 20%;
     text-align: center;
-    font-size: 22mm;
+    font-size: 20mm;
+    overflow: hidden;
 }
-geometry{
+#physic:hover{
+    height: fit-content;
+}
+#geometry{
     margin:0;
     background-color: lawngreen;
     position: absolute;
     height: inherit;
-    width: 35%;
-    right: 15%;
+    width: 30%;
+    right: 20%;
     text-align: center;
-    font-size: 22mm;
+    font-size: 20mm;
+    overflow: hidden;
 }
+#geometry:hover{
+    height: fit-content;
+}
+
+
+
 
 
 p{
