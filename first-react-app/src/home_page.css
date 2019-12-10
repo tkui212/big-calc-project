@@ -20,9 +20,7 @@ body {
   left: 0;
   font-size: 18mm;
 }
-#login:hover {
-  height: fit-content;
-}
+
 #login > * {
   font-size: 5mm;
 }
@@ -42,9 +40,7 @@ body {
   right: 0;
   font-size: 20mm;
 }
-#logo:hover {
-  height: fit-content;
-}
+
 #physic {
   background-color: #777070;
 
