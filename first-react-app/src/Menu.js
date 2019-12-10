@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
-import './home_page.css';
 import Menuos from './Menuos';
+
 export default class Menu extends Component {
     // constructor(props) {
     //      super(props)

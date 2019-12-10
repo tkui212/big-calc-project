@@ -1,5 +1,6 @@
 import React, {Component} from 'react';
 import './home_page.css';
+import * as F from './functions.js';
 export default class Menuos extends Component {
     // constructor(props) {
     //      super(props)
@@ -7,6 +8,7 @@ export default class Menuos extends Component {
 
 //   document.querySelector(`#${this.props.id}awd`).Hide("up", 1);
     render() {
+        F.hi()
         if(this.props.id==="login"){
             return (
                 <div id={this.props.id} className="menuos" >

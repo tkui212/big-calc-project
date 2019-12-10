@@ -52,18 +52,12 @@ body {
   left: 20%;
   font-size: 20mm;
 }
-#physic:hover {
-  height: fit-content;
-}
 #geometry {
   background-color: lawngreen;
 
   width: 30%;
   right: 20%;
   font-size: 20mm;
-}
-#geometry:hover {
-  height: fit-content;
 }
 
 #can_plate {
