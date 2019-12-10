@@ -23,18 +23,30 @@ let c = canvas.getContext("2d");
 // c.stroke();
 // c.fill()
 function create(color, name){ //creating the menu arcs
+    this.name=name
     this.color=color
     this.rnd_x =Math.random()*50+ Math.random()*(innerWidth-100); //setting random x set-up
     this.rnd_y =Math.random()*50+ Math.random()*(innerHeight-100) ; //setting random y set-up
-    this.vx = Math.random()*10;
-    this.vy = Math.random()*10;
+    this.vx = Math.random()*5;
+    this.vy = Math.random()*5;
 
     c.beginPath();
     c.strokeStyle = this.color;
     c.arc(this.rnd_x, this.rnd_y, 50, 0, 360);
     c.fill();
     this.update = function(){
+        
 
+for(let i=0;i<10;i++){
+let distance = Math.sqrt(Math.pow(c1[i].rnd_x-this.rnd_x,2) + Math.pow(c1[i].rnd_y-this.rnd_y,2));
+if (distance > 90&&distance < 100&&distance!=0) {
+    // c1[i].vx = -c1[i].vx
+    // c1[i].vy =-c1[i].vy
+    this.vx = -this.vx
+    this.vy =-this.vy
+}
+}
+        
         if (this.rnd_x+50>innerWidth || this.rnd_x-50<0){
             this.vx = -this.vx
             }
