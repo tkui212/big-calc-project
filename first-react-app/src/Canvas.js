@@ -24,10 +24,10 @@ let c = canvas.getContext("2d");
 // c.fill()
 function create(color, name){ //creating the menu arcs
     this.color=color
-    this.rnd_x =50+ Math.random()*(innerWidth-100); //setting random x set-up
-    this.rnd_y =50+ Math.random()*(innerHeight-100) ; //setting random y set-up
-    this.vx = 3;
-    this.vy = 3;
+    this.rnd_x =Math.random()*50+ Math.random()*(innerWidth-100); //setting random x set-up
+    this.rnd_y =Math.random()*50+ Math.random()*(innerHeight-100) ; //setting random y set-up
+    this.vx = Math.random()*10;
+    this.vy = Math.random()*10;
 
     c.beginPath();
     c.strokeStyle = this.color;
@@ -51,15 +51,17 @@ function create(color, name){ //creating the menu arcs
         c.fill();
     }
 }
- let c1 = new create("red" ,"hi");
- let c2 = new create("blue" ,"hi2");
+ let c1 =[]
+ for(let i=0;i<10;i++){
+    c1[i]= new create("red" ,`hi${i}`);
+ }
+
 
 
 function animation(){
     c.clearRect(0,0,innerWidth,innerHeight);
     requestAnimationFrame(animation);
-    c1.update();
-    c2.update();
+    c1.forEach((ele)=>{ele.update();})
 }
 animation()
 
