@@ -3,6 +3,7 @@ import './App.css';
 import './home_page.css';
 import Menu from './Menu';
 import Canvas from './Canvas';
+
 function App() {
   return (
     <div className="App">
