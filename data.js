@@ -252,3 +252,5 @@ for (const element of $(`snapTo`)) {
 }
 
 
+console.log(2**2)
+console.log(4**2)

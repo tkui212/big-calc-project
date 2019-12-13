@@ -19,7 +19,7 @@ canvas.width = window.innerWidth
 canvas.height = window.innerHeight*0.82
 const innerWidth = canvas.width
 const innerHeight = canvas.height
-let c = canvas.getContext("2d");
+var c = canvas.getContext("2d");
 // c.strokeStyle = "red";
 // c.fillStyle = "red"
 // c.stroke();
@@ -32,16 +32,16 @@ function create(color, name){ //creating the menu arcs
     // this.vx = Math.random()*5;
     // this.vy = Math.random()*5;
     if(this.name==="1"){
-this.x=500
-this.y=200
-this.vx=4
+this.x=200
+this.y=250
+this.vx=5
 this.vy=0
 
     }
     else{
-        this.x=500
+        this.x=308
 this.y=300
-this.vx=-4
+this.vx=-5
 this.vy=0
     }
 
@@ -51,11 +51,29 @@ this.vy=0
     c.fill();
     this.update = function(){
     for(let i=0;i<2;i++){
-
-        var vCollision = {x: c1[i].x - this.x, y: c1[i].y - this.y};
-        var distance = Math.sqrt((c1[i].x-this.x)*(c1[i].x-this.x) + (c1[i].y-this.y)*(c1[i].y-this.y));
-        if(distance!==0&&distance<101&&distance>90){
+        let c2=c1[i]
+        let vCollision = {x: c1[i].x - this.x, y: c1[i].y - this.y};
+        let distance = Math.sqrt((c1[i].x+c1[i].vx-this.x-this.vx)*(c1[i].x+c1[i].vx-this.x-this.vx) + (c1[i].y+c1[i].vy-this.y-this.vy)*(c1[i].y+c1[i].vy-this.y-this.vy));
+        if(distance!==0&&distance<101){
+            var a=c2.vx**2-2*c2.vx*this.x+this.x**2+c2.vy**2-2*c2.vy*this.y+this.y**2
+            var b=2*c2.x*c2.vx-2*this.x*c2.vx-2*c2.x*this.vx+2*this.x*this.vx+2*c2.y*c2.vy-2*this.y*c2.vy-2*c2.y*this.vy+2*this.y*this.vy
+            var C=this.x**2+c2.x**2-2*c2.x*this.x+this.y**2+c2.y**2-2*c2.y*this.y
+            var conclosen1=(b+Math.sqrt(b**2-4*a*C))/2*a
+            var conclosen2=(b-Math.sqrt(b**2-4*a*C))/2*a
             // console.log("work")
+            console.log(`t1=`+conclosen1)
+            console.log(`t2=`+conclosen2)
+            console.log(`a=`+a)
+            console.log(`c2.vx**2=${c2.vx**2}
+            -2*c2.vx*this.x=${-2*c2.vx*this.x}
+            +this.x**2=${this.x**2}
+            +c2.vy**2=${c2.vy**2}
+            -2*c2.vy*this.y=${-2*c2.vy*this.y}
+            +this.y**2=${this.y**2}`)
+            console.log(`b=`+b)
+            console.log(`c=`+C)
+            console.log(c2)
+            console.log(this)
         var vCollisionNorm = {x: vCollision.x / distance, y: vCollision.y / distance};
         var vRelativeVelocity = {x: this.vx - c1[i].vx, y: this.vy - c1[i].vy};
         var speed = vRelativeVelocity.x * vCollisionNorm.x + vRelativeVelocity.y * vCollisionNorm.y;
@@ -73,28 +91,18 @@ this.vy=0
         if (this.y + 50>innerHeight || this.y-50<0){
             this.vy =-this.vy
         }
+        console.log(`this before movemant`)
+        console.log(this)
         this.x += this.vx;
         this.y += this.vy;
+        console.log(`this after movemant`)
+        console.log(this)
         c.beginPath()
         c.fillStyle = this.color;
         c.strokeStyle = this.color;
         c.arc(this.x, this.y, 50, 0, 360);
         c.fill();
-        // let lin = new Path2D();
-       
-        // c.fillStyle = "blue";
-        // c.strokeStyle =  "blue";
-        // c.lineWidth = 2;
-//   c.beginPath();
-//   lin.moveTo(this.x,this.y );
-//   lin.lineTo((this.x+this.vx*50),this.y );
-//   c.stroke(lin);
-//   c.fill(lin);
-//   c.beginPath();
-//   lin.moveTo(this.x,this.y );
-//   lin.lineTo(this.x,(this.y +this.vy*50));
-//   c.stroke(lin);
-//   c.fill(lin);
+   
     }
 }
 let c1 =[]
@@ -107,12 +115,16 @@ c1[1]=new create("red","2")
 
 function animation(){
     c.clearRect(0,0,innerWidth,innerHeight);
-    requestAnimationFrame(animation);
+    // requestAnimationFrame(animation);
     c1.forEach((ele)=>{ele.update();})
-    // obj1.update()
-    // obj2.update()
+
 }
-animation()
+canvas["ani"]=function animation(){
+    c.clearRect(0,0,innerWidth,innerHeight);
+    // requestAnimationFrame(animation);
+    c1.forEach((ele)=>{ele.update();})
+
+}
 
         }
     }
