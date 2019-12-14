@@ -33,13 +33,13 @@ function create(color, name){ //creating the menu arcs
     // this.vy = Math.random()*5;
     if(this.name==="1"){
 this.x=200
-this.y=250
+this.y=300
 this.vx=5
 this.vy=0
 
     }
     else{
-        this.x=308
+        this.x=304
 this.y=300
 this.vx=-5
 this.vy=0
@@ -62,8 +62,11 @@ this.vy=0
             var conclosen2=(b-Math.sqrt(b**2-4*a*C))/2*a
             // console.log("work")
             console.log(`t1=`+conclosen1)
+            console.log("")
             console.log(`t2=`+conclosen2)
+            console.log("")
             console.log(`a=`+a)
+            console.log("")
             console.log(`c2.vx**2=${c2.vx**2}
             -2*c2.vx*this.x=${-2*c2.vx*this.x}
             +this.x**2=${this.x**2}
@@ -71,8 +74,27 @@ this.vy=0
             -2*c2.vy*this.y=${-2*c2.vy*this.y}
             +this.y**2=${this.y**2}`)
             console.log(`b=`+b)
+            console.log("")
+            console.log(`2*c2.x*c2.vx=${2*c2.x*c2.vx}
+            -2*this.x*c2.vx=${-2*this.x*c2.vx}
+            -2*c2.x*this.vx=${-2*c2.x*this.vx}
+            +2*this.x*this.vx=${2*this.x*this.vx}
+            +2*c2.y*c2.vy=${2*c2.y*c2.vy}
+            -2*this.y*c2.vy=${-2*this.y*c2.vy}
+            -2*c2.y*this.vy=${-2*c2.y*this.vy}
+            +2*this.y*this.vy=${2*this.y*this.vy}`)
+            console.log("")
             console.log(`c=`+C)
+            console.log("")
+            console.log(`this.x**2=${this.x**2}
+            +c2.x**2=${c2.x**2}
+            -2*c2.x*this.x=${-2*c2.x*this.x}
+            +this.y**2=${this.y**2}
+            +c2.y**2=${c2.y**2}
+            -2*c2.y*this.y=${ -2*c2.y*this.y}`)
+            console.log("")
             console.log(c2)
+            console.log("")
             console.log(this)
         var vCollisionNorm = {x: vCollision.x / distance, y: vCollision.y / distance};
         var vRelativeVelocity = {x: this.vx - c1[i].vx, y: this.vy - c1[i].vy};
@@ -102,7 +124,6 @@ this.vy=0
         c.strokeStyle = this.color;
         c.arc(this.x, this.y, 50, 0, 360);
         c.fill();
-   
     }
 }
 let c1 =[]
