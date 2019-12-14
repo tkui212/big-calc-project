@@ -55,9 +55,9 @@ this.vy=0
         let vCollision = {x: c1[i].x - this.x, y: c1[i].y - this.y};
         let distance = Math.sqrt((c1[i].x+c1[i].vx-this.x-this.vx)*(c1[i].x+c1[i].vx-this.x-this.vx) + (c1[i].y+c1[i].vy-this.y-this.vy)*(c1[i].y+c1[i].vy-this.y-this.vy));
         if(distance!==0&&distance<101){
-            var a=c2.vx**2-2*c2.vx*this.x+this.x**2+c2.vy**2-2*c2.vy*this.y+this.y**2
-            var b=2*c2.x*c2.vx-2*this.x*c2.vx-2*c2.x*this.vx+2*this.x*this.vx+2*c2.y*c2.vy-2*this.y*c2.vy-2*c2.y*this.vy+2*this.y*this.vy
-            var C=this.x**2+c2.x**2-2*c2.x*this.x+this.y**2+c2.y**2-2*c2.y*this.y
+            var a=this.vx**2-2*this.vx*c2.vx+c2.vx**2+this.vy**2-2*this.vy*c2.vy+c2.vy**2
+            var b=2*this.x*this.vx-2*this.vx*c2.x-2*this.x*c2.vx+2*c2.x*c2.vx-2*c2.y*this.vy+2*c2.y*c2.vy+2*this.vy*this.y-2*c2.vy*this.y
+            var C=this.x**2-2*this.x*c2.x+c2.x**2+c2.y**2+this.y**2-2*c2.y*this.y-10000
             var conclosen1=(b+Math.sqrt(b**2-4*a*C))/2*a
             var conclosen2=(b-Math.sqrt(b**2-4*a*C))/2*a
             // console.log("work")
