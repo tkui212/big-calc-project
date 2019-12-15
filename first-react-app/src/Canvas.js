@@ -6,6 +6,7 @@ export default class Canvas extends Component {
     constructor(props) {
          super(props)
          this.canvasRef = React.createRef();
+         
         }
     render() {
         return(
@@ -13,13 +14,15 @@ export default class Canvas extends Component {
         )
         }
         componentDidMount() {
-var canvas = document.querySelector("#can_plate");
+            console.log(this)
+            console.log("mount")
+var canvass = document.querySelector("#can_plate");
 
-canvas.width = window.innerWidth
-canvas.height = window.innerHeight*0.82
-const innerWidth = canvas.width
-const innerHeight = canvas.height
-var c = canvas.getContext("2d");
+canvass.width = window.innerWidth
+canvass.height = window.innerHeight*0.82
+const innerWidth = canvass.width
+const innerHeight = canvass.height
+var c = canvass.getContext("2d");
 // c.strokeStyle = "red";
 // c.fillStyle = "red"
 // c.stroke();
@@ -44,83 +47,95 @@ this.y=300
 this.vx=-5
 this.vy=0
     }
-
+this.timer=0
     c.beginPath();
     c.strokeStyle = this.color;
     c.arc(this.x, this.y, 50, 0, 360);
     c.fill();
+
     this.update = function(){
+        console.log(c1)
+        if(this.timer<1){
     for(let i=0;i<2;i++){
-        let c2=c1[i]
-        let vCollision = {x: c2.x - this.x, y: c2.y - this.y};
-        let distance = Math.sqrt((c2.x+c2.vx-this.x-this.vx)**2 + (c2.y+c2.vy-this.y-this.vy)**2);
-        console.log("futer distance="+distance)
-        if(distance!==0&&distance<101){
-            var a=this.vx**2-2*this.vx*c2.vx+c2.vx**2+this.vy**2-2*this.vy*c2.vy+c2.vy**2
+        this.c2=c1[i]
+        this.vCollision = {x: this.c2.x - this.x, y: this.c2.y - this.y};
+        this.distance = Math.sqrt((this.c2.x+this.c2.vx-this.x-this.vx)**2 + (this.c2.y+this.c2.vy-this.y-this.vy)**2);
+        console.log("futer distance="+this.distance)
+        if(this.distance!==0){
+            this.a=this.vx**2-2*this.vx*this.c2.vx+this.c2.vx**2+this.vy**2-2*this.vy*this.c2.vy+this.c2.vy**2
 
-            var b=2*this.x*this.vx-2*this.vx*c2.x-2*this.x*c2.vx+2*c2.x*c2.vx-2*c2.y*this.vy+2*c2.y*c2.vy+2*this.vy*this.y-2*c2.vy*this.y
+            this.b=2*this.x*this.vx-2*this.vx*this.c2.x-2*this.x*this.c2.vx+2*this.c2.x*this.c2.vx-2*this.c2.y*this.vy+2*this.c2.y*this.c2.vy+2*this.vy*this.y-2*this.c2.vy*this.y
 
-            var C=this.x**2-2*this.x*c2.x+c2.x**2+c2.y**2+this.y**2-2*c2.y*this.y-10000
-            console.log("")
-            console.log(`sqrt=`+Math.sqrt(b**2-(4*a*C)))
-            console.log("")
-            console.log(`a=`+a)
-            console.log("")
-            let aT2=2*a
-            var conclosen1=((-b)+Math.sqrt(b**2-(4*a*C)))/aT2
-            var conclosen2=((-b)-Math.sqrt(b**2-(4*a*C)))/aT2
-            // console.log("work")
-            console.log(`t1=`+conclosen1)
-            console.log("")
-            console.log(`t2=`+conclosen2)
-            console.log("")
-            console.log(`a=`+a)
-            console.log("")
-            console.log(`c2.vx**2=${c2.vx**2}
-            -2*c2.vx*this.x=${-2*c2.vx*this.x}
-            +this.x**2=${this.x**2}
-            +c2.vy**2=${c2.vy**2}
-            -2*c2.vy*this.y=${-2*c2.vy*this.y}
-            +this.y**2=${this.y**2}`)
-            console.log(`b=`+b)
-            console.log("")
-            console.log(`2*c2.x*c2.vx=${2*c2.x*c2.vx}
-            -2*this.x*c2.vx=${-2*this.x*c2.vx}
-            -2*c2.x*this.vx=${-2*c2.x*this.vx}
-            +2*this.x*this.vx=${2*this.x*this.vx}
-            +2*c2.y*c2.vy=${2*c2.y*c2.vy}
-            -2*this.y*c2.vy=${-2*this.y*c2.vy}
-            -2*c2.y*this.vy=${-2*c2.y*this.vy}
-            +2*this.y*this.vy=${2*this.y*this.vy}`)
-            console.log("")
-            console.log(`c=`+C)
-            console.log("")
-            console.log(`this.x**2=${this.x**2}
-            +c2.x**2=${c2.x**2}
-            -2*c2.x*this.x=${-2*c2.x*this.x}
-            +this.y**2=${this.y**2}
-            +c2.y**2=${c2.y**2}
-            -2*c2.y*this.y=${ -2*c2.y*this.y}`)
-            console.log("")
-            console.log(c2)
-            console.log("")
-            console.log(this)
-        var vCollisionNorm = {x: vCollision.x / distance, y: vCollision.y / distance};
-        var vRelativeVelocity = {x: this.vx - c1[i].vx, y: this.vy - c1[i].vy};
-        var speed = vRelativeVelocity.x * vCollisionNorm.x + vRelativeVelocity.y * vCollisionNorm.y;
-        this.vx -= (speed * vCollisionNorm.x);
-        this.vy -= (speed * vCollisionNorm.y);
-        c1[i].vx += (speed * vCollisionNorm.x);
-        c1[i].vy += (speed * vCollisionNorm.y);
+            this.C=this.x**2-2*this.x*this.c2.x+this.c2.x**2+this.c2.y**2+this.y**2-2*this.c2.y*this.y-10000
+            
+            this.aT2=2*this.a
+            this.con1=((-this.b)+Math.sqrt(this.b**2-(4*this.a*this.C)))/this.aT2
+            this.con2=((-this.b)-Math.sqrt(this.b**2-(4*this.a*this.C)))/this.aT2
+            this.con=null
+            if(this.con1<this.con2&&this.con1>0){
+                this.con=this.con1
+
+            }else{
+                this.con=this.con2
+
+            }
+            
+            console.log(c1)
+            this.x+=this.vx*this.con
+            this.y+=this.vy*this.con
+            this.c2.x+=this.c2.vx*this.con
+            this.c2.y+=this.c2.vy*this.con
+            this.c2.timer=0
+            console.log(c1)
+            this.distance = Math.sqrt((this.c2.x-this.x)**2 + (this.c2.y-this.y)**2);
+        this.vCollisionNorm = {x: this.vCollision.x / this.distance, y: this.vCollision.y / this.distance};
+        this.vRelativeVelocity = {x: this.vx - c1[i].vx, y: this.vy - c1[i].vy};
+        this.speed = this.vRelativeVelocity.x * this.vCollisionNorm.x + this.vRelativeVelocity.y * this.vCollisionNorm.y;
+        this.vx -= (this.speed * this.vCollisionNorm.x);
+        this.vy -= (this.speed * this.vCollisionNorm.y);
+        c1[i].vx += (this.speed * this.vCollisionNorm.x);
+        c1[i].vy += (this.speed * this.vCollisionNorm.y);
+        this.con=1-this.con
+        this.x+=this.vx*this.con
+        this.y+=this.vy*this.con
+        this.c2.x+=this.c2.vx*this.con
+        this.c2.y+=this.c2.vy*this.con
+        console.log(c1)
+        this.distance = Math.sqrt((this.c2.x+this.c2.vx-this.x-this.vx)**2 + (this.c2.y+this.c2.vy-this.y-this.vy)**2);
+            this.a=this.vx**2-2*this.vx*this.c2.vx+this.c2.vx**2+this.vy**2-2*this.vy*this.c2.vy+this.c2.vy**2
+
+            this.b=2*this.x*this.vx-2*this.vx*this.c2.x-2*this.x*this.c2.vx+2*this.c2.x*this.c2.vx-2*this.c2.y*this.vy+2*this.c2.y*this.c2.vy+2*this.vy*this.y-2*this.c2.vy*this.y
+
+            this.C=this.x**2-2*this.x*this.c2.x+this.c2.x**2+this.c2.y**2+this.y**2-2*this.c2.y*this.y-10000
+            
+            this.aT2=2*this.a
+            this.con1=((-this.b)+Math.sqrt(this.b**2-(4*this.a*this.C)))/this.aT2
+            this.con2=((-this.b)-Math.sqrt(this.b**2-(4*this.a*this.C)))/this.aT2
+            if(this.con1<this.con2&&this.con1>0){
+                this.con=this.con1
+            }else{
+                if(this.con2>0){
+                this.con=this.con2
+                }
+                else{
+                    this.con=null
+                }
+            }
+        this.timer=this.con<this.timer?this.con:this.timer
+        this.timer=this.con==null?this.con:this.timer
+        console.log(this.timer)
         }
+        
         // console.log(this)
 }
-        
+}else{
         if (this.x+50>innerWidth || this.x-50<0){
             this.vx = -this.vx
+            this.timer=0
             }
         if (this.y + 50>innerHeight || this.y-50<0){
             this.vy =-this.vy
+            this.timer=0
         }
         console.log(`this before movemant`)
         console.log(this)
@@ -128,14 +143,16 @@ this.vy=0
         this.y += this.vy;
         console.log(`this after movemant`)
         console.log(this)
+    }
         c.beginPath()
         c.fillStyle = this.color;
         c.strokeStyle = this.color;
         c.arc(this.x, this.y, 50, 0, 360);
         c.fill();
+        console.log(c1)
     }
 }
-let c1 =[]
+var c1 =[]
 //  for(let i=0;i<10;i++){
 //     c1[i]= new create("red" ,`hi${i}`);
 //  }
@@ -144,17 +161,28 @@ c1[0]=new create("blue","1")
 c1[1]=new create("red","2")
 
 function animation(){
+    c1=canvass.c1
     c.clearRect(0,0,innerWidth,innerHeight);
     // requestAnimationFrame(animation);
-    c1.forEach((ele)=>{ele.update();})
-
+    console.log(c1)
+    // c1.forEach((ele)=>{ele.update();})
+    c1[0].update()
+    setTimeout(()=>{console.log(c1)},90)
+    setTimeout(()=>{c1[1].update()},100)
+    setTimeout(()=>{console.log(c1)},200)
+    canvass.c1=c1
+    console.log(this.c1)
+    
 }
-canvas["ani"]=function animation(){
-    c.clearRect(0,0,innerWidth,innerHeight);
-    // requestAnimationFrame(animation);
-    c1.forEach((ele)=>{ele.update();})
-
+canvass["ani"]=function awddd(){
+    console.log(this.c1)
+    console.debug(c1)
+    animation()
 }
-
+canvass["con"]=function awddd(){
+    console.log(c1)
+}
+canvass["c1"]=c1
+console.log(this)
         }
     }
