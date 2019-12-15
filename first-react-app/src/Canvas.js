@@ -47,28 +47,38 @@ this.y=300
 this.vx=-5
 this.vy=0
     }
+    console.log("create")
 this.timer=0
+this.draw=function(){
     c.beginPath();
+    c.fillStyle = this.color;
     c.strokeStyle = this.color;
     c.arc(this.x, this.y, 50, 0, 360);
     c.fill();
+}
+this.calcings=function(){
+    this.a=this.vx**2-2*this.vx*this.c2.vx+this.c2.vx**2+this.vy**2-2*this.vy*this.c2.vy+this.c2.vy**2
 
+    this.b=2*this.x*this.vx-2*this.vx*this.c2.x-2*this.x*this.c2.vx+2*this.c2.x*this.c2.vx-2*this.c2.y*this.vy+2*this.c2.y*this.c2.vy+2*this.vy*this.y-2*this.c2.vy*this.y
+
+    this.C=this.x**2-2*this.x*this.c2.x+this.c2.x**2+this.c2.y**2+this.y**2-2*this.c2.y*this.y-10000
+    this.aT2=2*this.a
+}
+this.draw()
     this.update = function(){
-        console.log(c1)
         if(this.timer<1){
-    for(let i=0;i<2;i++){
-        this.c2=c1[i]
+    // for(let i=0;i<2;i++){
+        {
+            if(this.name=="1"){
+                this.c2=c1[1]
+            }
+            else{
+                this.c2=c1[0]
+            }
         this.vCollision = {x: this.c2.x - this.x, y: this.c2.y - this.y};
         this.distance = Math.sqrt((this.c2.x+this.c2.vx-this.x-this.vx)**2 + (this.c2.y+this.c2.vy-this.y-this.vy)**2);
-        console.log("futer distance="+this.distance)
         if(this.distance!==0){
-            this.a=this.vx**2-2*this.vx*this.c2.vx+this.c2.vx**2+this.vy**2-2*this.vy*this.c2.vy+this.c2.vy**2
-
-            this.b=2*this.x*this.vx-2*this.vx*this.c2.x-2*this.x*this.c2.vx+2*this.c2.x*this.c2.vx-2*this.c2.y*this.vy+2*this.c2.y*this.c2.vy+2*this.vy*this.y-2*this.c2.vy*this.y
-
-            this.C=this.x**2-2*this.x*this.c2.x+this.c2.x**2+this.c2.y**2+this.y**2-2*this.c2.y*this.y-10000
-            
-            this.aT2=2*this.a
+            this.calcings()
             this.con1=((-this.b)+Math.sqrt(this.b**2-(4*this.a*this.C)))/this.aT2
             this.con2=((-this.b)-Math.sqrt(this.b**2-(4*this.a*this.C)))/this.aT2
             this.con=null
@@ -76,56 +86,51 @@ this.timer=0
                 this.con=this.con1
 
             }else{
+                if(this.con2>0){
                 this.con=this.con2
-
+                }
             }
-            
-            console.log(c1)
+            if(this.con<1){
             this.x+=this.vx*this.con
             this.y+=this.vy*this.con
             this.c2.x+=this.c2.vx*this.con
             this.c2.y+=this.c2.vy*this.con
             this.c2.timer=0
-            console.log(c1)
             this.distance = Math.sqrt((this.c2.x-this.x)**2 + (this.c2.y-this.y)**2);
-        this.vCollisionNorm = {x: this.vCollision.x / this.distance, y: this.vCollision.y / this.distance};
-        this.vRelativeVelocity = {x: this.vx - c1[i].vx, y: this.vy - c1[i].vy};
+                if(this.distance<101){
+            this.vCollisionNorm = {x: this.vCollision.x / this.distance, y: this.vCollision.y / this.distance};
+        this.vRelativeVelocity = {x: this.vx - this.c2.vx, y: this.vy - this.c2.vy};
         this.speed = this.vRelativeVelocity.x * this.vCollisionNorm.x + this.vRelativeVelocity.y * this.vCollisionNorm.y;
         this.vx -= (this.speed * this.vCollisionNorm.x);
         this.vy -= (this.speed * this.vCollisionNorm.y);
-        c1[i].vx += (this.speed * this.vCollisionNorm.x);
-        c1[i].vy += (this.speed * this.vCollisionNorm.y);
+        this.c2.vx += (this.speed * this.vCollisionNorm.x);
+        this.c2.vy += (this.speed * this.vCollisionNorm.y);
         this.con=1-this.con
         this.x+=this.vx*this.con
         this.y+=this.vy*this.con
         this.c2.x+=this.c2.vx*this.con
         this.c2.y+=this.c2.vy*this.con
-        console.log(c1)
+                }
+            }
         this.distance = Math.sqrt((this.c2.x+this.c2.vx-this.x-this.vx)**2 + (this.c2.y+this.c2.vy-this.y-this.vy)**2);
-            this.a=this.vx**2-2*this.vx*this.c2.vx+this.c2.vx**2+this.vy**2-2*this.vy*this.c2.vy+this.c2.vy**2
-
-            this.b=2*this.x*this.vx-2*this.vx*this.c2.x-2*this.x*this.c2.vx+2*this.c2.x*this.c2.vx-2*this.c2.y*this.vy+2*this.c2.y*this.c2.vy+2*this.vy*this.y-2*this.c2.vy*this.y
-
-            this.C=this.x**2-2*this.x*this.c2.x+this.c2.x**2+this.c2.y**2+this.y**2-2*this.c2.y*this.y-10000
-            
-            this.aT2=2*this.a
+        this.calcings()
             this.con1=((-this.b)+Math.sqrt(this.b**2-(4*this.a*this.C)))/this.aT2
             this.con2=((-this.b)-Math.sqrt(this.b**2-(4*this.a*this.C)))/this.aT2
             if(this.con1<this.con2&&this.con1>0){
-                this.con=this.con1
+                this.timer=this.con1
+
             }else{
                 if(this.con2>0){
-                this.con=this.con2
+                this.timer=this.con2
                 }
                 else{
-                    this.con=null
+                    this.timer=null
                 }
+
             }
-        this.timer=this.con<this.timer?this.con:this.timer
-        this.timer=this.con==null?this.con:this.timer
-        console.log(this.timer)
+            console.log(this.timer)
+
         }
-        
         // console.log(this)
 }
 }else{
@@ -144,42 +149,34 @@ this.timer=0
         console.log(`this after movemant`)
         console.log(this)
     }
-        c.beginPath()
-        c.fillStyle = this.color;
-        c.strokeStyle = this.color;
-        c.arc(this.x, this.y, 50, 0, 360);
-        c.fill();
+        this.draw()
+        console.log(this.timer)
         console.log(c1)
     }
 }
-var c1 =[]
+let c1 =[new create("blue","1"),new create("red","2")]
 //  for(let i=0;i<10;i++){
-//     c1[i]= new create("red" ,`hi${i}`);
+//     this.c2= new create("red" ,`hi${i}`);
 //  }
 
-c1[0]=new create("blue","1")
-c1[1]=new create("red","2")
-
 function animation(){
-    c1=canvass.c1
     c.clearRect(0,0,innerWidth,innerHeight);
     // requestAnimationFrame(animation);
-    console.log(c1)
+    console.log(c1[0])
+    console.log(c1[1])
     // c1.forEach((ele)=>{ele.update();})
     c1[0].update()
-    setTimeout(()=>{console.log(c1)},90)
-    setTimeout(()=>{c1[1].update()},100)
-    setTimeout(()=>{console.log(c1)},200)
-    canvass.c1=c1
-    console.log(this.c1)
-    
+    c1[1].update()
+    console.log(c1[0])
+    console.log(c1[1])
+
+
+
 }
-canvass["ani"]=function awddd(){
-    console.log(this.c1)
-    console.debug(c1)
-    animation()
+canvass["ani"]=function awfddd(){
+    setTimeout(()=>{animation()},10)
 }
-canvass["con"]=function awddd(){
+canvass["con"]=function awdddd(){
     console.log(c1)
 }
 canvass["c1"]=c1
