@@ -50,13 +50,6 @@ export default class Canvas extends Component {
         {
             if(c1[i]!=this){
                 this.c2=c1[i]
-                c.strokeStyle = "brown";
-        c.lineWidth = 2;
-        c.beginPath();
-        c.moveTo(this.x, this.y);
-        c.lineTo(this.c2.x, this.c2.y);
-        c.stroke();
-        c.fill();
               await this.calcings();
               this.con1 =
                 (-this.b + Math.sqrt(this.b ** 2 - 4 * this.a * this.C)) /
@@ -80,14 +73,12 @@ export default class Canvas extends Component {
               }
               if(this.timer!=null){
                   this.collider=this.c2
-                  c.strokeStyle = "brown";
-        c.lineWidth = 4;
-        c.beginPath();
-        c.moveTo(this.x, this.y);
-        c.lineTo(this.c2.x, this.c2.y);
-        c.stroke();
-        c.fill();
-                  if(this.collider.timer==null){
+                  console.log("")
+                  console.log(this)
+                  console.log(this.collider)
+                  console.log(this.timer)
+                  console.log("")
+                  if(this.collider.timer!=this.timer&&this.collider.timer>this.timer){
                       await this.collider.collisenUpdate();
                   }
               }
@@ -261,11 +252,11 @@ export default class Canvas extends Component {
       await c1[1].update();
       await c1[2].update();
       await c1[3].update();
-    //   console.table(c1)
+
     }
     var anil=setInterval(() => {
         animation();
-    }, 50);
+    }, 100);
     canvass["ani"] = function awfddd() {
         animation()
     };
