@@ -90,7 +90,7 @@ export default class Canvas extends Component {
       };
       this.draw();
       this.update = function() {
-        if (this.timer < 1&&this.timer!=null) {
+        if (this.timer < 1) {
           //cullisen or check for next colissen
           console.log("timer<0, need to do calcs");
           // for(let i=0;i<2;i++){
@@ -123,7 +123,7 @@ export default class Canvas extends Component {
                   this.con = this.con2;
                 }
               }
-              if (this.con < 1&&this.con!=null) {
+              if (this.con < 1) {
                 //if there is goning to be collisen now
                 console.log(this.con)
                 console.log("collisen will happen in less tahn a secend")
