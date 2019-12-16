@@ -48,11 +48,15 @@ export default class Canvas extends Component {
 
         for(let i=0;i<c1.length;i++)
         {
-            if(this.name=="1"){
-                this.c2=c1[1]
-            }else{
-                this.c2=c1[0]
-            }
+            if(c1[i]!=this){
+                this.c2=c1[i]
+                c.strokeStyle = "brown";
+        c.lineWidth = 2;
+        c.beginPath();
+        c.moveTo(this.x, this.y);
+        c.lineTo(this.c2.x, this.c2.y);
+        c.stroke();
+        c.fill();
               await this.calcings();
               this.con1 =
                 (-this.b + Math.sqrt(this.b ** 2 - 4 * this.a * this.C)) /
@@ -61,7 +65,9 @@ export default class Canvas extends Component {
                 (-this.b - Math.sqrt(this.b ** 2 - 4 * this.a * this.C)) /
                 this.aT2;
               if (this.con1 < this.con2 && this.con1 > 0) {
+                if(this.timer!=null&&this.timer>=this.con1){
                 this.timer = this.con1;
+                }
               } else {
                 if (this.con2 > 0) {
                   this.timer = this.con2;
@@ -69,27 +75,33 @@ export default class Canvas extends Component {
                   this.timer = null;
                 }
               }
+              if(this.timer<1&&this.timer!=null){
+                  this.con=this.timer
+              }
               if(this.timer!=null){
                   this.collider=this.c2
+                  c.strokeStyle = "brown";
+        c.lineWidth = 4;
+        c.beginPath();
+        c.moveTo(this.x, this.y);
+        c.lineTo(this.c2.x, this.c2.y);
+        c.stroke();
+        c.fill();
+                  if(this.collider.timer==null){
+                      await this.collider.collisenUpdate();
+                  }
               }
-            
+            }
         }
         return new Promise(resolve =>{resolve("collupdate")})
       }
-      this.isCollisen=async function(){
-          console.log(this)
-          for(let i=0;i<c1.length;i++){
-            let d=Math.sqrt((this.collider.x - this.x) ** 2 + (this.collider.y - this.y) ** 2);
-            this.distance=this.distance<d?this.distance:d
-          }
-        
-        return this.timer<1||this.distance<100
+      this.isCollisen=function(){
+        return this.timer<1&&this.timer!=null
       }
       this.normalMove=async function(){
         this.x += this.vx;
           this.y += this.vy;
           if(this.timer!=null&&this.timer>=1){
-              
               this.timer-=1
           }
       }
@@ -98,13 +110,12 @@ export default class Canvas extends Component {
                 this.y += this.vy * this.con;
                 this.collider.x += this.collider.vx * this.con;
                 this.collider.y += this.collider.vy * this.con;
-
                 this.collider.timer = 0;
                 this.distance = Math.sqrt(
                   (this.collider.x - this.x) ** 2 + (this.collider.y - this.y) ** 2
                 );
-                
                 if (this.distance < 101) {//if acsawly collisen happend
+                    this.con=1-this.con
                     await this.collisen()
                 }
                 else{
@@ -128,34 +139,43 @@ export default class Canvas extends Component {
         c.lineTo(this.x+this.vx, this.y+this.vy);
         c.stroke();
         c.fill();
+        c.strokeStyle = "white";
+        c.lineWidth = 2;
+        c.beginPath();
+        c.moveTo(this.x, this.y);
+        c.lineTo(this.x+this.vx*this.timer, this.y+this.vy*this.timer);
+        c.stroke();
+        c.fill();
+
+        
         return new Promise(resolve =>{resolve("draw")})
       };
       this.calcings = function() {
         this.a =
           this.vx ** 2 -
-          2 * this.vx * this.collider.vx +
-          this.collider.vx ** 2 +
+          2 * this.vx * this.c2.vx +
+          this.c2.vx ** 2 +
           this.vy ** 2 -
-          2 * this.vy * this.collider.vy +
-          this.collider.vy ** 2;
+          2 * this.vy * this.c2.vy +
+          this.c2.vy ** 2;
 
         this.b =
           2 * this.x * this.vx -
-          2 * this.vx * this.collider.x -
-          2 * this.x * this.collider.vx +
-          2 * this.collider.x * this.collider.vx -
-          2 * this.collider.y * this.vy +
-          2 * this.collider.y * this.collider.vy +
+          2 * this.vx * this.c2.x -
+          2 * this.x * this.c2.vx +
+          2 * this.c2.x * this.c2.vx -
+          2 * this.c2.y * this.vy +
+          2 * this.c2.y * this.c2.vy +
           2 * this.vy * this.y -
-          2 * this.collider.vy * this.y;
+          2 * this.c2.vy * this.y;
 
         this.C =
           this.x ** 2 -
-          2 * this.x * this.collider.x +
-          this.collider.x ** 2 +
-          this.collider.y ** 2 +
+          2 * this.x * this.c2.x +
+          this.c2.x ** 2 +
+          this.c2.y ** 2 +
           this.y ** 2 -
-          2 * this.collider.y * this.y -
+          2 * this.c2.y * this.y -
           10000;
         this.aT2 = 2 * this.a;
         return new Promise(resolve =>{resolve("calcs")})
@@ -214,8 +234,7 @@ export default class Canvas extends Component {
       }
       this.draw();
       this.update = async function() {
-          console.log(this)
-        if(this.wallQ()||this.timer==0){
+        if(this.wallQ()||this.timer<1){
             await this.collisenUpdate()
         }
         if(this.isCollisen()){
@@ -226,14 +245,11 @@ export default class Canvas extends Component {
         }
 
         await this.draw();
-        return new Promise(resolve =>{
-            setTimeout(() => {
-              resolve("a");
-            }, 1);})
+        return new Promise(resolve =>{resolve("a");})
       };
       return this
     }
-    var c1 = [new create("blue", "1"), new create("red", "2")];
+    var c1 = [new create("blue", "1"), new create("red", "2"),new create("green", "3"), new create("yellow", "4")];
     console.log(c1)
     //  for(let i=0;i<10;i++){
     //     this.c2= new create("red" ,`hi${i}`);
@@ -241,25 +257,21 @@ export default class Canvas extends Component {
 
   async function animation() {
       c.clearRect(0, 0, innerWidth, innerHeight);
-
-      await c1[1].update();
       await c1[0].update();
-
-      console.log(c1);
-      console.log(c1[0].timer);
-    
-
+      await c1[1].update();
+      await c1[2].update();
+      await c1[3].update();
+    //   console.table(c1)
     }
     var anil=setInterval(() => {
         animation();
-    }, 20);
+    }, 50);
     canvass["ani"] = function awfddd() {
         animation()
     };
     canvass["con"] = function awdddd() {
       console.log(c1);
     };
-    
     canvass["anistart"] = function awfddd() {
         anil=setInterval(() => {
             animation();
