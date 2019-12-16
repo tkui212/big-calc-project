@@ -43,51 +43,63 @@ export default class Canvas extends Component {
 
       console.log(this);
     //   console.log(c1[0])
-      this.timer = 0;
+      this.timer = -1;
       this.collisenUpdate=async function(){
-
+        this.timer=null
         for(let i=0;i<c1.length;i++)
         {
             if(c1[i]!=this){
                 this.c2=c1[i]
               await this.calcings();
-              this.con1 =
+              this.aT2 = 2 * this.a;
+        this.con1 =
                 (-this.b + Math.sqrt(this.b ** 2 - 4 * this.a * this.C)) /
                 this.aT2;
               this.con2 =
                 (-this.b - Math.sqrt(this.b ** 2 - 4 * this.a * this.C)) /
                 this.aT2;
               if (this.con1 < this.con2 && this.con1 > 0) {
-                if(this.timer!=null&&this.timer>=this.con1){
+                if(this.timer>=this.con1||this.timer==null){
                 this.timer = this.con1;
+                this.collider=this.c2
                 }
               } else {
-                if (this.con2 > 0) {
+                if (this.con2 > 0&&(this.timer>=this.con2||this.timer==null)) {
                   this.timer = this.con2;
-                } else {
-                  this.timer = null;
+                  this.collider=this.c2
                 }
               }
-              if(this.timer<1&&this.timer!=null){
-                  this.con=this.timer
-              }
-              if(this.timer!=null){
-                  this.collider=this.c2
-                  console.log("")
-                  console.log(this)
-                  console.log(this.collider)
-                  console.log(this.timer)
-                  console.log("")
-                  if(this.collider.timer!=this.timer&&this.collider.timer>this.timer){
-                      await this.collider.collisenUpdate();
-                  }
+              if(this.timer==NaN){
+                console.error("timer cant be nan")
               }
             }
-        }
+          }
+              if(this.timer!=null){
+                  // this.collider=this.c2
+                  console.log("")
+                  console.log(this.color+" new collider= "+this.collider.color)
+                  // console.log("")
+                  // console.log(this)
+                  // console.log(this.collider)
+                  // console.log(this.timer)
+                  // console.log("")
+                  console.log("this timer="+this.timer+" collider timer="+this.collider.timer)
+                  console.log("")
+                  console.log("updatie to collider?="+this.collider.timer==null||this.collider.timer!==this.timer&&this.collider.timer>this.timer)
+
+                  if(this.collider.timer==null||this.collider.timer!==this.timer&&this.collider.timer>this.timer){
+                      await this.collider.collisenUpdate();
+                  }
+                  if(this.collider.collider!=this){
+                    this.timer=-1
+
+                  }
+              }
         return new Promise(resolve =>{resolve("collupdate")})
       }
       this.isCollisen=function(){
-        return this.timer<1&&this.timer!=null
+        // console.log(this)
+        return this.timer<1&&this.timer!=null&&this.timer>0&&this
       }
       this.normalMove=async function(){
         this.x += this.vx;
@@ -97,6 +109,7 @@ export default class Canvas extends Component {
           }
       }
       this.collisenExe=async function(){
+          this.con=this.timer
         this.x += this.vx * this.con;
                 this.y += this.vy * this.con;
                 this.collider.x += this.collider.vx * this.con;
@@ -114,8 +127,8 @@ export default class Canvas extends Component {
                     console.error(c1)
                     console.error(this)
                 }
-                this.collisenUpdate()
-                this.collider.collisenUpdate()
+                this.timer=-1
+                this.collider.timer=-1
       }
       this.draw = function() {
         c.beginPath();
@@ -137,8 +150,6 @@ export default class Canvas extends Component {
         c.lineTo(this.x+this.vx*this.timer, this.y+this.vy*this.timer);
         c.stroke();
         c.fill();
-
-        
         return new Promise(resolve =>{resolve("draw")})
       };
       this.calcings = function() {
@@ -168,7 +179,6 @@ export default class Canvas extends Component {
           this.y ** 2 -
           2 * this.c2.y * this.y -
           10000;
-        this.aT2 = 2 * this.a;
         return new Promise(resolve =>{resolve("calcs")})
       };
       this.wallQ=function(){
@@ -193,8 +203,8 @@ export default class Canvas extends Component {
             this.timer = 0;
             is=true
           }
+          // if(is){console.log("wall")}
           return is
-          
       }
       this.collisen=function(){
         this.distance = Math.sqrt(
@@ -225,14 +235,19 @@ export default class Canvas extends Component {
       }
       this.draw();
       this.update = async function() {
-        if(this.wallQ()||this.timer<1){
+        if(this.wallQ()||this.timer==-1){
+          // console.log(this.color+" update "+this.timer)
             await this.collisenUpdate()
         }
         if(this.isCollisen()){
-            this.collisenExe()
+          console.log(this.color+" executing on "+this.collider.color)
+
+            await this.collisenExe()
         }
         else{
-            this.normalMove()
+          // console.log(this.color+" normal")
+
+            await this.normalMove()
         }
 
         await this.draw();
@@ -240,7 +255,11 @@ export default class Canvas extends Component {
       };
       return this
     }
-    var c1 = [new create("blue", "1"), new create("red", "2"),new create("green", "3"), new create("yellow", "4")];
+    var c1 = []
+    for(let i=0;i<10;i++){
+      c1[i]=new create("red",i)
+    }
+    // [new create("blue", "1"), new create("red", "2"),new create("green", "3"), new create("yellow", "4")];
     console.log(c1)
     //  for(let i=0;i<10;i++){
     //     this.c2= new create("red" ,`hi${i}`);
@@ -248,15 +267,18 @@ export default class Canvas extends Component {
 
   async function animation() {
       c.clearRect(0, 0, innerWidth, innerHeight);
-      await c1[0].update();
-      await c1[1].update();
-      await c1[2].update();
-      await c1[3].update();
+      for(let i=0;i<c1.length;i++){
+        await c1[i].update();
+
+      }
+      // await c1[1].update();
+      // await c1[2].update();
+      // await c1[3].update();
 
     }
     var anil=setInterval(() => {
         animation();
-    }, 100);
+    }, 50);
     canvass["ani"] = function awfddd() {
         animation()
     };
@@ -266,8 +288,7 @@ export default class Canvas extends Component {
     canvass["anistart"] = function awfddd() {
         anil=setInterval(() => {
             animation();
-        }, 10);
-        
+        }, 50);
       };
       canvass["anistop"] = function awdddd() {
         clearInterval(anil)

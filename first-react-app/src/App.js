@@ -13,7 +13,6 @@ function App() {
       <Canvas id="can_plate"/>
       </header>
     </div>
-    
   );
 }
 
