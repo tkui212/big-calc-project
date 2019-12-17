@@ -251,6 +251,11 @@ for (const element of $(`snapTo`)) {
     updateCon(element)
 }
 
+let awff=[6,4,3,0,5]
+awff=awff.filter((value)=>{return value!=0?true:false})
+awff=awff.sort((a,b)=>{return b>a?-1:1})
+awff=awff.sort
+console.log(awff)
 
-console.log(2**2)
-console.log(4**2)
+let ffff=[1]
+console.log(ffff)

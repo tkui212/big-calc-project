@@ -43,13 +43,18 @@ export default class Canvas extends Component {
 
       console.log(this);
     //   console.log(c1[0])
-      this.timer = -1;
+      this.timer = [];
+      this.collider = [];
+        this.combine=[]
       this.collisenUpdate=async function(){
-        this.timer=null
+        this.timer=[]
+        this.collider=[]
+        let counter=0
         for(let i=0;i<c1.length;i++)
         {
             if(c1[i]!=this){
                 this.c2=c1[i]
+                
               await this.calcings();
               this.aT2 = 2 * this.a;
         this.con1 =
@@ -58,68 +63,129 @@ export default class Canvas extends Component {
               this.con2 =
                 (-this.b - Math.sqrt(this.b ** 2 - 4 * this.a * this.C)) /
                 this.aT2;
+                let is=true
               if (this.con1 < this.con2 && this.con1 > 0) {
-                if(this.timer>=this.con1||this.timer==null){
-                this.timer = this.con1;
-                this.collider=this.c2
+                this.timer[counter] = this.con1;
+                this.collider[counter]=this.c2
+              } else if (this.con2 > 0) {
+                  this.timer[counter] = this.con2;
+                  this.collider[counter]=this.c2
                 }
-              } else {
-                if (this.con2 > 0&&(this.timer>=this.con2||this.timer==null)) {
-                  this.timer = this.con2;
-                  this.collider=this.c2
+                else{
+                    is=false
+                    counter--
                 }
+                counter++
               }
-              if(this.timer==NaN){
-                console.error("timer cant be nan")
+            //   if(this.timer==NaN){
+            //     console.error("timer cant be nan")
+            //   }
+              
+            }
+          
+          for(let i=0;i<this.timer.length;i++){
+            //   if()
+            for(let j=0;j<this.timer.length-1;j++){
+              if(this.timer[j]>this.timer[j+1]){
+                let help=this.timer[j]
+                this.timer[j]=this.timer[j+1]
+                this.timer[j+1]=help
+                help=this.collider[j]
+                this.collider[j]=this.collider[j+1]
+                this.collider[j+1]=help
               }
             }
           }
-              if(this.timer!=null){
+              if(this.timer.length>0){
                   // this.collider=this.c2
                   console.log("")
-                  console.log(this.color+" new collider= "+this.collider.color)
+                  console.log()
+                  console.log(this.color+" new collider= "+this.collider[0].color)
                   // console.log("")
                   // console.log(this)
                   // console.log(this.collider)
                   // console.log(this.timer)
                   // console.log("")
-                  console.log("this timer="+this.timer+" collider timer="+this.collider.timer)
+                  console.log("this timer="+this.timer[0]+" collider timer="+this.collider[0].timer[0])
                   console.log("")
-                  console.log("updatie to collider?="+this.collider.timer==null||this.collider.timer!==this.timer&&this.collider.timer>this.timer)
+                  console.log("updatie to collider?="+this.collider[0].timer.length==0||this.collider[0].timer[0]!==this.timer[0]&&this.collider[0].timer[0]>this.timer[0])
 
-                  if(this.collider.timer==null||this.collider.timer!==this.timer&&this.collider.timer>this.timer){
-                      await this.collider.collisenUpdate();
+                  if(this.collider[0].timer.length==0||this.collider[0].timer[0]!==this.timer[0]&&this.collider[0].timer[0]>this.timer[0]){
+                      await this.collider[0].collisenUpdate();
                   }
-                  if(this.collider.collider!=this){
-                    this.timer=-1
+                  if(this.collider[0].collider[0]!=this){
+                      for(let item of this.timer){
+                            item=-1
+                        }
 
                   }
               }
         return new Promise(resolve =>{resolve("collupdate")})
       }
+      this.sortC=function(){
+          for(let i=0;i<this.timer.length;i++){
+              this.combine[i]={T:this.timer[i],C:this.collider[i]}
+          }
+        this.combine=this.combine.filter((value)=>{return value.T!=0?true:false})
+        this.combine=this.combine.sort((a,b)=>{return b.T>a.T?-1:1})
+        for(let i=0;i<this.combine.length;i++){
+            this.timer[i]=this.combine[i].T
+            this.collider[i]=this.combine[i].C
+        }
+        return new Promise(resolve =>{resolve("end")})
+      }
       this.isCollisen=function(){
         // console.log(this)
-        return this.timer<1&&this.timer!=null&&this.timer>0&&this
+        return this.timer.length!=0&&this.timer[0]<1
       }
       this.normalMove=async function(){
         this.x += this.vx;
           this.y += this.vy;
-          if(this.timer!=null&&this.timer>=1){
-              this.timer-=1
+          if(this.timer.length>0&&this.timer[0]>=1){
+            for(let item of this.timer){
+                item=-1
+            }
           }
+          return new Promise(resolve =>{resolve("end")})
+      }
+      this.moveTimesCon=function(){
+        this.x += this.vx * this.con;
+        this.y += this.vy * this.con;
+        this.collider[0].x += this.collider[0].vx * this.con;
+        this.collider[0].y += this.collider[0].vy * this.con;
+        return new Promise(resolve =>{resolve("end")})
       }
       this.collisenExe=async function(){
-          this.con=this.timer
-        this.x += this.vx * this.con;
-                this.y += this.vy * this.con;
-                this.collider.x += this.collider.vx * this.con;
-                this.collider.y += this.collider.vy * this.con;
-                this.collider.timer = 0;
+          this.con=this.timer[0]
+          console.log(this)
+        await this.moveTimesCon()
+        console.log(this)
+        for(let i=0;i<this.timer.length;i++){
+            this.timer[i]-=this.con
+        }
+        let M=this.collider[0]
+        await this.sortC()
+        console.log(this)
                 this.distance = Math.sqrt(
-                  (this.collider.x - this.x) ** 2 + (this.collider.y - this.y) ** 2
+                  (M.x - this.x) ** 2 + (M.y - this.y) ** 2
                 );
                 if (this.distance < 101) {//if acsawly collisen happend
                     this.con=1-this.con
+                    if(this.timer.length>1){
+                    while(this.timer.length>1&&this.con>this.timer[0]){
+                        
+                        let R=this.con
+                        this.con=this.timer[0]
+                        await this.collisen()
+                        await this.moveTimesCon()
+                        for(let i=0;i<this.timer.length;i++){
+                            this.timer[i]-=this.con
+                        }
+                        await this.sortC()
+                        this.com=R-this.con
+
+                    }
+                    }
                     await this.collisen()
                 }
                 else{
@@ -127,8 +193,14 @@ export default class Canvas extends Component {
                     console.error(c1)
                     console.error(this)
                 }
-                this.timer=-1
-                this.collider.timer=-1
+                for(let item of this.timer){
+                    item=-1
+                }
+                for(let item of this.collider[0].timer){
+                    item=-1
+                }
+                return new Promise(resolve =>{resolve("colExe")})
+                
       }
       this.draw = function() {
         c.beginPath();
@@ -147,7 +219,7 @@ export default class Canvas extends Component {
         c.lineWidth = 2;
         c.beginPath();
         c.moveTo(this.x, this.y);
-        c.lineTo(this.x+this.vx*this.timer, this.y+this.vy*this.timer);
+        c.lineTo(this.x+this.vx*this.timer[0], this.y+this.vy*this.timer[0]);
         c.stroke();
         c.fill();
         return new Promise(resolve =>{resolve("draw")})
@@ -185,22 +257,18 @@ export default class Canvas extends Component {
           let is=false
         if (this.x + 50 > innerWidth&&this.vx>0 ) {
             this.vx = -this.vx;
-            this.timer = 0;
             is=true
           }
           if(this.x - 50 < 0&&this.vx<0){
             this.vx = -this.vx;
-            this.timer = 0;
             is=true
           }
           if (this.y + 50 > innerHeight &&this.vy>0){
             this.vy = -this.vy;
-            this.timer = 0;
             is=true
           }
           if( this.y - 50 < 0&&this.vy<0){
             this.vy = -this.vy;
-            this.timer = 0;
             is=true
           }
           // if(is){console.log("wall")}
@@ -208,39 +276,34 @@ export default class Canvas extends Component {
       }
       this.collisen=function(){
         this.distance = Math.sqrt(
-            (this.collider.x - this.x) ** 2 + (this.collider.y - this.y) ** 2
+            (this.collider[0].x - this.x) ** 2 + (this.collider[0].y - this.y) ** 2
           );
-        this.vCollision = { x: this.collider.x - this.x, y: this.collider.y - this.y };
+        this.vCollision = { x: this.collider[0].x - this.x, y: this.collider[0].y - this.y };
         this.vCollisionNorm = {
             x: this.vCollision.x / this.distance,
             y: this.vCollision.y / this.distance
           };
           this.vRelativeVelocity = {
-            x: this.vx - this.collider.vx,
-            y: this.vy - this.collider.vy
+            x: this.vx - this.collider[0].vx,
+            y: this.vy - this.collider[0].vy
           };
           this.speed =
             this.vRelativeVelocity.x * this.vCollisionNorm.x +
             this.vRelativeVelocity.y * this.vCollisionNorm.y;
           this.vx -= this.speed * this.vCollisionNorm.x;
           this.vy -= this.speed * this.vCollisionNorm.y;
-          this.collider.vx += this.speed * this.vCollisionNorm.x;
-          this.collider.vy += this.speed * this.vCollisionNorm.y;
-          this.con = 1 - this.con;
-          this.x += this.vx * this.con;
-          this.y += this.vy * this.con;
-          this.collider.x += this.collider.vx * this.con;
-          this.collider.y += this.collider.vy * this.con;
+          this.collider[0].vx += this.speed * this.vCollisionNorm.x;
+          this.collider[0].vy += this.speed * this.vCollisionNorm.y;
           return new Promise(resolve =>{resolve("colli")})
       }
       this.draw();
       this.update = async function() {
-        if(this.wallQ()||this.timer==-1){
+        if(this.wallQ()||this.timer.length==0){
           // console.log(this.color+" update "+this.timer)
             await this.collisenUpdate()
         }
         if(this.isCollisen()){
-          console.log(this.color+" executing on "+this.collider.color)
+          console.log(this.color+" executing on "+this.collider[0].color)
 
             await this.collisenExe()
         }
@@ -255,6 +318,7 @@ export default class Canvas extends Component {
       };
       return this
     }
+
     var c1 = []
     for(let i=0;i<10;i++){
       c1[i]=new create("red",i)
