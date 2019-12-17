@@ -4,29 +4,36 @@ import "./home_page.css";
 export default class Canvas extends Component {
   constructor(props) {
     super(props);
-    this.canvasRef = React.createRef();
   }
   render() {
     return (
-      <canvas
-        id="can_plate"
-        height="82%"
-        width="window.innerWidth"
-        style={{ padding: "0" }}
-        ref={this.canvasRef}
-      />
+      // <canvas
+      //   id=
+      //   height=
+      //   width=
+      //   style={{ padding: "0" }}
+      //   ref={this.canvasRef}
+      // />
+      <svg version="1.1" id="svg" x="0px" y="0px"
+      width="100%" height="82%" >
+    
+  </svg>
+      
     );
   }
   componentDidMount() {
+    var stringify = require('json-stringify-safe');
+    function log(text) {
+      console.log(JSON.parse(stringify(text)))
+      }
     console.log(this);
     console.log("mount");
-    var canvass = document.querySelector("#can_plate");
+    var svg = document.querySelector("#svg");
 
-    canvass.width = window.innerWidth;
-    canvass.height = window.innerHeight * 0.82;
-    const innerWidth = canvass.width;
-    const innerHeight = canvass.height;
-    var c = canvass.getContext("2d");
+    // svg.width = window.innerWidth;
+    // svg.height = window.innerHeight * 0.82;
+    const innerWidth = svg.clientWidth;
+    const innerHeight = svg.clientHeight;
     // c.strokeStyle = "red";
     // c.fillStyle = "red"
     // c.stroke();
@@ -35,18 +42,48 @@ export default class Canvas extends Component {
       //creating the menu arcs
       this.name = name;
       this.color = color;
-
-        this.x =Math.random()*(innerWidth-100); //setting random x set-up
-        this.y =Math.random()*(innerHeight-100) ; //setting random y set-up
-        this.vx = Math.random()*10;
-        this.vy = Math.random()*10;
-
-      console.log(this);
-    //   console.log(c1[0])
       this.timer = [];
       this.collider = [];
-        this.combine=[]
+        this.combine=[];
+        this.block=false;
+      // this.x =Math.random()*(innerWidth-100); //setting random x set-up
+      //   this.y =Math.random()*(innerHeight-100) ; //setting random y set-up
+      //   this.vx = Math.random()*10;
+      //   this.vy = Math.random()*10;
+      if(this.name=="0"){
+        this.x =100
+        this.y =200
+        this.vx =10
+        this.vy =0
+      }
+      else if(this.name=="1"){
+        this.x =1006
+        this.y =200
+        this.vx =-10
+        this.vy =0
+      }
+      else if(this.name=="2"){
+        this.x =500
+        this.y =200
+        this.vx =0
+        this.vy =10
+      }
+      svg.innerHTML+= ` <circle id="${this.name}" cx="${this.x}" cy="${this.y}" r="${50}" stroke="${this.color}" stroke-width="${0}" fill="${this.color}" style="" />`
+      svg.innerHTML+= ` <line id="${this.name}V" x1="${this.x}" y1="${this.y}" x2="${this.x+this.vx}" y2="${this.y+this.vy}" style="stroke:black;stroke-width:2" />`
+      svg.innerHTML+= ` <line id="${this.name}ColliP" x1="${this.x}" y1="${this.y}" x2="${this.x+this.vx*0}" y2="${this.y+this.vy*0}" style="stroke:white;stroke-width:2" />`
+      
+      console.log(this);
+    //   console.log(c1[0])
+      this.setElements=function(){
+        this.elem=document.getElementById(`${this.name}`)
+        this.Vline=document.getElementById(`${this.name}V`)
+        this.colliP=document.getElementById(`${this.name}ColliP`)
+        return new Promise(resolve =>{resolve("collupdate")})
+
+      }
+        
       this.collisenUpdate=async function(){
+        console.log(this.color+" update ")
         this.timer=[]
         this.collider=[]
         let counter=0
@@ -54,7 +91,6 @@ export default class Canvas extends Component {
         {
             if(c1[i]!=this){
                 this.c2=c1[i]
-                
               await this.calcings();
               this.aT2 = 2 * this.a;
         this.con1 =
@@ -80,9 +116,7 @@ export default class Canvas extends Component {
             //   if(this.timer==NaN){
             //     console.error("timer cant be nan")
             //   }
-              
             }
-          
           for(let i=0;i<this.timer.length;i++){
             //   if()
             for(let j=0;j<this.timer.length-1;j++){
@@ -141,9 +175,11 @@ export default class Canvas extends Component {
       this.normalMove=async function(){
         this.x += this.vx;
           this.y += this.vy;
+          console.log(this.timer)
           if(this.timer.length>0&&this.timer[0]>=1){
-            for(let item of this.timer){
-                item=-1
+            console.log("e")
+            for(let i=0;i<this.timer.length;i++){
+                this.timer[i]-=1
             }
           }
           return new Promise(resolve =>{resolve("end")})
@@ -157,15 +193,15 @@ export default class Canvas extends Component {
       }
       this.collisenExe=async function(){
           this.con=this.timer[0]
-          console.log(this)
+          log(this)
         await this.moveTimesCon()
-        console.log(this)
+        log(this)
         for(let i=0;i<this.timer.length;i++){
             this.timer[i]-=this.con
         }
         let M=this.collider[0]
         await this.sortC()
-        console.log(this)
+        log(this)
                 this.distance = Math.sqrt(
                   (M.x - this.x) ** 2 + (M.y - this.y) ** 2
                 );
@@ -173,7 +209,6 @@ export default class Canvas extends Component {
                     this.con=1-this.con
                     if(this.timer.length>1){
                     while(this.timer.length>1&&this.con>this.timer[0]){
-                        
                         let R=this.con
                         this.con=this.timer[0]
                         await this.collisen()
@@ -186,43 +221,36 @@ export default class Canvas extends Component {
 
                     }
                     }
+                    else{
                     await this.collisen()
-                }
+                    }
+                                                    }
                 else{
                     console.error("collisen failed")
                     console.error(c1)
                     console.error(this)
                 }
-                for(let item of this.timer){
-                    item=-1
-                }
-                for(let item of this.collider[0].timer){
-                    item=-1
-                }
+                this.timer=[]
+                this.collider[0].timer=[]
+                queue.remove(this.collider[0].name)
                 return new Promise(resolve =>{resolve("colExe")})
-                
+
       }
       this.draw = function() {
-        c.beginPath();
-        c.fillStyle = this.color;
-        c.strokeStyle = this.color;
-        c.arc(this.x, this.y, 50, 0, 360);
-        c.fill();
-        c.strokeStyle = "black";
-        c.lineWidth = 2;
-        c.beginPath();
-        c.moveTo(this.x, this.y);
-        c.lineTo(this.x+this.vx, this.y+this.vy);
-        c.stroke();
-        c.fill();
-        c.strokeStyle = "white";
-        c.lineWidth = 2;
-        c.beginPath();
-        c.moveTo(this.x, this.y);
-        c.lineTo(this.x+this.vx*this.timer[0], this.y+this.vy*this.timer[0]);
-        c.stroke();
-        c.fill();
-        return new Promise(resolve =>{resolve("draw")})
+        this.elem.attributes[1].value=this.x
+        this.elem.attributes[2].value=this.y
+        this.Vline.attributes[1].value=this.x
+        this.Vline.attributes[2].value=this.y
+        this.Vline.attributes[3].value=this.x+this.vx
+        this.Vline.attributes[4].value=this.y+this.vy
+        let tt=this.timer[0]>0?this.timer[0]:0
+        this.colliP.attributes[1].value=this.x
+        this.colliP.attributes[2].value=this.y
+        this.colliP.attributes[3].value=this.x+this.vx*tt
+        this.colliP.attributes[4].value=this.y+this.vy*tt
+
+        return new Promise(resolve =>{resolve("end")})
+        // this.elem.cy=this.y
       };
       this.calcings = function() {
         this.a =
@@ -296,10 +324,9 @@ export default class Canvas extends Component {
           this.collider[0].vy += this.speed * this.vCollisionNorm.y;
           return new Promise(resolve =>{resolve("colli")})
       }
-      this.draw();
       this.update = async function() {
+        console.log(this.color+" up")
         if(this.wallQ()||this.timer.length==0){
-          // console.log(this.color+" update "+this.timer)
             await this.collisenUpdate()
         }
         if(this.isCollisen()){
@@ -308,21 +335,51 @@ export default class Canvas extends Component {
             await this.collisenExe()
         }
         else{
-          // console.log(this.color+" normal")
-
+          console.log(this.color+" normal")
             await this.normalMove()
         }
 
         await this.draw();
+        this.block=false
         return new Promise(resolve =>{resolve("a");})
       };
       return this
     }
+    var c1 = [new create("red","0"),new create("blue","1"),new create("green","2")]
+    // var c1 = [new create("red","0"),new create("blue","1")]
+    c1.forEach(element => {
+      element.setElements()
+    });
+    var queue={
+      arr:[],
+      sort:function(){
+        queue.arr=queue.arr.sort((a,b)=>{return parseInt(b.name)>parseInt(a.name)?-1:1})
+        return new Promise(resolve =>{resolve("a");})  
+      },
+        remove:function(a){
+          queue.arr=queue.arr.filter((value)=>{return value.name==a?false:true})
+          return new Promise(resolve =>{resolve("a");})
+        },
+        length: function(){
+          return queue.arr.length
+        },
+        set:async function(a){
+          queue.arr=a
+          await queue.sort()
+          return new Promise(resolve =>{resolve("a");})
+        },
+        runQueue:async function(){
+          for(let i=0;i<queue.length();){
+            await queue.arr[i].update()
+            await queue.remove(queue.arr[i].name)
 
-    var c1 = []
-    for(let i=0;i<10;i++){
-      c1[i]=new create("red",i)
+          }
+          return new Promise(resolve =>{resolve("end");})
+        }
     }
+    // for(let i=0;i<10;i++){
+      // c1[i]=new create("red",i)
+    // }
     // [new create("blue", "1"), new create("red", "2"),new create("green", "3"), new create("yellow", "4")];
     console.log(c1)
     //  for(let i=0;i<10;i++){
@@ -330,34 +387,28 @@ export default class Canvas extends Component {
     //  }
 
   async function animation() {
-      c.clearRect(0, 0, innerWidth, innerHeight);
-      for(let i=0;i<c1.length;i++){
-        await c1[i].update();
-
-      }
-      // await c1[1].update();
-      // await c1[2].update();
-      // await c1[3].update();
-
+       await queue.set(c1);
+      await queue.runQueue()
+      await c1[1].draw()
     }
     var anil=setInterval(() => {
         animation();
     }, 50);
-    canvass["ani"] = function awfddd() {
+    svg["ani"] = function awfddd() {
         animation()
     };
-    canvass["con"] = function awdddd() {
+    svg["con"] = function awdddd() {
       console.log(c1);
     };
-    canvass["anistart"] = function awfddd() {
+    svg["anistart"] = function awfddd() {
         anil=setInterval(() => {
             animation();
-        }, 50);
+        }, 1000);
       };
-      canvass["anistop"] = function awdddd() {
+      svg["anistop"] = function awdddd() {
         clearInterval(anil)
       };
-    canvass["c1"] = c1;
+    svg["c1"] = c1;
     console.log(this);
   }
 }

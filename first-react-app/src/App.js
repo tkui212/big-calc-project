@@ -11,6 +11,7 @@ function App() {
 
       <Menu id="home_menu"/>
       <Canvas id="can_plate"/>
+      
       </header>
     </div>
   );
