@@ -46,28 +46,28 @@ export default class Canvas extends Component {
       this.collider = [];
         this.combine=[];
         this.block=false;
-      // this.x =Math.random()*(innerWidth-100); //setting random x set-up
-      //   this.y =Math.random()*(innerHeight-100) ; //setting random y set-up
-      //   this.vx = Math.random()*10;
-      //   this.vy = Math.random()*10;
-      if(this.name=="0"){
-        this.x =100
-        this.y =200
-        this.vx =10
-        this.vy =0
-      }
-      else if(this.name=="1"){
-        this.x =1006
-        this.y =200
-        this.vx =-10
-        this.vy =0
-      }
-      else if(this.name=="2"){
-        this.x =500
-        this.y =200
-        this.vx =0
-        this.vy =10
-      }
+      this.x =Math.random()*(innerWidth-100); //setting random x set-up
+        this.y =Math.random()*(innerHeight-100) ; //setting random y set-up
+        this.vx = Math.random()*10;
+        this.vy = Math.random()*10;
+      // if(this.name=="0"){
+      //   this.x =100
+      //   this.y =200
+      //   this.vx =10
+      //   this.vy =0
+      // }
+      // else if(this.name=="1"){
+      //   this.x =1006
+      //   this.y =200
+      //   this.vx =-10
+      //   this.vy =0
+      // }
+      // else if(this.name=="2"){
+      //   this.x =500
+      //   this.y =200
+      //   this.vx =0
+      //   this.vy =10
+      // }
       svg.innerHTML+= ` <circle id="${this.name}" cx="${this.x}" cy="${this.y}" r="${50}" stroke="${this.color}" stroke-width="${0}" fill="${this.color}" style="" />`
       svg.innerHTML+= ` <line id="${this.name}V" x1="${this.x}" y1="${this.y}" x2="${this.x+this.vx}" y2="${this.y+this.vy}" style="stroke:black;stroke-width:2" />`
       svg.innerHTML+= ` <line id="${this.name}ColliP" x1="${this.x}" y1="${this.y}" x2="${this.x+this.vx*0}" y2="${this.y+this.vy*0}" style="stroke:white;stroke-width:2" />`
@@ -345,11 +345,9 @@ export default class Canvas extends Component {
       };
       return this
     }
-    var c1 = [new create("red","0"),new create("blue","1"),new create("green","2")]
+    var c1 = []
     // var c1 = [new create("red","0"),new create("blue","1")]
-    c1.forEach(element => {
-      element.setElements()
-    });
+    
     var queue={
       arr:[],
       sort:function(){
@@ -377,9 +375,12 @@ export default class Canvas extends Component {
           return new Promise(resolve =>{resolve("end");})
         }
     }
-    // for(let i=0;i<10;i++){
-      // c1[i]=new create("red",i)
-    // }
+    for(let i=0;i<10;i++){
+      c1[i]=new create("red",i)
+    }
+    c1.forEach(element => {
+      element.setElements()
+    });
     // [new create("blue", "1"), new create("red", "2"),new create("green", "3"), new create("yellow", "4")];
     console.log(c1)
     //  for(let i=0;i<10;i++){
