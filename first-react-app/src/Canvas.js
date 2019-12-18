@@ -2,7 +2,7 @@ import React, {
   Component
 } from "react";
 import "./home_page.css";
-import Big from './big.js'
+
 export default class Canvas extends Component {
   constructor(props) {
     super(props);
@@ -163,7 +163,7 @@ export default class Canvas extends Component {
           // await this.sortC()
           // log(this)
           this.distance = Math.sqrt(
-            Big(Big(this.collider.x).minus(this.x).pow(2).toNumber()).plus(Big(this.collider.y).minus(this.y).pow(2).toNumber()).toNumber()
+            (this.collider.x - this.x) ** 2 + (this.collider.y - this.y) ** 2
           );
           if (this.distance < 101) { //if acsawly collisen happend
             // this.con=1-this.con
@@ -210,13 +210,13 @@ export default class Canvas extends Component {
         this.elem.attributes[2].value = this.y
         this.Vline.attributes[1].value = this.x
         this.Vline.attributes[2].value = this.y
-        this.Vline.attributes[3].value = Big(this.x).plus(this.vx).toNumber()
-        this.Vline.attributes[4].value = Big(this.y).plus(this.vy).toNumber()
-        let tt = this.timer[0] > 0 ? this.timer[0] : 0
-        this.colliP.attributes[1].value = this.x
-        this.colliP.attributes[2].value = this.y
-        this.colliP.attributes[3].value = Big(this.x).plus(this.vx).times(tt).toNumber()
-        this.colliP.attributes[4].value = Big(this.y).plus(this.vy).times(tt).toNumber()
+        this.Vline.attributes[3].value=this.x+this.vx
+        this.Vline.attributes[4].value=this.y+this.vy
+        let tt=this.timer[0]>0?this.timer[0]:0
+        this.colliP.attributes[1].value=this.x
+        this.colliP.attributes[2].value=this.y
+        this.colliP.attributes[3].value=this.x+this.vx*tt
+        this.colliP.attributes[4].value=this.y+this.vy*tt
 
         return new Promise(resolve => {
           resolve("end")
@@ -225,47 +225,43 @@ export default class Canvas extends Component {
       };
       this.calcings = function () {
         this.a =
-          Big(this.vx).pow(2)
-          .minus(Big(2).times(this.vx).times(this.c2.vx).toNumber())
-          .plus(Big(this.c2.vx).pow(2).toNumber())
-          .plus(Big(this.vy).pow(2).toNumber())
-          .minus(Big(2).times(this.vy).times(this.c2.vy).toNumber())
-          .plus(Big(this.c2.vy).pow(2).toNumber()).toNumber()
+          this.vx ** 2 -
+          2 * this.vx * this.c2.vx +
+          this.c2.vx ** 2 +
+          this.vy ** 2 -
+          2 * this.vy * this.c2.vy +
+          this.c2.vy ** 2;
+
+
         this.b =
-          Big(2).times(this.x).times(this.vx)
-          .minus(Big(2).times(this.vx).times(this.c2.x).toNumber())
-          .minus(Big(2).times(this.x).times(this.c2.vx).toNumber())
-          .plus(Big(2).times(this.c2.x).times(this.c2.vx).toNumber())
-          .minus(Big(2).times(this.c2.y).times(this.vy).toNumber())
-          .plus(Big(2).times(this.c2.y).times(this.c2.vy).toNumber())
-          .plus(Big(2).times(this.vy).times(this.y).toNumber())
-          .minus(Big(2).times(this.c2.vy).times(this.y).toNumber()).toNumber()
+          2 * this.x * this.vx -
+          2 * this.vx * this.c2.x -
+          2 * this.x * this.c2.vx +
+          2 * this.c2.x * this.c2.vx -
+          2 * this.c2.y * this.vy +
+          2 * this.c2.y * this.c2.vy +
+          2 * this.vy * this.y -
+          2 * this.c2.vy * this.y;
+
 
         this.C =
-          Big(this.x).pow(2)
-          .minus(Big(2).times(this.x).times(this.c2.x).toNumber())
-          .plus(Big(this.c2.x).pow(2).toNumber())
-          .plus(Big(this.c2.y).pow(2).toNumber())
-          .plus(Big(this.y).pow(2).toNumber())
-          .minus(Big(2).times(this.c2.y).times(this.y).toNumber())
-          .minus(10000).toNumber()
+          this.x ** 2 -
+          2 * this.x * this.c2.x +
+          this.c2.x ** 2 +
+          this.c2.y ** 2 +
+          this.y ** 2 -
+          2 * this.c2.y * this.y -
+          10000;
 
-        this.aT2 = Big(2).times(this.a).toNumber()
-        if(this.aT2!=0){
-        this.con1 =
-          Big(-this.b)
-          .plus(Big(Big(this.b).pow(2)
-            .minus(Big(4).times(this.a).times(this.C).toNumber()).toNumber()).sqrt().toNumber())
-          .div(this.aT2).toNumber();
-        this.con2 =
-          Big(-this.b)
-          .minus(Big(Big(this.b).pow(2)
-          .minus(Big(4).times(this.a).times(this.C).toNumber()).toNumber()).sqrt().toNumber())
-          .div(this.aT2).toNumber();
-        }
-        else{
-          return 0
-        }
+          this.aT2 = 2 * this.a;
+            this.con1 =
+                    (-this.b + Math.sqrt(this.b ** 2 - 4 * this.a * this.C))
+                     /
+                    this.aT2;
+            this.con2 =
+            (-this.b - Math.sqrt(this.b ** 2 - 4 * this.a * this.C))
+             /
+                    this.aT2;
         if (this.con1 < this.con2 && this.con1 > 0) {
           return this.con1
         } else if (this.con2 > 0) {
@@ -276,20 +272,19 @@ export default class Canvas extends Component {
       }
       this.wallQ = function () {
         let is = false
-        if (Big(this.x).plus(50).toNumber() > innerWidth && this.vx > 0) {
+        if (this.x + 50 > innerWidth&&this.vx>0 ) {
           this.vx = -this.vx;
-          is = true
-          log("a")
+          is=true
         }
-        if (Big(this.x).minus(50).toNumber() < 0 && this.vx < 0) {
+        if(this.x - 50 < 0&&this.vx<0){
           this.vx = -this.vx;
-          is = true
+          is=true
         }
-        if (Big(this.y).plus(50).toNumber() > innerHeight && this.vy > 0) {
+        if (this.y + 50 > innerHeight &&this.vy>0){
           this.vy = -this.vy;
-          is = true
+          is=true
         }
-        if (Big(this.y).minus(50).toNumber() < 0 && this.vy < 0) {
+        if( this.y - 50 < 0&&this.vy<0){
           this.vy = -this.vy;
           is = true
         }
@@ -297,28 +292,25 @@ export default class Canvas extends Component {
         return is
       }
       this.collisen = function () {
-        this.distance = Big(
-          Big(Big(this.collider.x).minus(this.x).pow(2).toNumber()).plus(Big(this.collider.y).minus(this.y).pow(2).toNumber()).toNumber()
-        ).sqrt().toNumber();
-        this.vCollision = {
-          x: Big(this.collider.x).minus(this.x).toNumber(),
-          y: Big(this.collider.y).minus(this.y).toNumber()
-        };
-        this.vCollisionNorm = {
-          x: Big(this.vCollision.x).div(this.distance).toNumber(),
-          y: Big(this.vCollision.y).div(this.distance).toNumber()
+        this.distance = Math.sqrt(
+          (this.collider.x - this.x) ** 2 + (this.collider.y - this.y) ** 2
+        );
+      this.vCollision = { x: this.collider.x - this.x, y: this.collider.y - this.y };
+      this.vCollisionNorm = {
+          x: this.vCollision.x / this.distance,
+          y: this.vCollision.y / this.distance
         };
         this.vRelativeVelocity = {
-          x: Big(this.vx).minus(this.collider.vx).toNumber(),
-          y: Big(this.vy).minus(this.collider.vy).toNumber()
+          x: this.vx - this.collider.vx,
+          y: this.vy - this.collider.vy
         };
         this.speed =
-          Big(this.vRelativeVelocity.x).times(this.vCollisionNorm.x)
-          .plus(Big(this.vRelativeVelocity.y).times(this.vCollisionNorm.y).toNumber()).toNumber();
-        this.vx = Big(this.speed).times(this.vCollisionNorm.x).minus(this.vx).toNumber();
-        this.vy = Big(this.speed).times(this.vCollisionNorm.y).minus(this.vy).toNumber();
-        this.collider.vx = Big(this.speed).times(this.vCollisionNorm.x).plus(this.collider.vx).toNumber();
-        this.collider.vy = Big(this.speed).times(this.vCollisionNorm.y).plus(this.collider.vy).toNumber();
+          this.vRelativeVelocity.x * this.vCollisionNorm.x +
+          this.vRelativeVelocity.y * this.vCollisionNorm.y;
+        this.vx -= this.speed * this.vCollisionNorm.x;
+        this.vy -= this.speed * this.vCollisionNorm.y;
+        this.collider.vx += this.speed * this.vCollisionNorm.x;
+        this.collider.vy += this.speed * this.vCollisionNorm.y;
         return new Promise(resolve => {
           resolve("colli")
         })
@@ -427,9 +419,9 @@ export default class Canvas extends Component {
       },
       removeTime: function (num) {
         for (let ele of queue.TC) {
-          ele.T = Big(ele.T).minus(num).toNumber()
+          ele.T -= num
         }
-        queue.second = Big(queue.second).minus(num).toNumber()
+        queue.second -=num
         queue.TC = queue.TC.filter((value) => {
           return value.name == num ? false : true
         })
