@@ -227,7 +227,7 @@ export default class Canvas extends Component {
            .plus(Big(this.c2.vx).pow(2).toString())
            .plus(Big(this.vy).pow(2).toString())
            .minus(Big(2).times(this.vy).times(this.c2.vy).toString())
-           .plus(Big(this.c2.vy).pow(2).toString())
+           .plus(Big(this.c2.vy).pow(2).toString()).toString()
 
         this.b =
           Big(2).times (this.x) .times (this.vx) 
@@ -247,28 +247,31 @@ export default class Canvas extends Component {
           Big(2) .times (this.c2.vy) .times (this.y).toString()).toString()
 
         this.C =
-          (this.x) .pow( 2) 
-.minus(
-          (2) .times (this.x) .times (this.c2.x) 
-.plus(
-          (this.c2.x) .pow( 2) 
-.plus(
-          (this.c2.y) .pow( 2) 
-.plus(
-          (this.y) .pow( 2) 
-.minus(
-          (2) .times (this.c2.y) .times (this.y) 
-.minus(
-          10000;
+          Box(this.x) .pow( 2) 
+          .minus(
+          Box(2) .times (this.x) .times (this.c2.x) .toString()) 
+          .plus(
+            Box(this.c2.x) .pow( 2) .toString()) 
+          .plus(
+            Box(this.c2.y) .pow( 2) .toString()) 
+          .plus(
+            Box(this.y) .pow( 2) .toString()) 
+          .minus(
+            Box(2) .times (this.c2.y) .times (this.y).toString()) 
+            .minus(10000).toString()
           
-          this.aT2 = (2) .times (this.a)
+          this.aT2 = Box(2) .times (this.a).toString()
 
         this.con1 =
-                ((-this.b) .plus( Math.sqrt((this.b) .pow( 2) .minus( 4 .times (this.a) .times (this.C)) /
-                (this.aT2);
+                Box(-this.b) 
+                .plus( Math.sqrt(Box(this.b) .pow( 2) 
+                .minus( Box(4) .times (this.a) .times (this.C).toString()).toString())) 
+                .div(this.aT2).toString();
               this.con2 =
-                ((-this.b) .minus( Math.sqrt((this.b) .pow( 2) .minus( 4 .times (this.a) .times (this.C)) /
-                (this.aT2);
+              Box(-this.b) 
+              .minus( Math.sqrt(Box(this.b) .pow( 2) 
+              .minus( Box(4) .times (this.a) .times (this.C).toString()).toString())) 
+              .div(this.aT2).toString();
                 if (this.con1 < this.con2 && this.con1 > 0) {
                     return this.con1
                   } else if (this.con2 > 0) {
@@ -280,19 +283,20 @@ export default class Canvas extends Component {
       }
       this.wallQ=function(){
           let is=false
-        if (this.x .plus( 50 > innerWidth&&this.vx>0 ) {
+        if (Box(this.x) .plus( 50).toString() > innerWidth&&this.vx>0 ) {
+            this.vx = -this.vx;
+            is=true
+            log("a")
+          }
+          if(Box(this.x) .minus( 50).toString() < 0&&this.vx<0){
             this.vx = -this.vx;
             is=true
           }
-          if(this.x .minus( 50 < 0&&this.vx<0){
-            this.vx = -this.vx;
-            is=true
-          }
-          if (this.y .plus( 50 > innerHeight &&this.vy>0){
+          if (Box(this.y) .plus( 50).toString() > innerHeight &&this.vy>0){
             this.vy = -this.vy;
             is=true
           }
-          if( this.y .minus( 50 < 0&&this.vy<0){
+          if( Box(this.y) .minus( 50).toString() < 0&&this.vy<0){
             this.vy = -this.vy;
             is=true
           }
@@ -301,24 +305,25 @@ export default class Canvas extends Component {
       }
       this.collisen=function(){
         this.distance = Math.sqrt(
-            (this.collider.x .minus( this.x) .pow( 2) .plus( (this.collider.y .minus( this.y) .pow( 2)
+            Big(Big(this.collider.x).minus(this.x).pow(2).toString()).plus(Big(this.collider.y).minus(this.y).pow(2).toString()).toString()
           );
-        this.vCollision = { x: this.collider.x .minus( this.x, y: this.collider.y .minus( this.y };
+        this.vCollision = { x: Big(this.collider.x) .minus( this.x).toString(),
+             y: Big(this.collider.y) .minus( this.y).toString() };
         this.vCollisionNorm = {
-            x: this.vCollision.x / this.distance,
-            y: this.vCollision.y / this.distance
+            x:  Big(this.vCollision.x) .div( this.distance).toString(),
+            y:  Big(this.vCollision.y) .div( this.distance).toString()
           };
           this.vRelativeVelocity = {
-            x: this.vx .minus( this.collider.vx,
-            y: this.vy .minus( this.collider.vy
+            x: Big(this.vx) .minus( this.collider.vx),
+            y: Big(this.vy) .minus( this.collider.vy)
           };
           this.speed =
-            this.vRelativeVelocity.x .times this.vCollisionNorm.x .plus(
-            this.vRelativeVelocity.y .times this.vCollisionNorm.y;
-          this.vx .minus(= this.speed .times this.vCollisionNorm.x;
-          this.vy .minus(= this.speed .times this.vCollisionNorm.y;
-          this.collider.vx .plus(= this.speed .times this.vCollisionNorm.x;
-          this.collider.vy .plus(= this.speed .times this.vCollisionNorm.y;
+          Big(this.vRelativeVelocity.x) .times (this.vCollisionNorm.x) .plus(
+            Big(this.vRelativeVelocity.y) .times( this.vCollisionNorm.y).toString()).toString();
+          this.vx = Big(this.speed) .times (this.vCollisionNorm.x).minus(this.vx) 
+          this.vy = Big(this.speed) .times (this.vCollisionNorm.y).minus(this.vy) 
+          this.collider.vx = Big(this.speed) .times (this.vCollisionNorm.x).plus(this.collider.vx) 
+          this.collider.vy = Big(this.speed) .times (this.vCollisionNorm.y).plus(this.collider.vy) 
           return new Promise(resolve =>{resolve("colli")})
       }
       this.update = async function() {
