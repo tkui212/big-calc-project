@@ -232,27 +232,33 @@ export default class Canvas extends Component {
         this.b =
           Big(2).times (this.x) .times (this.vx) 
           .minus(
-          Big(2) .times (this.vx) .times (this.c2.x) )
+          Big(2) .times (this.vx) .times (this.c2.x).toString() )
           .minus(
-          Big(2) .times (this.x) .times (this.c2.vx)) 
+          Big(2) .times (this.x) .times (this.c2.vx).toString()) 
           .plus(
-          Big(2) .times (this.c2.x) .times (this.c2.vx))
+          Big(2) .times (this.c2.x) .times (this.c2.vx).toString())
           .minus(
-          Big(2) .times (this.c2.y) .times (this.vy)) 
+          Big(2) .times (this.c2.y) .times (this.vy).toString()) 
           .plus(
-          Big(2) .times (this.c2.y) .times (this.c2.vy)) 
+          Big(2) .times (this.c2.y) .times (this.c2.vy).toString()) 
           .plus(
-          Big(2) .times (this.vy) .times (this.y)) 
+          Big(2) .times (this.vy) .times (this.y).toString()) 
           .minus(
-          Big(2) .times (this.c2.vy) .times (this.y))
+          Big(2) .times (this.c2.vy) .times (this.y).toString()).toString()
 
         this.C =
-          (this.x) .pow( 2) .minus(
-          (2) .times (this.x) .times (this.c2.x) .plus(
-          (this.c2.x) .pow( 2) .plus(
-          (this.c2.y) .pow( 2) .plus(
-          (this.y) .pow( 2) .minus(
-          (2) .times (this.c2.y) .times (this.y) .minus(
+          (this.x) .pow( 2) 
+.minus(
+          (2) .times (this.x) .times (this.c2.x) 
+.plus(
+          (this.c2.x) .pow( 2) 
+.plus(
+          (this.c2.y) .pow( 2) 
+.plus(
+          (this.y) .pow( 2) 
+.minus(
+          (2) .times (this.c2.y) .times (this.y) 
+.minus(
           10000;
           
           this.aT2 = (2) .times (this.a)
