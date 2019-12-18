@@ -250,3 +250,7 @@ for(const poin of datapoints){
 for (const element of $(`snapTo`)) {
     updateCon(element)
 }
+
+// var bigDecimal = require('js-big-decimal');
+let aaaaw=0.00324
+console.log(aaaaw)
