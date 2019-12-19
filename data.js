@@ -252,5 +252,9 @@ for (const element of $(`snapTo`)) {
 }
 
 // var bigDecimal = require('js-big-decimal');
-let aaaaw=0.00324
-console.log(aaaaw)
+// let aaaaw=0.00324
+// console.log(aaaaw)
+// let aw2=aaaaw
+// console.log(aw2)
+// aw2=-aaaaw
+// console.log(aw2)
