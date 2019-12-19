@@ -29,6 +29,7 @@ export default class Canvas extends Component {
   }
   componentDidMount() {
     const exactMath = require('exact-math');
+    // console.log(exactMath.formula('4**2'))
 
     var stringify = require('json-stringify-safe');
 
@@ -151,7 +152,7 @@ export default class Canvas extends Component {
         this.collider = collider
         let collies = this.collisens()
         console.log(collies)
-        if (collies[0].T == timer) {
+        // if (collies[0].T == timer) {
           console.log(this.color + " executing on " + this.collider.color)
           // log(this)
           // await this.moveTimesCon()
@@ -197,9 +198,9 @@ export default class Canvas extends Component {
           queue.remove(this.name)
           this.draw()
           this.collider.draw()
-        } else {
-          console.error("collisen imposeble")
-        }
+        // } else {
+        //   console.error("collisen imposeble")
+        // }
         return new Promise(resolve => {
           resolve("colExe")
         })
