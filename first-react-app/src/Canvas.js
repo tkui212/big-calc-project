@@ -362,10 +362,10 @@ export default class Canvas extends Component {
         this.speed =exactMath.formula(`
           ${this.vRelativeVelocity.x} * ${this.vCollisionNorm.x} +
           ${this.vRelativeVelocity.y} * ${this.vCollisionNorm.y}`)
-        this.vx =exactMath.formula(` ${this.speed} * ${this.vCollisionNorm.x} - ${this.vx}`)
-        this.vy =exactMath.formula(` ${this.speed} * ${this.vCollisionNorm.y} - ${this.vy}`)
-        this.collider.vx =exactMath.formula(` ${this.speed} * ${this.vCollisionNorm.x} + ${this.collider.vx}`)
-        this.collider.vy =exactMath.formula(` ${this.speed} * ${this.vCollisionNorm.y} + ${this.collider.vy}`)
+        this.vx =exactMath.formula(` ${this.vx}-${this.speed} * ${this.vCollisionNorm.x} `)
+        this.vy =exactMath.formula(` ${this.vy}-${this.speed} * ${this.vCollisionNorm.y} `)
+        this.collider.vx =exactMath.formula(` ${this.collider.vx} + ${this.speed} * ${this.vCollisionNorm.x} `)
+        this.collider.vy =exactMath.formula(` ${this.collider.vy} + ${this.speed} * ${this.vCollisionNorm.y} `)
         return new Promise(resolve => {
           resolve("colli")
         })
