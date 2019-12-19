@@ -54,10 +54,41 @@ export default class Canvas extends Component {
       this.collider = [];
       this.combine = [];
       this.block = false;
+      this.sqrt=0;
       // this.x =Math.random()*(innerWidth-100); //setting random x set-up
       //   this.y =Math.random()*(innerHeight-100) ; //setting random y set-up
       //   this.vx = Math.random()*10;
       //   this.vy = Math.random()*10;
+      // if (this.name == "0") {
+      //   this.color = "red"
+      //   this.x = 300
+      //   this.y = 300
+      //   this.vx = 0
+      //   this.vy = 0
+      // } else if (this.name == "1") {
+      //   this.color = "blue"
+
+      //   this.x = 100
+      //   this.y = 100
+      //   this.vx = 11
+      //   this.vy = 11
+      // } else if (this.name == "2") {
+      //   this.color = "green"
+
+      //   this.x = 300
+      //   this.y = 505
+      //   this.vx = 0
+      //   this.vy = -11
+      // } else if (this.name == "3") {
+      //   this.color = "yellow"
+
+      //   this.x = 500
+      //   this.y = 100
+      //   this.vx = -9
+      //   this.vy = -9
+      // }
+
+
       if (this.name == "0") {
         this.color = "red"
         this.x = 250
@@ -67,24 +98,24 @@ export default class Canvas extends Component {
       } else if (this.name == "1") {
         this.color = "blue"
 
-        this.x = 131
+        this.x = 139
         this.y = 300
         this.vx = 10
         this.vy = 0
       } else if (this.name == "2") {
         this.color = "green"
 
-        this.x = 362
-        this.y = 300
-        this.vx = -10
-        this.vy = 0
+        this.x = 250
+        this.y = 415
+        this.vx = 0
+        this.vy = -10
       } else if (this.name == "3") {
         this.color = "yellow"
 
-        this.x = 250
-        this.y = 413
-        this.vx = 0
-        this.vy = -10
+        this.x = 369
+        this.y = 300
+        this.vx = -10
+        this.vy = 0
       }
       svg.innerHTML += ` <circle id="${this.name}" cx="${this.x}" cy="${this.y}" r="${50}" stroke="${this.color}" stroke-width="${0}" fill="${this.color}" style="" />`
       svg.innerHTML += ` <line id="${this.name}V" x1="${this.x}" y1="${this.y}" x2="${this.x+this.vx}" y2="${this.y+this.vy}" style="stroke:black;stroke-width:2" />`
@@ -104,7 +135,7 @@ export default class Canvas extends Component {
         let y=exactMath.formula(`${collider.y} + ${collider.vy} *${time} - ${this.y}  - ${this.vy}*${time}`)
         x=Math.abs(x)
         y=Math.abs(y)
-        return Math.sqrt(exactMath.formula(`${exactMath.pow(x,2)} + ${exactMath.pow(y,2)}`))
+        return exactMath.ceil(exactMath.floor(Math.sqrt(exactMath.formula(`${Math.abs(exactMath.pow(x,2))} + ${Math.abs(exactMath.pow(y,2))}`)),-5),-4)
       }
       this.collisens = function () {
         console.log(this.color + " collisens ")
@@ -112,11 +143,11 @@ export default class Canvas extends Component {
         let counter = 0
         for (let i = 0; i < c1.length; i++) {
           if (c1[i] != this) {
-              
             this.c2 = c1[i];
-            console.log(log(c1[i]))
-            console.log(log(this.c2))
+            // console.log(log(c1[i]))
+            // console.log(log(this.c2))
             // console.log(this.calcings())
+            // console.log(log(this))
             if (this.calcings() != null) {
               this.combine[counter] = {
                 T: this.calcings(),
@@ -124,18 +155,19 @@ export default class Canvas extends Component {
                 This: this
               };
               counter++
-              console.log(log(this.combine))
+              // console.log(log(this.combine))
             }
 
           }
         }
+        // console.log(log(this.sortC()))
         return this.sortC()
       }
       this.sortC = function () {
         this.combine = this.combine.filter((value) => {
           return value.T != 0 ? true : false
         })
-        console.log(log(this.combine))
+        // console.log(log(this.combine))
         this.combine = this.combine.sort((a, b) => {
           return b.T > a.T ? -1 : 1
         })
@@ -143,7 +175,7 @@ export default class Canvas extends Component {
           this.timer = this.combine[0].T
           this.collider = this.combine[0].C
         }
-        console.log(log(this.combine))
+        // console.log(log(this.combine))
         return this.combine
       }
       this.moveTimesCon = async function (con) {
@@ -158,48 +190,42 @@ export default class Canvas extends Component {
         })
       }
       this.collisenExe = async function (collider, timer) {
-        //   console.log(log(this.combine))
-        //   console.log("")
-        // //   for(let i=0;i<c1.length;i++){//current dta comper to every collider
-        // //       if(c1[i].name!=this.name){
-        // // console.log(log(this.disTest(this.combine[0].T,c1[i])))
-        // // console.log(log(this.disTest(this.timer,c1[i])))
-        // // console.log(log(this.disTest(this.calcings(),c1[i])))
-        // // console.log(log(this.disTest(timer,c1[i])))
-        // //       }
-        // // }
-        // // console.log("")
-        // console.log(log(c1))
-        // for(let i=0;i<c1.length;i++){//if data of collider is correct
-        //     if(c1[i].name!=this.name){
-        //         this.c2=c1[i]
-                
-        //         console.log(log(this.disTest(this.calcings(),c1[i])))
-        //         console.log(log(this.c2))
-        //         console.log(log(this))
-        //     }
-        // }
-        //     console.log("")
-        //     console.log(log(this.combine))
-        //     for(let i=0;i<this.combine.length;i++){//if data of collider is correct
-        //             console.log(log(this.combine[i]))
-        //             console.log(log(this.disTest(this.combine[i].T,this.combine[i].C)))
-        //         }
+        if(this.disTest(timer,collider)!=100){
+          if(this.disTest(this.timer,this.collider)!=100||this.disTest(this.combine[0].T,this.combine[0].C)!=100){
+
+            console.log("")
+            console.log(this)
+            console.log(queue)
+            console.log("the given data")
+            console.log("")
+            console.log(timer)
+            console.log(collider)
+            console.log(this.disTest(timer,collider))
+            console.log("")
+            console.log(this.timer)
+            console.log(this.collider)
+            console.log(this.disTest(this.timer,this.collider))
+            console.log("")
+            console.log(this.combine[0].T)
+            console.log(this.combine[0].C)
+            console.log(this.disTest(this.combine[0].T,this.combine[0].C))
+            throw("this collisen is totaly imposable")
+          }
+          else{
+            throw("this collisen is mayldly imposable")
+          }
+        }
         this.timer=timer
         this.con = this.timer
         this.collider = collider
 
-        console.log(log(this.disTest(this.timer,this.collider)))
-        console.log(log(this))
-        // let collies = this.collisens()
-        // console.log(log(collies))
-        // if (collies[0].T == timer) {
+
           console.log(this.color + " executing on " + this.collider.color)
           await queue.moveAll(this.con)
           await queue.removeTime(this.con)
-          console.log(log(this.disTest(0,this.collider)))
-          console.log(log(this.combine))
-          console.log(log(queue.TC))
+          // console.log(log(this.disTest(0,this.collider)))
+          // console.log(log(this.combine))
+          // console.log(log(queue.TC))
           // timer-=this.con
           // let M=this.collider
           // await this.sortC()
@@ -208,24 +234,24 @@ export default class Canvas extends Component {
         let y=exactMath.formula(`${this.collider.y} - ${this.y}`)
         x=Math.abs(x)
         y=Math.abs(y)
-        this.distance = Math.sqrt(exactMath.formula(`${exactMath.pow(x,2)} + ${exactMath.pow(y,2)}`))
+        this.distance = Math.sqrt(exactMath.formula(`${Math.abs(exactMath.pow(x,2))} + ${Math.abs(exactMath.pow(y,2))}`))
         console.log(log(this.distance))
           if (this.distance < 101) { //if acsawly collisen happend
 
             await this.collisen()
-            await queue.getCsInSecond()[0].C.draw()
-            await queue.getCsInSecond()[0].This.draw()
-            await queue.updateEl([this.name, this.collider.name])
+            await this.collider.draw()
+            await this.draw()
+            await queue.updateEl([this, this.collider])
 
           } else {
             console.error("collisen failed")
             console.error(log(queue.TC))
             console.error(log(this))
           }
-          queue.remove(this.collider.name)
-          queue.remove(this.name)
-          this.draw()
-          this.collider.draw()
+          await queue.remove(this.collider.name)
+          await queue.remove(this.name)
+          await this.draw()
+          await this.collider.draw()
         // } else {
         //   console.error("collisen imposeble")
         // }
@@ -239,13 +265,13 @@ export default class Canvas extends Component {
         this.elem.attributes[2].value = this.y
         this.Vline.attributes[1].value = this.x
         this.Vline.attributes[2].value = this.y
-        this.Vline.attributes[3].value=exactMath.formula(`${this.x} +${this.vx}`)
-        this.Vline.attributes[4].value=exactMath.formula(`${this.y} +${this.vy}`)
-        let tt=this.timer>0?this.timer:0
+        this.Vline.attributes[3].value=exactMath.formula(`${this.x} +${this.vx}*3`)
+        this.Vline.attributes[4].value=exactMath.formula(`${this.y} +${this.vy}*3`)
+        let tt=this.combine.T>0?this.combine.T:0
         this.colliP.attributes[1].value=this.x
         this.colliP.attributes[2].value=this.y
-        this.colliP.attributes[3].value=exactMath.formula(`${this.x} +${this.vx} * ${tt}`) 
-        this.colliP.attributes[4].value=exactMath.formula(`${this.y} +${this.vy} * ${tt}`) 
+        this.colliP.attributes[3].value=exactMath.formula(`${this.x} +${this.vx} * ${tt}`)
+        this.colliP.attributes[4].value=exactMath.formula(`${this.y} +${this.vy} * ${tt}`)
 
         return new Promise(resolve => {
           resolve("end")
@@ -254,12 +280,12 @@ export default class Canvas extends Component {
       };
       this.calcings = function () {
         this.a =exactMath.formula(`
-        ${exactMath.pow(this.vx, 2)}-
-          2 * ${this.vx} * ${this.c2.vx} +
-          ${exactMath.pow(this.c2.vx, 2)} +
-          ${exactMath.pow(this.vy ** 2)} -
-          2 * ${this.vy} * ${this.c2.vy} +
-          ${exactMath.pow(this.c2.vy , 2)}`)
+        ${Math.abs(exactMath.pow(this.vx, 2))}-
+          (2 * ${this.vx} * ${this.c2.vx}) +
+          ${Math.abs(exactMath.pow(this.c2.vx, 2))} +
+          ${Math.abs(exactMath.pow(this.vy , 2))} -
+          (2 * ${this.vy} * ${this.c2.vy}) +
+          ${Math.abs(exactMath.pow(this.c2.vy , 2))}`)
 
 
         this.b =exactMath.formula(`
@@ -274,20 +300,20 @@ export default class Canvas extends Component {
 
 
         this.C =exactMath.formula(`
-          ${exactMath.pow(this.x , 2)} -
-          2 * ${this.x} * ${this.c2.x} +
-          ${exactMath.pow(this.c2.x , 2)} +
-          ${exactMath.pow(this.c2.y , 2)} +
-          ${exactMath.pow(this.y , 2)} -
-          2 * ${this.c2.y} * ${this.y} -
+          ${Math.abs(exactMath.pow(this.x , 2))} -
+          (2 * ${this.x} * ${this.c2.x}) +
+          ${Math.abs(exactMath.pow(this.c2.x , 2))} +
+          ${Math.abs(exactMath.pow(this.c2.y , 2))} +
+          ${Math.abs(exactMath.pow(this.y , 2))} -
+          (2 * ${this.c2.y} * ${this.y}) -
           10000`);
 
           this.aT2 = exactMath.formula(`2 * ${this.a}`)
-          let sqrt=Math.sqrt(exactMath.formula(`${exactMath.pow(this.b, 2)} - 4 * ${this.a} * ${this.C}`))
-          if(sqrt.toString()=="NaN"){return null}
-          this.con1 =exactMath.formula(`(${-this.b}+${sqrt})/${this.aT2}`)
+          this.sqrt=Math.sqrt(exactMath.formula(`${Math.abs(exactMath.pow(this.b, 2))} - 4 * ${this.a} * ${this.C}`))
+          if(this.sqrt.toString()=="NaN"){return null}
+          this.con1 =exactMath.formula(`(${-this.b}+${this.sqrt})/${this.aT2}`)
 
-            this.con2 =exactMath.formula(`(${-this.b}-${sqrt}) /  ${this.aT2}`)
+            this.con2 =exactMath.formula(`(${-this.b}-${this.sqrt}) /  ${this.aT2}`)
             if(this.con2>0){
                 let intTime=exactMath.floor(this.con2,1)
                 let T1=exactMath.formula(`
@@ -296,32 +322,49 @@ export default class Canvas extends Component {
                 let T2=exactMath.formula(`
                 ${exactMath.round(this.con1,-10)} -
                 ${exactMath.floor(this.con1,1)}`)
-                
                 // console.log(intTime)
                 // console.log(T1)
                 // console.log(T2)
                 if(T2>0){
                     // console.log(exactMath.formula(`${intTime}+${T1}`))
+                    if(this.disTest(exactMath.formula(`${intTime}+${T1}`),this.c2)!=100){
+                    console.log(log(this))
+                    console.log(this.disTest(exactMath.formula(`${intTime}+${T1}`),this.c2))
+                    throw("a")
+                    }
                     return  exactMath.formula(`${intTime}+${T1}`)
                 }
                 else if(T2<0){
-                    // console.log(exactMath.formula(`${intTime}+(
-                    //     ${Math.abs(exactMath.formula(`${T1}+${T2}`))}
-                    // )/2`))
+                    if(this.disTest(exactMath.formula(`${intTime}+(
+                      ${Math.abs(exactMath.formula(`${T1}+${T2}`))}
+                  )/2`),this.c2)!=100){
+                    console.log(log(this))
+                    console.log(this.disTest(exactMath.formula(`${intTime}+(
+                      ${Math.abs(exactMath.formula(`${T1}+${T2}`))}
+                  )/2`),this.c2))
+                  throw("a")
+                }
                     return  exactMath.formula(`${intTime}+(
                         ${Math.abs(exactMath.formula(`${T1}+${T2}`))}
                     )/2`)
                 }
                 else if(T2==0){
                     // console.log(intTime)
+                    console.log(this.disTest(exactMath.formula(`${intTime}+${T1}`),this.c2))
                     return intTime
                 }
                 else{
-                    // console.log("null")
+                  console.log(intTime)
+                console.log(T1)
+                console.log(T2)
+                    console.log("null")
                     return null
                 }
             }
-            
+            else{
+              console.log("null")
+              return null
+            }
       }
       this.wallQ = function () {
         let is = false
@@ -349,7 +392,7 @@ export default class Canvas extends Component {
         let y=exactMath.formula(`${this.collider.y} - ${this.y}`)
         x=Math.abs(x)
         y=Math.abs(y)
-        this.distance = Math.sqrt(exactMath.formula(`${exactMath.pow(x,2)} + ${exactMath.pow(y,2)}`))
+        this.distance = Math.sqrt(exactMath.formula(`${Math.abs(exactMath.pow(x,2))} + ${Math.abs(exactMath.pow(y,2))}`))
       this.vCollision = { x: x, y: y };
       this.vCollisionNorm = {
           x: exactMath.formula(`${this.vCollision.x} / ${this.distance}`),
@@ -401,7 +444,7 @@ export default class Canvas extends Component {
         for (let i = 0; i < ar.length; i++) {
           queue.TC = queue.TC.filter((value) => {
             let is = false
-            if (ar[i] == value.C.name || ar[i] == value.This.name) {
+            if (ar[i].name == value.C.name || ar[i].name == value.This.name) {
               removed.push(value.This)
               removed.push(value.C)
             } else {
@@ -541,7 +584,6 @@ export default class Canvas extends Component {
           await queue.removeTime(queue.second)
 
         }
-        
         return new Promise(resolve => {
           resolve("end");
         })
@@ -570,19 +612,25 @@ export default class Canvas extends Component {
         })
       },
       runCollisens: async function () {
+
           //making sure
           let colliders=[]
           let gcis=queue.getCsInSecond()
+          if (gcis.length > 0) { //there is collisen in this second
+            console.log(log(queue.TC))
           for(let i=0;i<gcis.length;i++){
               colliders.push(gcis[i].This)
           }
           colliders=colliders.filterDup()
           console.log(log(colliders))
           await queue.updateEl(colliders)
-        if (queue.getCsInSecond().length > 0) { //there is collisen in this second
-
-            
-
+          console.log(log(queue.TC))
+          if(queue.getCsInSecond().length==0){
+            console.log("after update there are no collisens now")
+            return new Promise(resolve => {
+              resolve("end");
+            })
+          }
           console.log(log(queue.getCsInSecond()))
           console.log("starting collisens")
 
@@ -593,10 +641,13 @@ export default class Canvas extends Component {
               await queue.filter()
               await queue.sort()
             }
+            if(queue.getCsInSecond().length==0){
+              await queue.moveAll(queue.second)
+            }
           }
         }
         else{
-            console.error("there are no true collisense now")
+            console.log("there are acsualy no collisense now")
         }
         return new Promise(resolve => {
           resolve("end");
@@ -618,7 +669,7 @@ export default class Canvas extends Component {
       await queue.sort()
       anil = setInterval(async function () {
         animation();
-      }, 500);
+      }, 50);
 
       svg["ani"] = function awfddd() {
         animation()
