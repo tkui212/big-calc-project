@@ -230,11 +230,12 @@ export default class Canvas extends Component {
           // let M=this.collider
           // await this.sortC()
           // log(this)
-          let x=exactMath.formula(`${this.collider.x} - ${this.x}`)
-        let y=exactMath.formula(`${this.collider.y} - ${this.y}`)
-        x=Math.abs(x)
-        y=Math.abs(y)
-        this.distance = Math.sqrt(exactMath.formula(`${Math.abs(exactMath.pow(x,2))} + ${Math.abs(exactMath.pow(y,2))}`))
+          // console.log(log(this.distance))
+
+        this.distance =await this.disTest(0,this.collider)
+        if(this.distance<100){
+          throw("small")
+        }
         console.log(log(this.distance))
           if (this.distance < 101) { //if acsawly collisen happend
 
@@ -247,6 +248,7 @@ export default class Canvas extends Component {
             console.error("collisen failed")
             console.error(log(queue.TC))
             console.error(log(this))
+            throw("fuck")
           }
           await queue.remove(this.collider.name)
           await queue.remove(this.name)
@@ -362,7 +364,9 @@ export default class Canvas extends Component {
                 }
             }
             else{
+              
               console.log("null")
+              console.log(log(this))
               return null
             }
       }
@@ -387,12 +391,11 @@ export default class Canvas extends Component {
         // if(is){console.log("wall")}
         return is
       }
-      this.collisen = function () {
+      this.collisen = async function () {
+        console.log(log(this))
         let x=exactMath.formula(`${this.collider.x} - ${this.x}`)
         let y=exactMath.formula(`${this.collider.y} - ${this.y}`)
-        x=Math.abs(x)
-        y=Math.abs(y)
-        this.distance = Math.sqrt(exactMath.formula(`${Math.abs(exactMath.pow(x,2))} + ${Math.abs(exactMath.pow(y,2))}`))
+        this.distance = await this.disTest(0,this.collider)
       this.vCollision = { x: x, y: y };
       this.vCollisionNorm = {
           x: exactMath.formula(`${this.vCollision.x} / ${this.distance}`),
@@ -409,6 +412,7 @@ export default class Canvas extends Component {
         this.vy =exactMath.formula(` ${this.vy}-${this.speed} * ${this.vCollisionNorm.y} `)
         this.collider.vx =exactMath.formula(` ${this.collider.vx} + ${this.speed} * ${this.vCollisionNorm.x} `)
         this.collider.vy =exactMath.formula(` ${this.collider.vy} + ${this.speed} * ${this.vCollisionNorm.y} `)
+        console.log(log(this))
         return new Promise(resolve => {
           resolve("colli")
         })
@@ -574,6 +578,7 @@ export default class Canvas extends Component {
         if (queue.TC[0] == undefined) {
           queue.TC = []
         }
+        //add update with next second!!!!!!!
         if (queue.getCsInSecond().length > 0) { //there is collisen in this second
             console.log("runQueue runs collisens")
           await queue.runCollisens()
@@ -627,6 +632,8 @@ export default class Canvas extends Component {
           console.log(log(queue.TC))
           if(queue.getCsInSecond().length==0){
             console.log("after update there are no collisens now")
+            await queue.moveAll(queue.second)
+            await queue.removeTime(queue.second)
             return new Promise(resolve => {
               resolve("end");
             })
