@@ -50,6 +50,12 @@ class weight extends body {
     this.meText = document.getElementById(`${this.id}text`);
     this.meElement[`class`]=this
     
+    Draggable.create(`${this.id}`
+    , {
+      type:"x,y",
+      overshootTolerance:0,
+      inertia:true
+    })
     console.log(this)
   },100)
 

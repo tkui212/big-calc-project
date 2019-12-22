@@ -75,6 +75,20 @@ body {
   max-height: 100%;
 }
 
-p {
+a {
   margin: 0;
+}
+
+
+circle{
+  transition: 0.5s;
+  animation-timing-function: linear;
+  -webkit-animation-timing-function: linear;
+  
+}
+line{
+  transition: 5s;
+  animation-timing-function: linear;
+  -webkit-animation-timing-function: linear;
+
 }

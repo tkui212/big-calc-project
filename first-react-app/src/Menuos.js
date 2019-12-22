@@ -8,7 +8,6 @@ export default class Menuos extends Component {
 
 //   document.querySelector(`#${this.props.id}awd`).Hide("up", 1);
     render() {
-        F.hi()
         if(this.props.id==="login"){
             return (
                 <div id={this.props.id} className="menuos" >
@@ -20,12 +19,28 @@ export default class Menuos extends Component {
                             </div>
             </div>
                 )
-        }else{
+        }else if(this.props.id==="physic"){
             return (
                 <div id={this.props.id} className="menuos" >
             {this.props.displaytext}
             <div id={this.props.id+"awd"} className="contents">
-                <p>1</p><p>2</p><p>3</p><p>4</p></div>
+                <a href="C:\Users\WIN10\Documents\2 drive\OneDrive\big calc project\index.html">graphs</a><a>2</a><a>3</a><a>4</a></div>
+                </div>
+                )
+        }else if(this.props.id==="geometry"){
+            return (
+                <div id={this.props.id} className="menuos" >
+            {this.props.displaytext}
+            <div id={this.props.id+"awd"} className="contents">
+                <a>1</a><a>2</a><a>3</a><a>4</a></div>
+                </div>
+                )
+        }else if(this.props.id==="logo"){
+            return (
+                <div id={this.props.id} className="menuos" >
+            {this.props.displaytext}
+            <div id={this.props.id+"awd"} className="contents">
+                <a>1</a><a>2</a><a>3</a><a>4</a></div>
                 </div>
                 )
         }
