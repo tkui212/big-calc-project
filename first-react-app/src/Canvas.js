@@ -167,7 +167,6 @@ export default class Canvas extends Component {
           resolve("end");
         });
       };
-
       this.calcings = function() {
         this.a = exactMath.formula(`
         ${Math.abs(exactMath.pow(this.vx, 2))}-
