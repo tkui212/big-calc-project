@@ -1,4 +1,9 @@
 import React, { Component } from "react";
+import {exactMath,queue,timeComponent,c1,animation} from "./objects/queue.js";
+// import {cirlce} from "./objects/circle.js";
+// import React, { Component } from "react";
+// import React, { Component } from "react";
+// import React, { Component } from "react";
 import "./home_page.css";
 
 export default class Canvas extends Component {
@@ -25,17 +30,33 @@ export default class Canvas extends Component {
     );
   }
   componentDidMount() {
-    const exactMath = require("exact-math");
-    // console.log(exactMath.formula('4**2'))
 
+    // console.log(exactMath.formula('4**2'))
+    Array.prototype.filterDup = function() {
+        let arra = [this[0]];
+        for (let i = 0; i < this.length; i++) {
+          let is = true;
+          for (let j = 0; j < arra.length; j++) {
+            if (arra[j] == this[i]) {
+              is = false;
+              break;
+            }
+          }
+          if (is) {
+            arra.push(this[i]);
+          }
+        }
+        // this=arra
+        return arra;
+      };
     var stringify = require("json-stringify-safe");
 
     function log(text) {
       return JSON.parse(stringify(text));
     }
     var svg = document.querySelector("#svg");
-    const innerWidth = svg.clientWidth;
-    const innerHeight = svg.clientHeight;
+    var innerWidth = svg.clientWidth;
+    var innerHeight = svg.clientHeight;
 
     function create(color, name) {
       //creating the menu arcs
@@ -46,11 +67,40 @@ export default class Canvas extends Component {
       this.combine = [];
       this.block = false;
       this.sqrt = 0;
-      this.x = Math.random() * (innerWidth - 100); //setting random x set-up
-      this.y = Math.random() * (innerHeight - 100); //setting random y set-up
-      this.vx = Math.random() * 50;
-      this.vy = Math.random() * 50;
+    //   this.x = Math.random() * (innerWidth - 100); //setting random x set-up
+    //   this.y = Math.random() * (innerHeight - 100); //setting random y set-up
+    //   this.vx = Math.random() * 50;
+    //   this.vy = Math.random() * 50;
 
+
+    if(this.name=="0"){
+        this.color="red"
+        this.x =250
+        this.y =300
+        this.vx =0
+        this.vy =0
+    }
+    else if(this.name=="1"){
+        this.color="blue"
+        this.x =149
+        this.y =300
+        this.vx =10
+        this.vy =0
+    }
+    else if(this.name=="2"){
+        this.color="green"
+        this.x =354
+        this.y =300
+        this.vx =-10
+        this.vy =0
+    }
+    else{
+        this.color="yellow"
+        this.x =359
+        this.y =300
+        this.vx =0
+        this.vy =-10
+    }
       svg.innerHTML += ` <circle id="${this.name}" cx="${this.x}" cy="${
         this.y
       }" r="${50}" stroke="${this.color}" stroke-width="${0}" fill="${
@@ -398,168 +448,14 @@ export default class Canvas extends Component {
       };
       return this;
     }
-    
-    var c1 = [];
-    var queue = {
-      TC: [],
-      arr: [],
-      updateEl: async function(ar) {
-        if (ar.length == 0) {
-          return new Promise(resolve => {
-            resolve("no need");
-          });
-        }
-        let removed = [];
-        for (let i = 0; i < ar.length; i++) {
-          queue.TC = queue.TC.filter(value => {
-            let is = false;
-            if (ar[i].name == value.C.name || ar[i].name == value.This.name) {
-              removed.push(value.This);
-              if (typeof value.C != "string") {
-                removed.push(value.C);
-              }
-            } else {
-              is = true;
-            }
-            return is;
-          });
-        }
-        removed = removed.filterDup();
-        if (removed[0] == undefined) {
-          removed = ar;
-        }
-        for (let i = 0; i < removed.length; i++) {
-          queue.TC = queue.TC.concat(await removed[i].collisens());
-        }
-        // await queue.filterDup(ar)
-        await queue.sort();
-        if (queue.TC[0] == undefined) {
-          queue.TC = [];
-        }
-        return new Promise(resolve => {
-          resolve("a");
-        });
-      },
-      filter: function() {
-        queue.TC = queue.TC.filter(value => {
-          return value.T >= 0 ? true : false;
-        });
-        return new Promise(resolve => {
-          resolve("a");
-        });
-      },
-      filterDup: function() {
-        let arra = [queue.TC[0]];
-        for (let i = 0; i < queue.TC.length; i++) {
-          let is = true;
-          for (let j = 0; j < arra.length; j++) {
-            if (arra[j].T == queue.TC[i].T) {
-              is = false;
-              break;
-            }
-          }
-          if (is) {
-            arra.push(queue.TC[i]);
-          }
-        }
-        queue.TC = arra;
-        return new Promise(resolve => {
-          resolve("a");
-        });
-      },
-      sort: async function() {
-        await queue.filterDup();
-        await queue.filter();
-        queue.TC = queue.TC.sort((a, b) => {
-          return b.T > a.T ? -1 : 1;
-        });
-        return new Promise(resolve => {
-          resolve("a");
-        });
-      },
-      remove: function(a) {
-        queue.arr = queue.arr.filter(value => {
-          return value.name == a ? false : true;
-        });
-        return new Promise(resolve => {
-          resolve("a");
-        });
-      },
-      removeTime: function(num) {
-        for (let ele of queue.TC) {
-          ele.T = exactMath.formula(`${ele.T} - ${num}`);
-        }
-        for (let ele of c1) {
-          ele.timer = exactMath.formula(`${ele.timer} - ${num}`);
-        }
-        return new Promise(resolve => {
-          resolve("a");
-        });
-      },
-      getCsInSecond: function() {
-        let ar = [];
-        for (let i = 0; i < queue.TC.length; i++) {
-          if (queue.TC[i].T < 1) {
-            ar.push(queue.TC[i]);
-          } else {
-            return ar;
-          }
-        }
-        return ar;
-      },
-      length: function() {
-        return queue.arr.length;
-      },
-      set: async function(a) {
-        queue.arr = a;
-        return new Promise(resolve => {
-          resolve("a");
-        });
-      },
-      runQueue: async function() {
-        if (queue.TC.length > 0 && queue.TC[0] == undefined) {
-          if (queue.TC.length == 1) {
-            queue.TC = [];
-          } else {
-            throw "add a if to fix this";
-          }
-        }
-        if (queue.getCsInSecond().length > 0) {
-          await queue.runCollisens();
-        }
-        await queue.filter();
-        setTimeout(() => {animation();}, exactMath.formula(`${queue.TC[0].T}*1000`));
-        await queue.moveAll(queue.TC[0].T);
-        return new Promise(resolve => {
-          resolve("end");
-        });
-      },
-      moveAll: async function(num) {
-        let movers = [];
-        for (let i = 0; i < c1.length; i++) {
-          movers.push(c1[i].moveTimesCon(num));
-        }
-        await Promise.all(movers);
-        await queue.removeTime(num);
-        return new Promise(resolve => {
-          resolve("end");
-        });
-      },
-      runCollisens: async function() {
-        while (queue.getCsInSecond().length > 0) {
-          let elle = queue.getCsInSecond()[0];
-          await elle.This.collisenExe(elle.C, elle.T);
-          if (queue.TC.length != 0 || queue.TC != 0) {
-            await queue.filter();
-            await queue.sort();
-          }
-        }
-        return new Promise(resolve => {
-          resolve("end");
-        });
+    for (let i = 0; i < 4; i++) {
+        c1[i] = new create("red", i);
       }
-    };
-
+      for (let i = 0; i < c1.length; i++) {
+        queue.TC = queue.TC.concat(await c1[i].collisens());
+      }
+    let result=queue.futher(queue.TC)
+      throw("end")
     async function startup() {
       for (let i = 0; i < 1; i++) {
         c1[i] = new create("red", i);
@@ -575,14 +471,11 @@ export default class Canvas extends Component {
         animation();
       }, 1000);
     }
-    setTimeout(() => {
-      startup();
-    }, 100);
+    // setTimeout(() => {
+    //   startup();
+    // }, 100);
 
-    async function animation() {
-      await queue.set(c1);
-      await queue.runQueue();
-    }
+    
     var anil;
 
   }

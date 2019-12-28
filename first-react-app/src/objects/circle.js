@@ -1,16 +1,15 @@
-function create(color, name) {
+export function circle(color, name) {
     //creating the menu arcs
     this.name = name;
     this.color = color;
     this.timer = 0;
     this.collider = [];
     this.combine = [];
-    this.block = false;
     this.sqrt = 0;
-    this.x = Math.random() * (innerWidth - 100); //setting random x set-up
-    this.y = Math.random() * (innerHeight - 100); //setting random y set-up
-    this.vx = Math.random() * 50;
-    this.vy = Math.random() * 50;
+    this.x = 0;
+    this.y = 0;
+    this.vx = 0;
+    this.vy = 0;
 
     svg.innerHTML += ` <circle id="${this.name}" cx="${this.x}" cy="${
       this.y
