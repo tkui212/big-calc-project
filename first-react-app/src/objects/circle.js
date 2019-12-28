@@ -3,14 +3,70 @@ export function circle(color, name) {
     this.name = name;
     this.color = color;
     this.timer = 0;
-    this.collider = [];
-    this.combine = [];
-    this.sqrt = 0;
     this.x = 0;
     this.y = 0;
     this.vx = 0;
     this.vy = 0;
 
+    svg.innerHTML += ` <circle id="${this.name}" cx="${this.x}" cy="${
+      this.y
+    }" r="${50}" stroke="${this.color}" stroke-width="${0}" fill="${
+      this.color
+    }" style="" />`;
+    svg.innerHTML += ` <line id="${this.name}V" x1="${this.x}" y1="${
+      this.y
+    }" x2="${this.x + this.vx}" y2="${this.y +
+      this.vy}" style="stroke:black;stroke-width:2" />`;
+    svg.innerHTML += ` <line id="${this.name}ColliP" x1="${this.x}" y1="${
+      this.y
+    }" x2="${this.x + this.vx * 0}" y2="${this.y +
+      this.vy * 0}" style="stroke:white;stroke-width:2" />`;
+    return this;
+  }
+
+  function create(color, name) {
+    //creating the menu arcs
+    this.name = name;
+    this.color = color;
+    this.timer = 0;
+    this.collider = [];
+    this.combine = [];
+    this.block = false;
+    this.sqrt = 0;
+  //   this.x = Math.random() * (innerWidth - 100); //setting random x set-up
+  //   this.y = Math.random() * (innerHeight - 100); //setting random y set-up
+  //   this.vx = Math.random() * 50;
+  //   this.vy = Math.random() * 50;
+
+
+  if(this.name=="0"){
+      this.color="red"
+      this.x =250
+      this.y =300
+      this.vx =0
+      this.vy =0
+  }
+  else if(this.name=="1"){
+      this.color="blue"
+      this.x =149
+      this.y =300
+      this.vx =10
+      this.vy =0
+  }
+  else if(this.name=="2"){
+      this.color="green"
+      this.x =354
+      this.y =300
+      this.vx =-10
+      this.vy =0
+  }
+  else{
+      this.color="yellow"
+      this.x =250
+      this.y =409
+      this.vx =0
+      this.vy =-10
+  }
     svg.innerHTML += ` <circle id="${this.name}" cx="${this.x}" cy="${
       this.y
     }" r="${50}" stroke="${this.color}" stroke-width="${0}" fill="${
