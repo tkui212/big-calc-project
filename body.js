@@ -178,11 +178,10 @@ class force extends body {
   // this.meElement = document.getElementById("1");
   // this.meText = document.getElementById("1text");
 
-  draw = () => {
-  
-
-  };
   update = () => {};
+  render(){
+    return <line id={this.id} x1="${x[0]}" y1="${y[0]}" x2="${x[1]}" y2="${y[1]}" style="stroke:${color};stroke-width:${borderW}" marker-end="url(#arrow)" />
+  }
 }
 
 

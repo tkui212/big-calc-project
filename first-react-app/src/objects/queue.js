@@ -257,16 +257,23 @@ export var queue = {
         This.elem = document.getElementById(`${This.id}`);
         This.Vline = document.getElementById(`${This.id}V`);
         This.colliP = document.getElementById(`${This.id}ColliP`);
-        console.log("ye")
       }
-      console.log(This)
-      console.log(document.getElementById(`${This.id}`))
-      console.log(document)
-
       This.elem.style.transition = `${time}s linear`;
       This.elem.attributes.fill.value=color
-      This.elem.attributes[1].value = This.x;
-      This.elem.attributes[2].value = This.y;
+      This.elem.attributes.stroke.value=color
+      if(This.cx!=undefined){
+      This.cx.value = This.x;
+      This.cy.value = This.y;
+      }
+      else if(This.x1!=undefined){
+        This.x1.value = This.x;
+        This.y1.value = This.y;
+        This.x2.value = This.point2.x;
+        This.y2.value = This.point2.y;
+      }
+      else{
+        throw("somthing is rung")
+      }
     },
     calcings : function(This,collider) {
       This.a = exactMath.formula(`

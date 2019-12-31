@@ -3,6 +3,7 @@ import React, { Component } from "react";
 import {queue,timeComponent,c1,animation} from "./objects/queue.js";
 import "./home_page.css";
 import ReactDOM from 'react-dom';
+import {toDegrees,toRadians,log} from './functions.js';
 
 export class Body extends Component {
   constructor(props){
@@ -16,7 +17,11 @@ export class Body extends Component {
     this.connections=props.ops.cons?props.ops.cons:[];
     this.parent=props.ops.parent?props.ops.parent:null;
     this.svg=props.ops.svg?props.ops.svg:null;
+    this.group={
+
+    }
   }
+
   render() {
     return (
       <div></div>
@@ -127,14 +132,9 @@ export class Circle extends Body {
     this.port=new Point({x:this.x,y:this.y,ops:{id:`${this.id}P`,parent:this}});
     this.vx=ops.vx?ops.vx:0;
     this.vy=ops.vy?ops.vy:0;
-    // this.forces.push(new Force(this.x,this.y,{F:this.weight,angle:180}));
-  //   createCircle(this.x,this.y,this.weight,this.height,svg,{id:this.id})
-  //   createText(this.x,this.y,this.svg,this.radius*2,{color:"white",id:this.id})
-  //   setTimeout(()=>{
-  //   this.meElement = document.getElementById(`${this.id}`);
-  //   this.meText = document.getElementById(`${this.id}text`);
-  //   this.meElement[`class`]=this
-    
+    this.forces.push(new Force({x:this.x,y:this.y,ops:{id:`${this.id}F`,F:100,angle:180,P:this.port}}));
+    // if(this.parent!=null){
+    this.group=[this,this.port].concat(this.forces)
   //   // Draggable.create(`${this.id}`
   //   // , {
   //   //   type:"x,y",
@@ -145,8 +145,15 @@ export class Circle extends Body {
   // },100)
   }
   componentDidMount() {
-    console.log(this)
+    queue.setElements(this)
+
+    this.cx=this.elem.attributes.cx
+    this.cy=this.elem.attributes.cy
     queue.draw(this,0,"blue")
+    this.elem.me=this
+    this.port.componentDidMount()
+    this.forces[0].componentDidMount()
+    
   }
   update=(op)=>{
     for (let key in op) {
@@ -169,29 +176,36 @@ export class Circle extends Body {
   }
   render(){
     let meP=this.port.render()
-    return([<circle id={this.id} cx={this.x} cy={this.y} r={this.radius} stroke={this.color} strokeWidth={0} fill={this.color} />,meP])
+    let meF=this.forces[0].render()
+    return([<circle id={this.id} cx={this.x} cy={this.y} r={this.radius} stroke={this.color} strokeWidth={0} fill={this.color} />,meP,meF])
   }
   
 }
 export class Force extends Body {
-  constructor(x,y,ops){
-    super(x,y,ops)
+  constructor(props){
+    super(props)
+    let ops=props.ops
     this.F=ops.F
     this.angle=ops.angle
-    this.point1=new Point(this.x,this.y,{})
-    this.point2=new Point(this.x+Math.sin(toRadians(this.angle))*this.F,this.y-Math.cos(toRadians(this.angle))*this.F,{})
-    createArrow([this.point1.x,this.point2.x],[this.point1.y,this.point2.y],svg,{id:this.id})
-    this.meElement=document.getElementById(`${this.id}`)
+    this.point1=ops.P?ops.P:new Point({x:this.x,y:this.y,ops:{id:`${this.id}P1`}})
+    this.x=ops.P.x
+    this.y=ops.P.y
+    this.point2=new Point({x:exactMath.formula(`${this.x}+${Math.sin(toRadians(this.angle))}*${this.F}`),y:exactMath.formula(`${this.y}-${Math.cos(toRadians(this.angle))}*${this.F}`),ops:{id:`${this.id}P2`}})
   }
-
+  componentDidMount(){
+    queue.setElements(this)
+    this.x1=this.elem.attributes.x1
+    this.y1=this.elem.attributes.y1
+    this.x2=this.elem.attributes.x2
+    this.y2=this.elem.attributes.y2
+    queue.draw(this,0,"green")
+    this.elem.me=this
+  }
+  render(){
+    return(<line id={this.id} x1={this.point1.x} y1={this.point1.y} x2={this.point2.x} y2={this.point2.y} stroke={this.color} fill={this.color} strokeWidth={2} markerEnd={"url(#arrow)"} />)
+  }
   // this.meElement = document.getElementById("1");
   // this.meText = document.getElementById("1text");
-
-  draw = () => {
-  
-
-  };
-  update = () => {};
 }
 export class Point extends Body{
   /**
@@ -206,13 +220,32 @@ export class Point extends Body{
     super(props)
   }
   componentDidMount() {
-    console.log(this)
+    queue.setElements(this)
+    if(this.parent!=null){
+      if(this.parent.cx!=undefined){-
+        console.log(this.elem)
+      this.cx=[this.elem.attributes.cx.value,this.parent.attributes.cx.value]
+      this.cy=[this.elem.attributes.cx.value,this.parent.attributes.cx.value]
+      console.dir(this.cx)
+      console.dir(this.parent.cx)
+      console.log("this")
+      }
+      else if(this.parent.x1!=undefined){
+        this.elem.attributes.cx=this.parent.x1
+        this.elem.attributes.cy=this.parent.y1
+      }
+    }
+    else{
+      this.cx=this.elem.attributes.cx
+      this.cy=this.elem.attributes.cy
+    }
     queue.draw(this,0,"white")
+    this.elem.me=this
+    console.log(this)
   }
   render(){
     return(<circle id={this.id} cx={this.x} cy={this.y} r={10} stroke={"white"} strokeWidth={0} fill={"white"} />)
   }
-  update = () => {};
 }
 export class Line extends Component{
   constructor(p1,p2,ops){
