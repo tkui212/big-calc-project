@@ -152,7 +152,7 @@ export default class Canvas extends Component {
     //   });
       let Tspeed=10
       // var RL=queue.futher(c2,60,0)
-    let result=queue.futher(c1,20,0)
+    let result=queue.futher(c1,40,0)
     runTimeLine(result,0)
     // fastRun(RL)
 function fastRun(Ar){
