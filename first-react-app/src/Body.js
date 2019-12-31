@@ -18,10 +18,25 @@ export class Body extends Component {
     this.parent=props.ops.parent?props.ops.parent:null;
     this.svg=props.ops.svg?props.ops.svg:null;
     this.group={
-
+      cV:[this],
+      cx:this.x,
+      cy:this.y,
+      cx:(num)=>{
+        this.group.cx=num
+        for(let ele of this.group.cV){
+          ele.elem.attributes.cx.value=num
+        }
+        return num
+      },
+      cy:(num)=>{
+        this.group.cy=num
+        for(let ele of this.group.cV){
+          ele.elem.attributes.cy.value=num
+        }
+        return num
+      }
     }
   }
-
   render() {
     return (
       <div></div>
@@ -125,6 +140,17 @@ export class Circle extends Body {
      */
   constructor(props){
     super(props)
+    let fun=function num(n){
+      if(n!=undefined){
+        this.n=n
+      }
+       return n}
+    let a=new fun(1)
+    let b=a
+    let c=a
+    console.log(a())
+    c.n=4
+    console.log(a()+" "+b.n+" "+c.n)
     let ops=props.ops
     this.width = ops.width?ops.width:100;
     this.height = ops.height?ops.height:100;
@@ -133,8 +159,6 @@ export class Circle extends Body {
     this.vx=ops.vx?ops.vx:0;
     this.vy=ops.vy?ops.vy:0;
     this.forces.push(new Force({x:this.x,y:this.y,ops:{id:`${this.id}F`,F:100,angle:180,P:this.port}}));
-    // if(this.parent!=null){
-    this.group=[this,this.port].concat(this.forces)
   //   // Draggable.create(`${this.id}`
   //   // , {
   //   //   type:"x,y",
@@ -222,10 +246,10 @@ export class Point extends Body{
   componentDidMount() {
     queue.setElements(this)
     if(this.parent!=null){
-      if(this.parent.cx!=undefined){-
+      if(this.parent.cx!=undefined){
         console.log(this.elem)
-      this.cx=[this.elem.attributes.cx.value,this.parent.attributes.cx.value]
-      this.cy=[this.elem.attributes.cx.value,this.parent.attributes.cx.value]
+      this.cx=this.elem.attributes.cx
+      this.cy=this.elem.attributes.cy
       console.dir(this.cx)
       console.dir(this.parent.cx)
       console.log("this")
