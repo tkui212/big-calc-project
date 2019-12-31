@@ -261,15 +261,13 @@ export var queue = {
       This.elem.style.transition = `${time}s linear`;
       This.elem.attributes.fill.value=color
       This.elem.attributes.stroke.value=color
-      if(This.cx!=undefined){
-      This.cx.value = This.x;
-      This.cy.value = This.y;
+      if(This.Cx!=undefined){
+        
+      This.Cx.value = This.x;
+      This.Cy.value = This.y;
       }
-      else if(This.x1!=undefined){
-        This.x1.value = This.x;
-        This.y1.value = This.y;
-        This.x2.value = This.point2.x;
-        This.y2.value = This.point2.y;
+      else if(This.d!=undefined){
+
       }
       else{
         throw("somthing is rung")

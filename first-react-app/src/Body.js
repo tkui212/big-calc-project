@@ -13,8 +13,11 @@ export class Body extends Component {
     this.y=props.y
     this.color = props.ops.color?props.ops.color:"black";
     this.id=props.ops.id
+    document.getElementById("root").style.setProperty(`--${this.id}-x`,`${this.x}`)
+    document.getElementById("root").style.setProperty(`--${this.id}-y`,`${this.y}`)
     this.forces=props.ops.Fs?props.ops.Fs:[];
     this.connections=props.ops.cons?props.ops.cons:[];
+    this.children=[]
     this.parent=props.ops.parent?props.ops.parent:null;
     this.svg=props.ops.svg?props.ops.svg:null;
     this.group={
@@ -43,9 +46,7 @@ export class Body extends Component {
     );
   }
   componentDidMount() {
-    
   }
-  
   update = (op) => {
     for (let key in op) {
       if (this.hasOwnProperty(key)){
@@ -140,17 +141,6 @@ export class Circle extends Body {
      */
   constructor(props){
     super(props)
-    let fun=function num(n){
-      if(n!=undefined){
-        this.n=n
-      }
-       return n}
-    let a=new fun(1)
-    let b=a
-    let c=a
-    console.log(a())
-    c.n=4
-    console.log(a()+" "+b.n+" "+c.n)
     let ops=props.ops
     this.width = ops.width?ops.width:100;
     this.height = ops.height?ops.height:100;
@@ -171,13 +161,20 @@ export class Circle extends Body {
   componentDidMount() {
     queue.setElements(this)
 
-    this.cx=this.elem.attributes.cx
-    this.cy=this.elem.attributes.cy
-    queue.draw(this,0,"blue")
+    this.elem.style.setProperty("cx","var(--can_plate-x)")
+    this.elem.style.setProperty("cy","var(--can_plate-y)")
+    this.Cx=this.elem.attributes.cx
+    this.Cy=this.elem.attributes.cy
+    if(this.parent!==null){
+      this.parent.elem.style=this.elem.style
+      this.parent.elem.style=this.elem.style
+    }
+  //   console.log(this.elem.attributes.cx.childNodes)
+    // this.elem.attributes.cx.childNodes=new NodeList
+    // queue.draw(this,0,"blue")
     this.elem.me=this
     this.port.componentDidMount()
     this.forces[0].componentDidMount()
-    
   }
   update=(op)=>{
     for (let key in op) {
@@ -186,7 +183,7 @@ export class Circle extends Body {
       }
     }
     this.gridX=[this.y-this.height/2,this.y,this.y+this.height/2]
-    this.gridY=[this.x-this.width/2,this.x,this.x+this.width/2]  
+    this.gridY=[this.x-this.width/2,this.x,this.x+this.width/2]
     this.ports=new Array(3);
   for(let i=0;i<3;i++){
     this.ports[i]=new Array(3)
@@ -203,7 +200,7 @@ export class Circle extends Body {
     let meF=this.forces[0].render()
     return([<circle id={this.id} cx={this.x} cy={this.y} r={this.radius} stroke={this.color} strokeWidth={0} fill={this.color} />,meP,meF])
   }
-  
+
 }
 export class Force extends Body {
   constructor(props){
@@ -218,15 +215,16 @@ export class Force extends Body {
   }
   componentDidMount(){
     queue.setElements(this)
-    this.x1=this.elem.attributes.x1
-    this.y1=this.elem.attributes.y1
-    this.x2=this.elem.attributes.x2
-    this.y2=this.elem.attributes.y2
-    queue.draw(this,0,"green")
+    // this.elem.style.setProperty("d",`m ${this.point2.x} ${this.point2.y} L var(--can_plate-x) var(--can_plate-x)`)
+    // this.x1=this.elem.attributes.x1
+    // this.y1=this.elem.attributes.y1
+    // this.x2=this.elem.attributes.x2
+    // this.y2=this.elem.attributes.y2
+    // queue.draw(this,0,"green")
     this.elem.me=this
   }
   render(){
-    return(<line id={this.id} x1={this.point1.x} y1={this.point1.y} x2={this.point2.x} y2={this.point2.y} stroke={this.color} fill={this.color} strokeWidth={2} markerEnd={"url(#arrow)"} />)
+    return(<path id={this.id} d={"m 100 100 L 200 200"} stroke={this.color} fill={this.color} strokeWidth={2} markerEnd={"url(#arrow)"} />)
   }
   // this.meElement = document.getElementById("1");
   // this.meText = document.getElementById("1text");
@@ -238,13 +236,15 @@ export class Point extends Body{
      * @param {object} ops settings
      * @param {string} ops.id - that can contain:
      * @param {Force[]} ops.Fs array of forces that go throw the Point
-     * @param {body[]} ops.cons array of bodys that are connectedto the Point 
+     * @param {body[]} ops.cons array of bodys that are connectedto the Point
      */
   constructor(props){
     super(props)
   }
   componentDidMount() {
     queue.setElements(this)
+    this.elem.style.setProperty("cx","var(--can_plate-x)")
+    this.elem.style.setProperty("cy","var(--can_plate-y)")
     if(this.parent!=null){
       if(this.parent.cx!=undefined){
         console.log(this.elem)
@@ -263,7 +263,7 @@ export class Point extends Body{
       this.cx=this.elem.attributes.cx
       this.cy=this.elem.attributes.cy
     }
-    queue.draw(this,0,"white")
+    // queue.draw(this,0,"white")
     this.elem.me=this
     console.log(this)
   }
