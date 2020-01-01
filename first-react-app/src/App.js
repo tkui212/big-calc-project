@@ -28,6 +28,7 @@ function App() {
         </defs>
       {/* <Body id="can_plate"/> */}
         <Circle x="100" y="100" radius="50" ops={{id:"can_plate"}}/>
+        <Circle x="300" y="100" radius="50" ops={{id:"b2"}}/>
       </svg>
       </header>
     </div>

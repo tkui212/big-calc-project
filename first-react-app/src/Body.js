@@ -9,8 +9,17 @@ export class Body extends Component {
   constructor(props){
     console.log(props)
     super(props)
-    this.x=props.x
-    this.y=props.y
+    // this.x=props.x
+    // this.y=props.y
+    this.value={x:props.x,y:props.y}
+    Object.defineProperty(this,"y",{
+      get(){return this.value.y},
+      set(num){ this.value.y=num}
+    })
+    Object.defineProperty(this,"x",{
+      get(){return this.value.x},
+      set(num){ this.value.x=num}
+    })
     this.color = props.ops.color?props.ops.color:"black";
     this.id=props.ops.id
     document.getElementById("root").style.setProperty(`--${this.id}-x`,`${this.x}`)
@@ -20,25 +29,6 @@ export class Body extends Component {
     this.children=[]
     this.parent=props.ops.parent?props.ops.parent:null;
     this.svg=props.ops.svg?props.ops.svg:null;
-    this.group={
-      cV:[this],
-      cx:this.x,
-      cy:this.y,
-      cx:(num)=>{
-        this.group.cx=num
-        for(let ele of this.group.cV){
-          ele.elem.attributes.cx.value=num
-        }
-        return num
-      },
-      cy:(num)=>{
-        this.group.cy=num
-        for(let ele of this.group.cV){
-          ele.elem.attributes.cy.value=num
-        }
-        return num
-      }
-    }
   }
   render() {
     return (
@@ -55,6 +45,10 @@ export class Body extends Component {
     }
 
   };
+  UX=(num)=>{
+    this.x=num
+    document.getElementById("root").style.setProperty(`--${this.id}-x`,`${num}`)
+  }
 }
 // export class Weight extends Body {
 //   /**
@@ -148,27 +142,21 @@ export class Circle extends Body {
     this.port=new Point({x:this.x,y:this.y,ops:{id:`${this.id}P`,parent:this}});
     this.vx=ops.vx?ops.vx:0;
     this.vy=ops.vy?ops.vy:0;
-    this.forces.push(new Force({x:this.x,y:this.y,ops:{id:`${this.id}F`,F:100,angle:180,P:this.port}}));
-  //   // Draggable.create(`${this.id}`
-  //   // , {
-  //   //   type:"x,y",
-  //   //   overshootTolerance:0,
-  //   //   inertia:true
-  //   // })
-  //   console.log(this)
-  // },100)
+    this.forces.push(new Force({x:this.x,y:this.y,ops:{id:`${this.id}F`,F:100,angle:180,P:this.port, parent:this}}));
   }
   componentDidMount() {
     queue.setElements(this)
-
-    this.elem.style.setProperty("cx","var(--can_plate-x)")
-    this.elem.style.setProperty("cy","var(--can_plate-y)")
+    this.port.value=this.value
+    this.forces[0].value=this.value
+    this.elem.style.setProperty("cx",`var(--${this.id}-x)`)
+    this.elem.style.setProperty("cy",`var(--${this.id}-y)`)
     this.Cx=this.elem.attributes.cx
     this.Cy=this.elem.attributes.cy
     if(this.parent!==null){
       this.parent.elem.style=this.elem.style
       this.parent.elem.style=this.elem.style
     }
+    // this.cx=document.getElementById("root").style.get
   //   console.log(this.elem.attributes.cx.childNodes)
     // this.elem.attributes.cx.childNodes=new NodeList
     // queue.draw(this,0,"blue")
@@ -215,7 +203,6 @@ export class Force extends Body {
   }
   componentDidMount(){
     queue.setElements(this)
-    // this.elem.style.setProperty("d",`m ${this.point2.x} ${this.point2.y} L var(--can_plate-x) var(--can_plate-x)`)
     // this.x1=this.elem.attributes.x1
     // this.y1=this.elem.attributes.y1
     // this.x2=this.elem.attributes.x2
@@ -224,7 +211,8 @@ export class Force extends Body {
     this.elem.me=this
   }
   render(){
-    return(<path id={this.id} d={"m 100 100 L 200 200"} stroke={this.color} fill={this.color} strokeWidth={2} markerEnd={"url(#arrow)"} />)
+    return(<line id={this.id} stroke={"white"} strokeWidth={2} 
+    markerEnd={"url(#arrow)"} fill={"white"} x1={0} y1={0} x2={this.point2.x} y2={this.point2.y} style={{transform:`translate(calc(var(--${this.parent.id}-x)*1px), calc(var(--${this.parent.id}-y)*1px))`}}/>)
   }
   // this.meElement = document.getElementById("1");
   // this.meText = document.getElementById("1text");
@@ -243,25 +231,15 @@ export class Point extends Body{
   }
   componentDidMount() {
     queue.setElements(this)
-    this.elem.style.setProperty("cx","var(--can_plate-x)")
-    this.elem.style.setProperty("cy","var(--can_plate-y)")
+    
     if(this.parent!=null){
-      if(this.parent.cx!=undefined){
-        console.log(this.elem)
-      this.cx=this.elem.attributes.cx
-      this.cy=this.elem.attributes.cy
-      console.dir(this.cx)
-      console.dir(this.parent.cx)
-      console.log("this")
-      }
-      else if(this.parent.x1!=undefined){
-        this.elem.attributes.cx=this.parent.x1
-        this.elem.attributes.cy=this.parent.y1
-      }
+        this.elem.style.setProperty("cx",`var(--${this.parent.id}-x)`)
+    this.elem.style.setProperty("cy",`var(--${this.parent.id}-y)`)
+   
     }
     else{
-      this.cx=this.elem.attributes.cx
-      this.cy=this.elem.attributes.cy
+      this.elem.style.setProperty("cx",`var(--${this.id}-x)`)
+      this.elem.style.setProperty("cy",`var(--${this.id}-y)`)
     }
     // queue.draw(this,0,"white")
     this.elem.me=this
