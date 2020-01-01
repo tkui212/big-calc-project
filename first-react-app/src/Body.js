@@ -192,6 +192,7 @@ export class Force extends Line {
     let el=document.createElement('img');
     el.src="./F.png"
     el.id=this.id
+    el.className="line"
     el.style=`top: calc(${this.value.cy}*1px);left: calc(${this.value.cx}*1px);width: 100px;position: absolute;height: 20px;z-index: 99;transform-origin: left;transform: rotate(90deg);mix-blend-mode: multiply;`
     document.getElementById("Lines").append(el)
     // throw("a")
