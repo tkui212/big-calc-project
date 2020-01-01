@@ -142,7 +142,7 @@ export class Force extends Body {
   }
   render(){
     return(<line id={this.id} stroke={"white"} strokeWidth={2} 
-    markerEnd={"url(#arrow)"} fill={"white"} x1={0} y1={0} x2={this.point2.x} y2={this.point2.y} style={{transform:`translate(calc(${this.value.cx}*1px), calc(${this.value.cy}*1px),calc(${this.value.cx}*1px), calc(${this.value.cy}*1px))`}}/>)
+    markerEnd={"url(#arrow)"} fill={"white"} x1={0} y1={0} x2={this.point2.x} y2={this.point2.y} style={{transform:`translate(calc(${this.value.cx}*1px), calc(${this.value.cy}*1px))`}}/>)
   }
   // this.meElement = document.getElementById("1");
   // this.meText = document.getElementById("1text");
