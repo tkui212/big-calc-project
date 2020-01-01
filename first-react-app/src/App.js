@@ -8,8 +8,7 @@ import {Body,Weight,Circle,Force,Point,Line} from './Body';
 function App() {
   return (
     <div className="App">
-      <header className="App-header">
-
+    <header className="App-header">
       {/* <Menu id="home_menu"/>
       <Canvas id="can_plate"/> */}
       <svg version="1.1" id="Svg" x="0px" y="0px" width="100%" height="100%" style={{height: "inherit"}}>
