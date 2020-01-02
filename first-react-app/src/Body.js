@@ -156,27 +156,57 @@ export class Line extends Body{
     set(num){ this.data2.x=num;}
   })
   this.valueChange=()=>{
-    let xLength=exactMath.formula(`(${this.y1}-${this.y2})`)
-    let yLength=exactMath.formula(`(${this.x1}-${this.x2})`)
-    let angle=Math.atan(Math.abs(exactMath.formula(`${xLength}/${yLength}`)))* (180 / Math.PI)
-    if(xLength<=0){
-      angle=angle+90
-    }
-    if(yLength<=0){
-      angle=angle-90
-    }
-    if(yLength>=0&&xLength>=0){
-      angle=angle+180
-    }
-    console.log(xLength+" "+yLength)
-    document.getElementById("all").style.setProperty(`--${this.id}-deg`,`rotate(${angle}deg)`)
+    let xLength=exactMath.formula(`(${this.x1}-${this.x2})`)
+    let yLength=exactMath.formula(`(${this.y1}-${this.y2})`)
     let length=Math.sqrt(Math.pow(Math.abs(xLength),2)+Math.pow(Math.abs(yLength),2))
     document.getElementById("all").style.setProperty(`--${this.id}-length`,`${length}`)
+let angle
+    if(xLength<0&&yLength<0){
+      angle=Math.asin(exactMath.formula(`${xLength}/${length}`))* (180 / Math.PI)+90
+    }
+    else if(xLength<0&&yLength>0){
+    angle=-(Math.asin(exactMath.formula(`${xLength}/${length}`))* (180 / Math.PI)+90)
+    }
+    else if(xLength>0&&yLength>0){
+      angle=Math.acos(exactMath.formula(`${xLength}/${length}`))* (180 / Math.PI)+180
+    }
+    else if(xLength>0&&yLength<0){
+      angle=Math.asin(exactMath.formula(`${xLength}/${length}`))* (180 / Math.PI)+90
+    }
+    console.log(this.data)
     console.log(angle)
+    if(xLength==0||yLength==0){
+      angle=0
+      if(xLength<0){
+        angle=0
+      }
+      if(xLength>0){
+        angle=180
+      }
+      if(yLength<0){
+        angle=90
+      }
+      if(yLength>0){
+        angle=270
+      }
+    }
+    else{
+    if(xLength<0){
+      angle=angle-90
+    }
+    if(yLength<0){
+      angle=angle+90
+    }
+  }
+  if(yLength>=0&&xLength>=0){
+    angle=angle+180
+  }
+    console.log(xLength+" "+yLength)
+    console.log(angle)
+    document.getElementById("all").style.setProperty(`--${this.id}-deg`,`rotate(${angle}deg)`)
   }
   this.data.registerListener(this.valueChange)
   this.data2.registerListener(this.valueChange)
-  console.log(this.data)
   this.valueChange()
 }
   }
@@ -197,7 +227,6 @@ export class Line extends Body{
     el.id=this.id
     el.className="line"
     let style
-    console.log(this)
     if(this.renderType=="react"){
       if(this.later!=undefined){
         style={position:" absolute",height:" 2px",zIndex:" 99",transformOrigin:" left",backgroundColor:"green"}
