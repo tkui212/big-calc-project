@@ -26,12 +26,15 @@ function App() {
           </marker>
         </defs>
       {/* <Body id="can_plate"/> */}
-        <Circle x="100" y="100" radius="50" ops={{id:"can_plate"}}/>
-        <Circle x="300" y="100" radius="50" ops={{id:"b2"}}/>
+        <Circle x="100" y="100" radius="50" id="b1"/>
+        <Circle x="300" y="100" radius="50" id="b2"/>
+        
       </svg>
       </header>
-    </div>
-  );
+      <div id="Slines">
+      <Line P1={"b1P"} P2={"b2P"} id="CsLine" after={true} renderType="react"/>
+      </div>
+    </div>);
 }
 
 export default App;
