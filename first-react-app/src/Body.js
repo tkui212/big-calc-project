@@ -30,21 +30,25 @@ export class Data extends Component {
     Object.defineProperty(this,"x",{
       get(){return document.getElementById("all").style.getPropertyValue(`--${this.id}-x`)},
       set(num){document.getElementById("all").style.setProperty(`--${this.id}-x`,`${num}`)
-      }
+      this.Listeners.forEach(Fun => {
+        Fun.call()
+      });}
     })
     Object.defineProperty(this,"y",{
       get(){return document.getElementById("all").style.getPropertyValue(`--${this.id}-y`)},
       set(num){document.getElementById("all").style.setProperty(`--${this.id}-y`,`${num}`)
-      }
+      this.Listeners.forEach(Fun => {
+        Fun.call()
+      });}
     })
     this.cx=`var(--${this.id}-x)`
     this.cy=`var(--${this.id}-y)`
     this.forces=props.Fs?props.Fs:[];
     this.cons=props.cons?props.cons:[];
 
-    this.aListener=function(val){}
+    this.Listeners=[]
     this.registerListener= function(listener) {
-      this.aListener = listener;
+      this.Listeners.push(listener)
     }
   }
   }
@@ -116,6 +120,7 @@ export class Line extends Body{
   }
   console.log(this.point1)
   this.data=this.point1.data
+  
   Object.defineProperty(this,"y1",{
     get(){return parseInt(this.data.y)},
     set(num){ this.data.y=num;}
@@ -151,14 +156,27 @@ export class Line extends Body{
     set(num){ this.data2.x=num;}
   })
   this.valueChange=()=>{
-    let angle=Math.atan(Math.abs(exactMath.formula(`(${this.x1}-${this.x2})/(${this.y1}-${this.y2})`)))
+    let xLength=exactMath.formula(`(${this.y1}-${this.y2})`)
+    let yLength=exactMath.formula(`(${this.x1}-${this.x2})`)
+    let angle=Math.atan(Math.abs(exactMath.formula(`${xLength}/${yLength}`)))* (180 / Math.PI)
+    if(xLength<=0){
+      angle=angle+90
+    }
+    if(yLength<=0){
+      angle=angle-90
+    }
+    if(yLength>=0&&xLength>=0){
+      angle=angle+180
+    }
+    console.log(xLength+" "+yLength)
     document.getElementById("all").style.setProperty(`--${this.id}-deg`,`rotate(${angle}deg)`)
-    let length=Math.sqrt(Math.pow(Math.abs(this.x1-this.x2),2)+Math.pow(Math.abs(this.y1-this.y2),2))
+    let length=Math.sqrt(Math.pow(Math.abs(xLength),2)+Math.pow(Math.abs(yLength),2))
     document.getElementById("all").style.setProperty(`--${this.id}-length`,`${length}`)
-    console.log("updait")
+    console.log(angle)
   }
-  this.data.registerListener(this.valueChange())
-  this.data2.registerListener(this.valueChange())
+  this.data.registerListener(this.valueChange)
+  this.data2.registerListener(this.valueChange)
+  console.log(this.data)
   this.valueChange()
 }
   }
@@ -203,8 +221,6 @@ export class Line extends Body{
       el.style=style
       document.getElementById("Lines").append(el)
     }
-    
-    
     // throw("a")
   }
 }

@@ -26,13 +26,19 @@ function App() {
           </marker>
         </defs>
       {/* <Body id="can_plate"/> */}
-        <Circle x="100" y="100" radius="50" id="b1"/>
-        <Circle x="300" y="100" radius="50" id="b2"/>
+        <Circle x="400" y="400" radius="50" id="main"/>
+        <Circle x="200" y="600" radius="50" id="b1"/>
+        <Circle x="600" y="600" radius="50" id="b2"/>
+        <Circle x="600" y="200" radius="50" id="b3"/>
+        <Circle x="200" y="200" radius="50" id="b4"/>
         
       </svg>
       </header>
       <div id="Slines">
-      <Line P1={"b1P"} P2={"b2P"} id="CsLine" after={true} renderType="react"/>
+      <Line P1={"b1P"} P2={"mainP"} id="CsLine1" after={true} renderType="react"/>
+      <Line P1={"b2P"} P2={"mainP"} id="CsLine2" after={true} renderType="react"/>
+      <Line P1={"b3P"} P2={"mainP"} id="CsLine3" after={true} renderType="react"/>
+      <Line P1={"b4P"} P2={"mainP"} id="CsLine4" after={true} renderType="react"/>
       </div>
     </div>);
 }
