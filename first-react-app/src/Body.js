@@ -120,7 +120,7 @@ export class Line extends Body{
   }
   console.log(this.point1)
   this.data=this.point1.data
-  
+  this.data.cons.push(this)
   Object.defineProperty(this,"y1",{
     get(){return parseInt(this.data.y)},
     set(num){ this.data.y=num;}
@@ -134,7 +134,6 @@ export class Line extends Body{
       this.point2=props.P2
     }
     else if(typeof props.P2=="string"){
-      console.log(document)
       this.point2=document.getElementById(`${props.P2}`).me
     }
     else{
@@ -144,9 +143,10 @@ export class Line extends Body{
     }
   }
   else{
-  this.point2=new Point({x:exactMath.formula(`${this.x}+${Math.sin(toRadians(this.angle))}*${this.F}`),y:exactMath.formula(`${this.y}-${Math.cos(toRadians(this.angle))}*${this.F}`),id:`${this.id}P2`})
+  this.point2=new Point({x:exactMath.formula(`${this.x1}+${Math.sin(toRadians(this.angle))}*${this.F}`),y:exactMath.formula(`${this.y1}-${Math.cos(toRadians(this.angle))}*${this.F}`),id:`${this.id}P2`})
   }
   this.data2=this.point2.data
+  this.data2.cons.push(this)
   Object.defineProperty(this,"y2",{
     get(){return parseInt(this.data2.y)},
     set(num){ this.data2.y=num;}
@@ -173,8 +173,6 @@ let angle
     else if(xLength>0&&yLength<0){
       angle=Math.asin(exactMath.formula(`${xLength}/${length}`))* (180 / Math.PI)+90
     }
-    console.log(this.data)
-    console.log(angle)
     if(xLength==0||yLength==0){
       angle=0
       if(xLength<0){
@@ -190,19 +188,6 @@ let angle
         angle=270
       }
     }
-    else{
-    if(xLength<0){
-      angle=angle-90
-    }
-    if(yLength<0){
-      angle=angle+90
-    }
-  }
-  if(yLength>=0&&xLength>=0){
-    angle=angle+180
-  }
-    console.log(xLength+" "+yLength)
-    console.log(angle)
     document.getElementById("all").style.setProperty(`--${this.id}-deg`,`rotate(${angle}deg)`)
   }
   this.data.registerListener(this.valueChange)
@@ -327,17 +312,48 @@ export class Force extends Line {
     super(props)
   }
   componentDidMount(){
+    if(this.later!=undefined){
+      console.log("re rendering")
+      let postline=new Force(this.later)
+      postline.render()
+      postline.componentDidMount()
+    }
+    else{
     queue.setElements(this)
-    // queue.draw(this,0,"green")
     this.elem.me=this
+    }
   }
   render(){
     let el=document.createElement('img');
     el.src="./F.png"
     el.id=this.id
     el.className="line"
-    el.style=`top: calc(${this.value.cy}*1px);left: calc(${this.value.cx}*1px);width: 100px;position: absolute;height: 20px;z-index: 99;transform-origin: left;transform: rotate(90deg);mix-blend-mode: multiply;`
-    document.getElementById("Lines").append(el)
+    // el.style=`top: calc(${this.value.cy}*1px);left: calc(${this.value.cx}*1px);width: 100px;position: absolute;height: 20px;z-index: 99;transform-origin: left;transform: rotate(90deg);mix-blend-mode: multiply;`
+    // document.getElementById("Lines").append(el)
+    let style
+    if(this.renderType=="react"){
+      if(this.later!=undefined){
+        style={position:" absolute",height:" 20px",zIndex:" 99",transformOrigin:" left",mixBlendMode: "multiply"}
+      }
+      else{
+        style={top:` calc(${this.data.cy}*1px);`,left:` calc(${this.data.cx}*1px);`,width:` calc(var(--${this.id}-length)*1px);`,position:` absolute`,height:` 20px`,zIndex:` 99`,transformOrigin:` left`,transform:` var(--${this.id}-deg)`, mixBlendMode: "multiply"}
+      }
+      return(
+        <div id={this.id+"delete"} className={"line"} style={style}/>
+      )
+    }
+    else{
+      console.log("normal render")
+      if(this.later!=undefined){
+        style=`position: absolute;height: 20px;z-index: 99;transform-origin: left;mix-blend-mode: multiply;`
+        el.id="delete"
+      }
+      else{
+        style=`top: calc(${this.data.cy}*1px);left: calc(${this.data.cx}*1px);width: calc(var(--${this.id}-length)*1px);position: absolute;height: 20px;z-index: 99;transform-origin: left;transform: var(--${this.id}-deg); mix-blend-mode: multiply;`
+      }
+      el.style=style
+      document.getElementById("Lines").append(el)
+    }
     // throw("a")
   }
 }
