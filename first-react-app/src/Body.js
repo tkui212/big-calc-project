@@ -2,7 +2,6 @@
 import React, { Component } from "react";
 import {queue,timeComponent,c1,animation} from "./objects/queue.js";
 import "./home_page.css";
-import ReactDOM from 'react-dom';
 import {toDegrees,toRadians,log} from './functions.js'
 import $ from  "jquery";
 import "jquery-ui/ui/widgets/draggable";
@@ -45,6 +44,11 @@ export class Data extends Component {
         Fun.call()
       });}
     })
+    Object.defineProperty(this,"transSpeed",{
+      get(){return document.getElementById("all").style.getPropertyValue(`--${this.id}-transSpeed`)},
+      set(num){document.getElementById("all").style.setProperty(`--${this.id}-transSpeed`,`${num}s linear`)
+    }})
+    this.transSpeed=0.5
     this.cx=`var(--${this.id}-x)`
     this.cy=`var(--${this.id}-y)`
     this.forces=props.Fs?props.Fs:[];
@@ -78,6 +82,7 @@ export class Cir extends Body {
   constructor(props){
     super(props)
     this.data=new Data({x:props.x,y:props.y,id:this.id})
+    this.data.cons.push(this)
   Object.defineProperty(this,"y",{
     get(){return this.data.y},
     set(num){ this.data.y=num;}
@@ -86,6 +91,9 @@ export class Cir extends Body {
     get(){return this.data.x},
     set(num){ this.data.x=num;}
   })
+  Object.defineProperty(this,"transSpeed",{
+    set(num){document.getElementById("all").style.setProperty(`--${this.data.id}-transSpeed`,`${num}s linear`)
+  }})
 }
 componentDidMount() {
   queue.setElements(this)
@@ -223,7 +231,7 @@ let angle
         style={position:" absolute",height:" 2px",zIndex:" 99",transformOrigin:" left",backgroundColor:"green"}
       }
       else{
-        style={top:` calc(${this.data.cy}*1px);`,left:` calc(${this.data.cx}*1px);`,width:` calc(var(--${this.id}-length)*1px);`,position:` absolute`,height:` 2px`,zIndex:` 99`,transformOrigin:` left`,transform:` var(--${this.id}-deg)`, backgroundOolor:`green`}
+        style={top:` calc(${this.data.cy}*1px);`,left:` calc(${this.data.cx}*1px);`,width:` calc(var(--${this.id}-length)*1px);`,position:` absolute`,height:` 2px`,zIndex:` 99`,transformOrigin:` left`,transform:` var(--${this.id}-deg)`, backgroundOolor:`green`,transition:`calc(var(--${this.data2.id}-transSpeed)*var(--${this.data.id}-transSpeed)/var(--${this.data2.id}-transSpeed))`}
       }
       return(
         <div id={this.id+"delete"} className={"line"} style={style}/>
@@ -236,7 +244,7 @@ let angle
         el.id="delete"
       }
       else{
-        style=`top: calc(${this.data.cy}*1px);left: calc(${this.data.cx}*1px);width: calc(var(--${this.id}-length)*1px);position: absolute;height: 2px;z-index: 99;transform-origin: left;transform: var(--${this.id}-deg); background-color:green;`
+        style=`top: calc(${this.data.cy}*1px);left: calc(${this.data.cx}*1px);width: calc(var(--${this.id}-length)*1px);position: absolute;height: 2px;z-index: 99;transform-origin: left;transform: var(--${this.id}-deg); background-color:green; transition:calc(var(--${this.data2.id}-transSpeed)*var(--${this.data.id}-transSpeed)/var(--${this.data2.id}-transSpeed));`
       }
       el.style=style
       document.getElementById("Lines").append(el)
@@ -249,7 +257,7 @@ export class Circle extends Cir {
      * @param x x position
      * @param y y position
      * @param radius the radius
-     * @param {string} id 
+     * @param {string} id
      * @param {number} radius
      * @param {number} vx
      * @param {number} vy
@@ -261,10 +269,10 @@ export class Circle extends Cir {
     this.radius = props.radius;
     this.port=new Point({x:this.x,y:this.y,id:`${this.id}P`});
     this.data=this.port.data
+    this.data.cons.push(this)
     this.vx=props.vx?props.vx:0;
     this.vy=props.vy?props.vy:0;
     // this.forces.push(new Force({x:this.x,y:this.y,ops:{id:`${this.id}F`,F:100,angle:180,P:this.port, parent:this}}));
-
   }
   componentDidMount() {
     queue.setElements(this)
@@ -272,11 +280,9 @@ export class Circle extends Cir {
     this.elem.me=this
     this.port.componentDidMount()
     // this.forces[0].componentDidMount()
-    console.log("didmout")
-    console.log($)
-    console.log($(`#${this.id}`))
+    this.dragQueue=true
     $(`#${this.id}`).draggable({
-      grid: [2, 2],
+      grid: [200, 200],
       drag: this.drag,
       start:this.mouseDown,
       stop:this.mouseUp
@@ -292,19 +298,19 @@ export class Circle extends Cir {
   mouseDown = (ev,ui) => {
     this.dragging=true
     this.mouse={x:this.x-ev.clientX,y:this.y-ev.clientY}
-    console.log(this.dragging)
-
+    this.transSpeed = 0;
   }
   mouseUp=(ev,ui)=>{
     this.dragging=false
-    console.log(this.dragging)
+    this.transSpeed = 0.5;
   }
   drag=(ev,ui)=>{
-    console.log(ev)
-    console.log(ui)
-
-      // this.x=ev.clientX+this.mouse.x
-      // this.y=ev.clientY+this.mouse.y
+    if(this.dragQueue){
+      this.x=ev.clientX+this.mouse.x
+      this.y=ev.clientY+this.mouse.y
+      this.dragQueue=false
+      setTimeout(()=>{this.dragQueue=true},10)
+    }
 
   }
   render(){
@@ -312,7 +318,7 @@ export class Circle extends Cir {
     // this.forces[0].render()
     console.log("render")
     return([
-        <circle id={this.id} cx={this.x} cy={this.y} r={this.radius} stroke={this.color} strokeWidth={0} fill={this.color} style={{cx:`${this.data.cx}`,cy:`${this.data.cy}`}} />
+        <circle id={this.id} cx={this.x} cy={this.y} r={this.radius} stroke={this.color} strokeWidth={0} fill={this.color} style={{cx:`${this.data.cx}`,cy:`${this.data.cy}`,transition:`var(--${this.data.id}-transSpeed)`}} />
         ,meP])
   }
 
@@ -335,9 +341,36 @@ export class Point extends Cir{
     // queue.draw(this,0,"white")
     this.elem.me=this
     console.log(this)
+    this.dragQueue=true
+    $(`#${this.id}`).draggable({
+      grid: [200, 200],
+      drag: this.drag,
+      start:this.mouseDown,
+      stop:this.mouseUp
+    });
+  }
+
+  mouseDown = (ev,ui) => {
+    this.data.seperateLine()
+    this.dragging=true
+    this.mouse={x:this.x-ev.clientX,y:this.y-ev.clientY}
+    this.transSpeed = 0;
+  }
+  mouseUp=(ev,ui)=>{
+    this.dragging=false
+    this.transSpeed = 0.5;
+  }
+  drag=(ev,ui)=>{
+    if(this.dragQueue){
+      this.x=ev.clientX+this.mouse.x
+      this.y=ev.clientY+this.mouse.y
+      this.dragQueue=false
+      setTimeout(()=>{this.dragQueue=true},10)
+    }
+
   }
   render(){
-    return(<circle id={this.id} cx={this.x} cy={this.y} r={10} stroke={"white"} strokeWidth={0} fill={"white"} style={{cx:`${this.data.cx}`,cy:`${this.data.cy}`}} />)
+    return(<circle id={this.id} cx={this.x} cy={this.y} r={10} stroke={"white"} strokeWidth={0} fill={"white"} style={{cx:`${this.data.cx}`,cy:`${this.data.cy}`,transition:`var(--${this.data.id}-transSpeed)`}} />)
   }
 }
 export class Force extends Line {

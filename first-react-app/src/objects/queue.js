@@ -262,7 +262,6 @@ export var queue = {
       This.elem.attributes.fill.value=color
       This.elem.attributes.stroke.value=color
       if(This.Cx!=undefined){
-        
       This.Cx.value = This.x;
       This.Cy.value = This.y;
       }
