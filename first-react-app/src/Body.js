@@ -3,7 +3,11 @@ import React, { Component } from "react";
 import {queue,timeComponent,c1,animation} from "./objects/queue.js";
 import "./home_page.css";
 import ReactDOM from 'react-dom';
-import {toDegrees,toRadians,log} from './functions.js';
+import {toDegrees,toRadians,log} from './functions.js'
+import $ from  "jquery";
+import "jquery-ui/ui/widgets/draggable";
+// import "./jquery-ui-1.12.1/jquery-ui.js";
+
 
 export class Data extends Component {
     /**
@@ -62,6 +66,8 @@ export class Body extends Component {
     this.color = props.color?props.color:"black";
     this.svg=props.svg?props.svg:null;
     this.renderType=props.renderType?props.renderType:"normal"
+    this.dragging=false
+    this.mouse={x:0,y:0}
   }
   render() {return (<div id={this.id}></div>);}
   componentDidMount() {}
@@ -267,7 +273,14 @@ export class Circle extends Cir {
     this.port.componentDidMount()
     // this.forces[0].componentDidMount()
     console.log("didmout")
-
+    console.log($)
+    console.log($(`#${this.id}`))
+    $(`#${this.id}`).draggable({
+      grid: [2, 2],
+      drag: this.drag,
+      start:this.mouseDown,
+      stop:this.mouseUp
+    });
   }
   update=(op)=>{
     for (let key in op) {
@@ -276,11 +289,31 @@ export class Circle extends Cir {
       }
     }
   }
+  mouseDown = (ev,ui) => {
+    this.dragging=true
+    this.mouse={x:this.x-ev.clientX,y:this.y-ev.clientY}
+    console.log(this.dragging)
+
+  }
+  mouseUp=(ev,ui)=>{
+    this.dragging=false
+    console.log(this.dragging)
+  }
+  drag=(ev,ui)=>{
+    console.log(ev)
+    console.log(ui)
+
+      // this.x=ev.clientX+this.mouse.x
+      // this.y=ev.clientY+this.mouse.y
+
+  }
   render(){
     let meP=this.port.render()
     // this.forces[0].render()
     console.log("render")
-    return([<circle id={this.id} cx={this.x} cy={this.y} r={this.radius} stroke={this.color} strokeWidth={0} fill={this.color} style={{cx:`${this.data.cx}`,cy:`${this.data.cy}`}} />,meP])
+    return([
+        <circle id={this.id} cx={this.x} cy={this.y} r={this.radius} stroke={this.color} strokeWidth={0} fill={this.color} style={{cx:`${this.data.cx}`,cy:`${this.data.cy}`}} />
+        ,meP])
   }
 
 }
@@ -454,15 +487,3 @@ const exactMath = require("exact-math");
 //   }
   
 // } 
-
-{/* <img src="./F.png" style="
-top: calc(var(--b2P-y)*1px);
-left: calc(var(--b2P-x)*1px);
-width: 100px;
-position: absolute;
-height: 20px;
-z-index: 99;
-transform-origin: left;
-transform: rotate(90deg);
-mix-blend-mode: multiply;
-"></img> */}
