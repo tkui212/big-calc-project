@@ -45,7 +45,7 @@ export default class App extends React.Component {
       </header>
       <div id="Slines">
       <Line P1={"b1P"} P2={"mainP"} id="CsLine1" after={true} renderType="react"/>
-      <Force P1={"b1P"} F={100} angle={90} id="Force" after={true} renderType="react"/>
+      {/* <Force P1={"b1P"} F={100} angle={90} id="Force" after={true} renderType="react"/> */}
       <Line P1={"b2P"} P2={"mainP"} id="CsLine2" after={true} renderType="react"/>
       <Line P1={"b3P"} P2={"mainP"} id="CsLine3" after={true} renderType="react"/>
       <Line P1={"b4P"} P2={"mainP"} id="CsLine4" after={true} renderType="react"/>

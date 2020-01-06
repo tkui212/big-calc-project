@@ -2,7 +2,7 @@
 import React, { Component } from "react";
 import {queue,timeComponent,c1,animation} from "./objects/queue.js";
 import "./home_page.css";
-import {toDegrees,toRadians,log} from './functions.js'
+import {toDegrees,toRadians,log,cpuAverage} from './functions.js'
 import $ from  "jquery";
 import "jquery-ui/ui/widgets/draggable";
 // import "./jquery-ui-1.12.1/jquery-ui.js";
@@ -53,12 +53,36 @@ export class Data extends Component {
     this.cy=`var(--${this.id}-y)`
     this.forces=props.Fs?props.Fs:[];
     this.cons=props.cons?props.cons:[];
-
     this.Listeners=[]
     this.registerListener= function(listener) {
       this.Listeners.push(listener)
     }
   }
+  }
+  seperateLine(t,tP){
+    let newData=new Data({x:t.x,y:t.y,id:t.id})
+    t.data=newData;
+    t.elem.style.cx=newData.cx
+    t.elem.style.cy=newData.cy
+    t.elem.style.transition=`var(--${t.data.id}-transSpeed)`
+    console.log(t)
+    console.log(tP)
+    if(tP.point1.id==t.id){
+      tP.data=t.data
+      tP.elem.style.top=`calc(${newData.cy}*1px)`
+      tP.elem.style.left=`calc(${newData.cx}*1px)`
+      tP.elem.style.transition=`calc(var(--${tP.data2.id}-transSpeed)*var(--${tP.data.id}-transSpeed)/var(--${tP.data2.id}-transSpeed))`
+      t.data.registerListener(tP.valueChange)
+    }
+    else if(tP.point2.id==t.id){
+      tP.data2=t.data
+      tP.elem.style.transition=`calc(var(--${tP.data2.id}-transSpeed)*var(--${tP.data.id}-transSpeed)/var(--${tP.data2.id}-transSpeed))`
+      t.data.registerListener(tP.valueChange)
+    }
+    else{
+      throw("this sulld not happen")
+    }
+    
   }
   // setCssProperty(name,value)
 }
@@ -116,12 +140,17 @@ export class Line extends Body{
     else{
     this.F=props.F
     this.angle=props.angle
+    if(typeof props.x=="number"&&typeof props.y=="number"){
+      this.point1=new Point({x:props.x,y:props.y,id:`${this.id}P1`})
+    }else{
+    this.point1=new Point({x:0,y:0,id:`${this.id}P1`})
+    
   if(props.P1!=undefined){
     if(props.P1.constructor.name=="Point"){
-      this.point1=props.P1
+      this.data=props.P1.data
     }
     else if(typeof props.P1=="string"){
-      this.point1=document.getElementById(`${props.P1}`).me
+      this.data=document.getElementById(`${props.P1}`).me.data
     }
     else{
       console.log(props.P1.constructor.name)
@@ -129,11 +158,9 @@ export class Line extends Body{
       throw("sold not happen")
     }
   }
-  else{
-  this.point1=new Point({x:props.x,y:props.y,id:`${this.id}P1`})
-  }
-  console.log(this.point1)
-  this.data=this.point1.data
+}
+  this.point1.data=this.data
+  this.point1.parent=this
   this.data.cons.push(this)
   Object.defineProperty(this,"y1",{
     get(){return parseInt(this.data.y)},
@@ -143,12 +170,16 @@ export class Line extends Body{
     get(){return parseInt(this.data.x)},
     set(num){ this.data.x=num;}
   })
+  if(typeof props.x=="number"&&typeof props.y=="number"){
+    this.point2=new Point({x:exactMath.formula(`${this.x1}+${Math.sin(toRadians(this.angle))}*${this.F}`),y:exactMath.formula(`${this.y1}-${Math.cos(toRadians(this.angle))}*${this.F}`),id:`${this.id}P2`})
+  }else{
+  this.point2=new Point({x:0,y:0,id:`${this.id}P2`})
   if(props.P2!=undefined){
     if(props.P2.constructor.name=="Point"){
-      this.point2=props.P2
+      this.data2=props.P2.data
     }
     else if(typeof props.P2=="string"){
-      this.point2=document.getElementById(`${props.P2}`).me
+      this.data2=document.getElementById(`${props.P2}`).me.data
     }
     else{
       console.log(props.P2.constructor.name)
@@ -156,10 +187,10 @@ export class Line extends Body{
       throw("sold not happen")
     }
   }
-  else{
-  this.point2=new Point({x:exactMath.formula(`${this.x1}+${Math.sin(toRadians(this.angle))}*${this.F}`),y:exactMath.formula(`${this.y1}-${Math.cos(toRadians(this.angle))}*${this.F}`),id:`${this.id}P2`})
-  }
-  this.data2=this.point2.data
+}
+
+  this.point2.data=this.data2
+  this.point2.parent=this
   this.data2.cons.push(this)
   Object.defineProperty(this,"y2",{
     get(){return parseInt(this.data2.y)},
@@ -245,6 +276,13 @@ let angle
       }
       else{
         style=`top: calc(${this.data.cy}*1px);left: calc(${this.data.cx}*1px);width: calc(var(--${this.id}-length)*1px);position: absolute;height: 2px;z-index: 99;transform-origin: left;transform: var(--${this.id}-deg); background-color:green; transition:calc(var(--${this.data2.id}-transSpeed)*var(--${this.data.id}-transSpeed)/var(--${this.data2.id}-transSpeed));`
+        this.point1.renderType="append"
+        this.point2.renderType="append"
+        this.point1.render()
+        this.point2.render()
+        this.point1.componentDidMount()
+        this.point2.componentDidMount()
+      
       }
       el.style=style
       document.getElementById("Lines").append(el)
@@ -268,6 +306,7 @@ export class Circle extends Cir {
     this.height = props.height?props.height:100;
     this.radius = props.radius;
     this.port=new Point({x:this.x,y:this.y,id:`${this.id}P`});
+    this.port.parent=this
     this.data=this.port.data
     this.data.cons.push(this)
     this.vx=props.vx?props.vx:0;
@@ -296,6 +335,7 @@ export class Circle extends Cir {
     }
   }
   mouseDown = (ev,ui) => {
+
     this.dragging=true
     this.mouse={x:this.x-ev.clientX,y:this.y-ev.clientY}
     this.transSpeed = 0;
@@ -309,7 +349,7 @@ export class Circle extends Cir {
       this.x=ev.clientX+this.mouse.x
       this.y=ev.clientY+this.mouse.y
       this.dragQueue=false
-      setTimeout(()=>{this.dragQueue=true},10)
+      setTimeout(()=>{this.dragQueue=true},30)
     }
 
   }
@@ -340,7 +380,7 @@ export class Point extends Cir{
     queue.setElements(this)
     // queue.draw(this,0,"white")
     this.elem.me=this
-    console.log(this)
+    
     this.dragQueue=true
     $(`#${this.id}`).draggable({
       grid: [200, 200],
@@ -351,7 +391,8 @@ export class Point extends Cir{
   }
 
   mouseDown = (ev,ui) => {
-    this.data.seperateLine()
+    this.data.seperateLine(this,this.parent)
+    console.log(this)
     this.dragging=true
     this.mouse={x:this.x-ev.clientX,y:this.y-ev.clientY}
     this.transSpeed = 0;
@@ -365,12 +406,26 @@ export class Point extends Cir{
       this.x=ev.clientX+this.mouse.x
       this.y=ev.clientY+this.mouse.y
       this.dragQueue=false
-      setTimeout(()=>{this.dragQueue=true},10)
+      setTimeout(()=>{this.dragQueue=true},30)
     }
 
   }
   render(){
+    if(this.renderType=="append"){
+      let elem=document.createElementNS("http://www.w3.org/2000/svg","circle")
+      elem.id=this.id
+      elem.setAttribute("cx",this.x)
+      elem.setAttribute("cy",this.y)
+      elem.setAttribute("r",10)
+      elem.setAttribute("stroke","white")
+      elem.setAttribute("stroke-width",0)
+      elem.setAttribute("fill","white")
+      elem.style=`cx:${this.data.cx}; cy:${this.data.cy};transition:var(--${this.data.id}-transSpeed);`
+      document.getElementById("Svg").append(elem)
+    }
+    else{
     return(<circle id={this.id} cx={this.x} cy={this.y} r={10} stroke={"white"} strokeWidth={0} fill={"white"} style={{cx:`${this.data.cx}`,cy:`${this.data.cy}`,transition:`var(--${this.data.id}-transSpeed)`}} />)
+    }
   }
 }
 export class Force extends Line {
