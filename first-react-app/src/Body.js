@@ -33,21 +33,20 @@ export class Data extends Component {
     Object.defineProperty(this,"x",{
       get(){return document.getElementById("all").style.getPropertyValue(`--${this.id}-x`)},
       set(num){document.getElementById("all").style.setProperty(`--${this.id}-x`,`${num}`)
-      this.Listeners.forEach(Fun => {
-        Fun.call()
-      });}
+      this.event(this.Listeners)
+    }
     })
     Object.defineProperty(this,"y",{
       get(){return document.getElementById("all").style.getPropertyValue(`--${this.id}-y`)},
       set(num){document.getElementById("all").style.setProperty(`--${this.id}-y`,`${num}`)
-      this.Listeners.forEach(Fun => {
-        Fun.call()
-      });}
+      this.event(this.Listeners)
+    }
     })
     Object.defineProperty(this,"transSpeed",{
       get(){return document.getElementById("all").style.getPropertyValue(`--${this.id}-transSpeed`)},
       set(num){document.getElementById("all").style.setProperty(`--${this.id}-transSpeed`,`${num}s linear`)
     }})
+    this.unpdatindgsTimeOut=true
     this.transSpeed=0.5
     this.cx=`var(--${this.id}-x)`
     this.cy=`var(--${this.id}-y)`
@@ -59,6 +58,19 @@ export class Data extends Component {
     }
   }
   }
+  event(ar){
+    if(this.unpdatindgsTimeOut){
+      ar.forEach(Fun => {
+        Fun.call()
+      });
+      this.unpdatindgsTimeOut=false
+      setTimeout(()=>{this.unpdatindgsTimeOut=true},1)
+    }
+  }
+  removeListener(id){
+    console.log(this)
+    this.Listeners.filter((value)=>value.id!=id)
+  }
   seperateLine(t,tP){
     let newData=new Data({x:t.x,y:t.y,id:t.id})
     t.data=newData;
@@ -69,15 +81,15 @@ export class Data extends Component {
     console.log(tP)
     if(tP.point1.id==t.id){
       tP.data=t.data
-      tP.elem.style.top=`calc(${newData.cy}*1px)`
-      tP.elem.style.left=`calc(${newData.cx}*1px)`
-      tP.elem.style.transition=`calc(var(--${tP.data2.id}-transSpeed)*var(--${tP.data.id}-transSpeed)/var(--${tP.data2.id}-transSpeed))`
-      t.data.registerListener(tP.valueChange)
+      // tP.elem.style.top=`calc(${newData.cy}*1px)`
+      // tP.elem.style.left=`calc(${newData.cx}*1px)`
+      // tP.elem.style.transition=`calc(var(--${tP.data2.id}-transSpeed)*var(--${tP.data.id}-transSpeed)/var(--${tP.data2.id}-transSpeed))`
+      // t.data.registerListener(tP.valueChange)
     }
     else if(tP.point2.id==t.id){
       tP.data2=t.data
-      tP.elem.style.transition=`calc(var(--${tP.data2.id}-transSpeed)*var(--${tP.data.id}-transSpeed)/var(--${tP.data2.id}-transSpeed))`
-      t.data.registerListener(tP.valueChange)
+      // tP.elem.style.transition=`calc(var(--${tP.data2.id}-transSpeed)*var(--${tP.data.id}-transSpeed)/var(--${tP.data2.id}-transSpeed))`
+      // t.data.registerListener(tP.valueChange)
     }
     else{
       throw("this sulld not happen")
@@ -105,8 +117,14 @@ export class Body extends Component {
 export class Cir extends Body {
   constructor(props){
     super(props)
-    this.data=new Data({x:props.x,y:props.y,id:this.id})
-    this.data.cons.push(this)
+    this.DataHolder=new Data({x:props.x,y:props.y,id:this.id})
+    Object.defineProperty(this,"data",{
+      get(){return this.DataHolder},
+      set(num){ 
+        this.DataHolder=num;
+        this.DataHolder.cons.push(this)
+      }
+    })
   Object.defineProperty(this,"y",{
     get(){return this.data.y},
     set(num){ this.data.y=num;}
@@ -123,6 +141,16 @@ componentDidMount() {
   queue.setElements(this)
   // queue.draw(this,0,"white")
   this.elem.me=this
+  Object.defineProperty(this,"data",{
+    get(){return this.DataHolder},
+    set(num){ 
+      this.DataHolder=num;
+      this.DataHolder.cons.push(this)
+      this.elem.style.cy=`calc(${this.DataHolder.cy}*1px)`
+      this.elem.style.cx=`calc(${this.DataHolder.cx}*1px)`
+      this.elem.style.transition=`var(--${this.DataHolder.id}-transSpeed)`
+    }
+  })
 }
 render(){
   return(<circle id={this.id} cx={this.x} cy={this.y} r={10} stroke={"white"} strokeWidth={0} fill={"white"} style={{cx:`${this.data.cx}`,cy:`${this.data.cy}`}} />)
@@ -140,8 +168,73 @@ export class Line extends Body{
     else{
     this.F=props.F
     this.angle=props.angle
+    this.DataHolder={data:null,data2:null}
+    this.valueChange=()=>{
+      let xLength=exactMath.formula(`(${this.x1}-${this.x2})`)
+      let yLength=exactMath.formula(`(${this.y1}-${this.y2})`)
+      let length=Math.sqrt(Math.pow(Math.abs(xLength),2)+Math.pow(Math.abs(yLength),2))
+      document.getElementById("all").style.setProperty(`--${this.id}-length`,`${length}`)
+  let angle
+      if(xLength<0&&yLength<0){
+        angle=Math.asin(exactMath.formula(`${xLength}/${length}`))* (180 / Math.PI)+90
+      }
+      else if(xLength<0&&yLength>0){
+      angle=-(Math.asin(exactMath.formula(`${xLength}/${length}`))* (180 / Math.PI)+90)
+      }
+      else if(xLength>0&&yLength>0){
+        angle=Math.acos(exactMath.formula(`${xLength}/${length}`))* (180 / Math.PI)+180
+      }
+      else if(xLength>0&&yLength<0){
+        angle=Math.asin(exactMath.formula(`${xLength}/${length}`))* (180 / Math.PI)+90
+      }
+      if(xLength==0||yLength==0){
+        angle=0
+        if(xLength<0){
+          angle=0
+        }
+        if(xLength>0){
+          angle=180
+        }
+        if(yLength<0){
+          angle=90
+        }
+        if(yLength>0){
+          angle=270
+        }
+      }
+      document.getElementById("all").style.setProperty(`--${this.id}-deg`,`rotate(${angle}deg)`)
+    }
+    Object.defineProperty(this,"data",{
+      get(){return this.DataHolder.data},
+      set(num){ 
+        if(this.DataHolder.data!=null){
+        this.DataHolder.data.removeListener(this.id)
+        }
+        this.DataHolder.data=num;
+        this.DataHolder.data.registerListener(this.valueChange) 
+        if(this.elem!=undefined){
+        this.elem.style.top=`calc(${this.DataHolder.data.cy}*1px)`
+        this.elem.style.left=`calc(${this.DataHolder.data.cx}*1px)`
+        this.elem.style.transition=`calc(var(--${this.DataHolder.data2.id}-transSpeed)*var(--${this.DataHolder.data.id}-transSpeed)/var(--${this.DataHolder.data2.id}-transSpeed))`
+        }
+      }
+    })
+    Object.defineProperty(this,"data2",{
+      get(){return this.DataHolder.data2},
+      set(num){ 
+        if(this.DataHolder.data2!=null){
+        this.DataHolder.data2.removeListener(this.id)
+        }
+        this.DataHolder.data2=num;
+        this.DataHolder.data2.registerListener(this.valueChange)
+        if(this.elem!=undefined){
+        this.elem.style.transition=`calc(var(--${this.DataHolder.data2.id}-transSpeed)*var(--${this.DataHolder.data.id}-transSpeed)/var(--${this.DataHolder.data2.id}-transSpeed))`
+        }
+        }
+    })
     if(typeof props.x=="number"&&typeof props.y=="number"){
       this.point1=new Point({x:props.x,y:props.y,id:`${this.id}P1`})
+      this.data=this.point1.data
     }else{
     this.point1=new Point({x:0,y:0,id:`${this.id}P1`})
     
@@ -200,41 +293,41 @@ export class Line extends Body{
     get(){return parseInt(this.data2.x)},
     set(num){ this.data2.x=num;}
   })
-  this.valueChange=()=>{
-    let xLength=exactMath.formula(`(${this.x1}-${this.x2})`)
-    let yLength=exactMath.formula(`(${this.y1}-${this.y2})`)
-    let length=Math.sqrt(Math.pow(Math.abs(xLength),2)+Math.pow(Math.abs(yLength),2))
-    document.getElementById("all").style.setProperty(`--${this.id}-length`,`${length}`)
-let angle
-    if(xLength<0&&yLength<0){
-      angle=Math.asin(exactMath.formula(`${xLength}/${length}`))* (180 / Math.PI)+90
-    }
-    else if(xLength<0&&yLength>0){
-    angle=-(Math.asin(exactMath.formula(`${xLength}/${length}`))* (180 / Math.PI)+90)
-    }
-    else if(xLength>0&&yLength>0){
-      angle=Math.acos(exactMath.formula(`${xLength}/${length}`))* (180 / Math.PI)+180
-    }
-    else if(xLength>0&&yLength<0){
-      angle=Math.asin(exactMath.formula(`${xLength}/${length}`))* (180 / Math.PI)+90
-    }
-    if(xLength==0||yLength==0){
-      angle=0
-      if(xLength<0){
-        angle=0
-      }
-      if(xLength>0){
-        angle=180
-      }
-      if(yLength<0){
-        angle=90
-      }
-      if(yLength>0){
-        angle=270
-      }
-    }
-    document.getElementById("all").style.setProperty(`--${this.id}-deg`,`rotate(${angle}deg)`)
-  }
+//   this.valueChange=()=>{
+//     let xLength=exactMath.formula(`(${this.x1}-${this.x2})`)
+//     let yLength=exactMath.formula(`(${this.y1}-${this.y2})`)
+//     let length=Math.sqrt(Math.pow(Math.abs(xLength),2)+Math.pow(Math.abs(yLength),2))
+//     document.getElementById("all").style.setProperty(`--${this.id}-length`,`${length}`)
+// let angle
+//     if(xLength<0&&yLength<0){
+//       angle=Math.asin(exactMath.formula(`${xLength}/${length}`))* (180 / Math.PI)+90
+//     }
+//     else if(xLength<0&&yLength>0){
+//     angle=-(Math.asin(exactMath.formula(`${xLength}/${length}`))* (180 / Math.PI)+90)
+//     }
+//     else if(xLength>0&&yLength>0){
+//       angle=Math.acos(exactMath.formula(`${xLength}/${length}`))* (180 / Math.PI)+180
+//     }
+//     else if(xLength>0&&yLength<0){
+//       angle=Math.asin(exactMath.formula(`${xLength}/${length}`))* (180 / Math.PI)+90
+//     }
+//     if(xLength==0||yLength==0){
+//       angle=0
+//       if(xLength<0){
+//         angle=0
+//       }
+//       if(xLength>0){
+//         angle=180
+//       }
+//       if(yLength<0){
+//         angle=90
+//       }
+//       if(yLength>0){
+//         angle=270
+//       }
+//     }
+//     document.getElementById("all").style.setProperty(`--${this.id}-deg`,`rotate(${angle}deg)`)
+//   }
   this.data.registerListener(this.valueChange)
   this.data2.registerListener(this.valueChange)
   this.valueChange()
@@ -308,7 +401,6 @@ export class Circle extends Cir {
     this.port=new Point({x:this.x,y:this.y,id:`${this.id}P`});
     this.port.parent=this
     this.data=this.port.data
-    this.data.cons.push(this)
     this.vx=props.vx?props.vx:0;
     this.vy=props.vy?props.vy:0;
     // this.forces.push(new Force({x:this.x,y:this.y,ops:{id:`${this.id}F`,F:100,angle:180,P:this.port, parent:this}}));
@@ -320,12 +412,8 @@ export class Circle extends Cir {
     this.port.componentDidMount()
     // this.forces[0].componentDidMount()
     this.dragQueue=true
-    $(`#${this.id}`).draggable({
-      grid: [200, 200],
-      drag: this.drag,
-      start:this.mouseDown,
-      stop:this.mouseUp
-    });
+    document.addEventListener("mouseup",this.mouseUp)
+    this.elem.addEventListener("mousedown",this.mouseDown)
   }
   update=(op)=>{
     for (let key in op) {
@@ -335,24 +423,31 @@ export class Circle extends Cir {
     }
   }
   mouseDown = (ev,ui) => {
-
+    document.addEventListener("mousemove",this.drag)
     this.dragging=true
     this.mouse={x:this.x-ev.clientX,y:this.y-ev.clientY}
     this.transSpeed = 0;
   }
   mouseUp=(ev,ui)=>{
+    document.removeEventListener("mousemove",this.drag)
     this.dragging=false
+    this.dragQueue=1
     this.transSpeed = 0.5;
   }
   drag=(ev,ui)=>{
-    if(this.dragQueue){
+    this.dragQueue++
+    if(this.dragging){
+      this.dragging=false
+      while(this.dragQueue>0){
       this.x=ev.clientX+this.mouse.x
       this.y=ev.clientY+this.mouse.y
-      this.dragQueue=false
-      setTimeout(()=>{this.dragQueue=true},30)
+      this.dragQueue--
+      }
+      this.dragging=true
+    }
     }
 
-  }
+  
   render(){
     let meP=this.port.render()
     // this.forces[0].render()
