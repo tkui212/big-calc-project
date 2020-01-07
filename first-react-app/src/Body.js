@@ -79,6 +79,7 @@ export class Data extends Component {
     // t.elem.style.transition=`var(--${t.data.id}-transSpeed)`
     console.log(t)
     console.log(tP)
+    if(t.parent!=undefined&&t.parent.constructor.name=="Line"){
     if(tP.point1.id==t.id){
       tP.data=t.data
     }
@@ -88,7 +89,21 @@ export class Data extends Component {
     else{
       throw("this sulld not happen")
     }
+  }
+  else if(t.parent!=undefined&&t.parent.constructor.name=="Circle"){
+    tP.data=t.data
+  }
     
+  }
+  bringToFront(elem){
+    for(let i=0;i<this.cons.length;i++){
+      if(this.cons[i].id==elem.id){
+        this.cons[i].elem.style.zIndex="5"
+      }
+      else{
+        this.cons[i].elem.style.zIndex="0"
+      }
+    }
   }
   // setCssProperty(name,value)
 }
@@ -118,7 +133,7 @@ export class Cir extends Body {
       set(num){ 
         this.DataHolder=num;
         this.DataHolder.cons.push(this)
-        if(this.parent!=undefined){
+        if(this.parent!=undefined&&this.parent.constructor.name=="Line"){
           if(this.parent.point1.id==this.id){
             this.parent.data=this.DataHolder
           }
@@ -126,6 +141,9 @@ export class Cir extends Body {
             this.parent.data2=this.DataHolder
           }
           
+        }
+        else if(this.parent!=undefined&&this.parent.constructor.name=="Circle"){
+          this.parent.data=this.DataHolder
         }
         if(this.elem!=undefined){
           // this.transSpeed=0
@@ -306,7 +324,13 @@ export class Line extends Body{
     else{
     queue.setElements(this)
     this.elem.me=this
+    this.elem.addEventListener("mousedown",this.mouseDown)
+    this.data.bringToFront(this.point1)
+    this.data2.bringToFront(this.point2)
     }
+  }
+  mouseDown = (ev,ui) => {
+    //bring to yop
   }
   render(){
     let el=document.createElement('div');
@@ -408,11 +432,8 @@ export class Circle extends Cir {
     this.dragging=false
     setTimeout(()=>{this.x=ev.clientX+this.mouse.x
       this.y=ev.clientY+this.mouse.y},2)
-    
-    
-    // this.transSpeed = 0.5;
   }
-  drag=(ev,end)=>{
+  drag=(ev)=>{
     this.dragQueue++
     if(this.dragging){
       this.dragging=false
