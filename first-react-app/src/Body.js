@@ -42,10 +42,6 @@ export class Data extends Component {
       this.event(this.Listeners)
     }
     })
-    // Object.defineProperty(this,"transSpeed",{
-    //   get(){return document.getElementById("all").style.getPropertyValue(`--${this.id}-transSpeed`)},
-    //   set(num){document.getElementById("all").style.setProperty(`--${this.id}-transSpeed`,`${num}s linear`)
-    // }})
     this.unpdatindgsTimeOut=true
     // this.transSpeed=0.5
     this.cx=`var(--${this.id}-x)`
@@ -68,8 +64,10 @@ export class Data extends Component {
     }
   }
   removeListener(id){
-    console.log(this)
-    this.Listeners.filter((value)=>value.id!=id)
+    this.Listeners=this.Listeners.filter((value)=>value.id!=id)
+  }
+  removeCon(id){
+    this.cons=this.cons.filter((value)=>value.id!=id)
   }
   seperateLine(t,tP){
     let newData=new Data({x:t.x,y:t.y,id:t.id})
@@ -107,7 +105,6 @@ export class Data extends Component {
   }
   // setCssProperty(name,value)
 }
-
 export class Body extends Component {
   constructor(props){
     super(props)
@@ -122,7 +119,6 @@ export class Body extends Component {
   componentDidMount() {}
   update = (op) => {for (let key in op) {if (this.hasOwnProperty(key)){this[key]= op[key];}}};
 }
-
 export class Cir extends Body {
   constructor(props){
     super(props)
@@ -195,65 +191,80 @@ render(){
   return(<circle id={this.id} cx={this.x} cy={this.y} r={10} stroke={"white"} strokeWidth={0} fill={"white"} style={{cx:`${this.data.cx}`,cy:`${this.data.cy}`}} />)
 }
 }
-
 export class Line extends Body{
   constructor(props){
     super(props)
-    if(props.after!=undefined&&props.after==true){
-      this.later=log(props)
-      delete this.later.after
-      this.later.renderType="normal"
-    }
-    else{
-    this.F=props.F
-    this.angle=props.angle
+    this.point1=new Point({x:0,y:0,id:`${this.id}P1`})
+    this.point2=new Point({x:0,y:0,id:`${this.id}P2`})
+    this.point1.parent=this
+    this.point2.parent=this
+    this.DataHolder={data:this.point1.data,data2:this.point2.data}
+    this.valueChange=()=>{
+      this.path=`path("M ${this.x1} ${this.y1} L ${this.x2} ${this.y2}")`
+      }
+      Object.defineProperty(this,"data",{
+        get(){return this.DataHolder.data},
+        set(num){ 
+          if(this.DataHolder.data!=null){
+          this.DataHolder.data.removeListener(this.id)
+          this.DataHolder.data.removeCon(this.id)
+          }
+          this.DataHolder.data=num;
+          this.DataHolder.data.registerListener(this.valueChange)
+          this.DataHolder.data.cons.push(this)
+          this.valueChange()
+        }
+        
+      })
+      Object.defineProperty(this,"data2",{
+        get(){return this.DataHolder.data2},
+        set(num){ 
+          if(this.DataHolder.data2!=null){
+          this.DataHolder.data2.removeListener(this.id)
+          this.DataHolder.data2.removeCon(this.id)
+          }
+          this.DataHolder.data2=num;
+          this.DataHolder.data2.registerListener(this.valueChange)
+          this.DataHolder.data2.cons.push(this)
+
+          this.valueChange()
+          }
+      })
+      Object.defineProperty(this,"y1",{
+        get(){return parseInt(this.data.y)},
+        set(num){ this.data.y=num;}
+      })
+      Object.defineProperty(this,"x1",{
+        get(){return parseInt(this.data.x)},
+        set(num){ this.data.x=num;}
+      })
+      Object.defineProperty(this,"y2",{
+        get(){return parseInt(this.data2.y)},
+        set(num){ this.data2.y=num;}
+      })
+      Object.defineProperty(this,"x2",{
+        get(){return parseInt(this.data2.x)},
+        set(num){ this.data2.x=num;}
+      })
     Object.defineProperty(this,"path",{
       get(){return `var(--${this.id}-path)`},
       set(num){ document.getElementById("all").style.setProperty(`--${this.id}-path`,`${num}`)}
     })
-    this.DataHolder={data:null,data2:null}
-    this.valueChange=()=>{
-      this.path=`path("M ${this.x1} ${this.y1} L ${this.x2} ${this.y2}")`
-      }
+
+    if(props.after!=undefined&&props.after==true){
+      this.later=props
+      this.F=props.F
+    this.angle=props.angle
+    }
+    else{
+    
 
     
-    Object.defineProperty(this,"data",{
-      get(){return this.DataHolder.data},
-      set(num){ 
-        if(this.DataHolder.data!=null){
-        this.DataHolder.data.removeListener(this.id)
-        }
-        this.DataHolder.data=num;
-        this.DataHolder.data.registerListener(this.valueChange) 
-        if(this.elem!=undefined){
-        // this.elem.style.transition=`calc(var(--${this.DataHolder.data2.id}-transSpeed)*var(--${this.DataHolder.data.id}-transSpeed)/var(--${this.DataHolder.data2.id}-transSpeed))`
-        }
-        this.valueChange()
-      }
-      
-    })
-    Object.defineProperty(this,"data2",{
-      get(){return this.DataHolder.data2},
-      set(num){ 
-        if(this.DataHolder.data2!=null){
-        this.DataHolder.data2.removeListener(this.id)
-        }
-        this.DataHolder.data2=num;
-        this.DataHolder.data2.registerListener(this.valueChange)
-        if(this.elem!=undefined){
-        // this.elem.style.transition=`calc(var(--${this.DataHolder.data2.id}-transSpeed)*var(--${this.DataHolder.data.id}-transSpeed)/var(--${this.DataHolder.data2.id}-transSpeed))`
-        }
-        this.valueChange()
-
-        }
-    })
     if(typeof props.x=="number"&&typeof props.y=="number"){
-      this.point1=new Point({x:props.x,y:props.y,id:`${this.id}P1`})
+      this.point1.x=props.x
+      this.point1.y=props.y
       this.data=this.point1.data
-    }else{
-    this.point1=new Point({x:0,y:0,id:`${this.id}P1`})
-    
-  if(props.P1!=undefined){
+    }else if(props.P1!=undefined){
     if(props.P1.constructor.name=="Point"){
       this.data=props.P1.data
     }
@@ -266,23 +277,13 @@ export class Line extends Body{
       throw("sold not happen")
     }
   }
-}
   this.point1.data=this.data
-  this.point1.parent=this
-  this.data.cons.push(this)
-  Object.defineProperty(this,"y1",{
-    get(){return parseInt(this.data.y)},
-    set(num){ this.data.y=num;}
-  })
-  Object.defineProperty(this,"x1",{
-    get(){return parseInt(this.data.x)},
-    set(num){ this.data.x=num;}
-  })
+
   if(typeof props.x=="number"&&typeof props.y=="number"){
-    this.point2=new Point({x:exactMath.formula(`${this.x1}+${Math.sin(toRadians(this.angle))}*${this.F}`),y:exactMath.formula(`${this.y1}-${Math.cos(toRadians(this.angle))}*${this.F}`),id:`${this.id}P2`})
-  }else{
-  this.point2=new Point({x:0,y:0,id:`${this.id}P2`})
-  if(props.P2!=undefined){
+    this.point2.x=exactMath.formula(`${this.x1}+${Math.sin(toRadians(this.angle))}*${this.F}`)
+    this.point2.y=exactMath.formula(`${this.y1}-${Math.cos(toRadians(this.angle))}*${this.F}`)
+     this.data2=this.point2.data
+  }else if(props.P2!=undefined){
     if(props.P2.constructor.name=="Point"){
       this.data2=props.P2.data
     }
@@ -294,89 +295,72 @@ export class Line extends Body{
       console.log(props.P2)
       throw("sold not happen")
     }
-  }
 }
-
   this.point2.data=this.data2
-  this.point2.parent=this
-  this.data2.cons.push(this)
-  Object.defineProperty(this,"y2",{
-    get(){return parseInt(this.data2.y)},
-    set(num){ this.data2.y=num;}
-  })
-  Object.defineProperty(this,"x2",{
-    get(){return parseInt(this.data2.x)},
-    set(num){ this.data2.x=num;}
-  })
-  this.data.registerListener(this.valueChange)
-  this.data2.registerListener(this.valueChange)
-  this.valueChange()
+
+
 }
   }
   
   componentDidMount(){
-    if(this.later!=undefined){
-      console.log("re rendering")
-      let postline=new Line(this.later)
-      postline.render()
-      postline.componentDidMount()
+    this.point1.componentDidMount()
+    this.point2.componentDidMount()
+    if(this.later!=undefined&&this.later.after==true){
+      if(typeof this.later.P1=="string"&&typeof this.later.P2=="string"){
+        console.log("a")
+        this.data=document.getElementById(`${this.later.P1}`).me.data
+        this.data2=document.getElementById(`${this.later.P2}`).me.data
+        this.point1.data=this.data
+        this.point2.data=this.data2
+      }
+      else{
+        console.log(this.later.P1.constructor.name)
+        console.log(this.later.P1)
+        throw("sold not happen")
+      }
     }
-    else{
+    this.valueChange()
+    console.log(this)
     queue.setElements(this)
     this.elem.me=this
     this.elem.addEventListener("mousedown",this.mouseDown)
-    this.data.bringToFront(this.point1)
-    this.data2.bringToFront(this.point2)
-    }
   }
   mouseDown = (ev,ui) => {
-    //bring to yop
+    console.log(this.id)
+    document.getElementById("Svg").appendChild(this.point1.elem)
+    document.getElementById("Svg").appendChild(this.point2.elem)
   }
   render(){
-    let el=document.createElement('div');
-    el.id=this.id
-    el.className="line"
-    let style
-    if(this.renderType=="react"){
-      if(this.later!=undefined){
-        style={position:" absolute",height:" 2px",zIndex:" 99",transformOrigin:" left",backgroundColor:"green"}
-      }
-      else{
-        style={top:` calc(${this.data.cy}*1px);`,left:` calc(${this.data.cx}*1px);`,width:` calc(var(--${this.id}-length)*1px);`,position:` absolute`,height:` 2px`,zIndex:` 99`,transformOrigin:` left`,transform:` var(--${this.id}-deg)`, backgroundOolor:`green`}
-      }
-      return(
-        <div id={this.id+"delete"} className={"line"} style={style}/>
-      )
-    }
-    else{
-      console.log("normal render")
-      if(this.later!=undefined){
-        style=`position: absolute;height: 2px;z-index: 99;transform-origin: left;background-color:green;`
-        el.id="delete"
-        el.style=style
-      document.getElementById("Lines").append(el)
-      }
-      else{
-        let elem=document.createElementNS("http://www.w3.org/2000/svg","path")
-      elem.id=this.id
-      elem.setAttribute("d",`M 0 0 L 0 0`)
-      elem.setAttribute("stroke","white")
-      elem.setAttribute("stroke-width",2)
-      elem.setAttribute("fill","white")
-      // elem.setAttribute("style","white")
-      elem.style=`d:${this.path};`
-      document.getElementById("Svg").append(elem)
-        // style=`top: calc(${this.data.cy}*1px);left: calc(${this.data.cx}*1px);width: calc(var(--${this.id}-length)*1px);position: absolute;height: 2px;z-index: 99;transform-origin: left;transform: var(--${this.id}-deg); background-color:green; transition:calc(var(--${this.data2.id}-transSpeed)*var(--${this.data.id}-transSpeed)/var(--${this.data2.id}-transSpeed));`
-        this.point1.renderType="append"
-        this.point2.renderType="append"
-        this.point1.render()
-        this.point2.render()
-        this.point1.componentDidMount()
-        this.point2.componentDidMount()
+    // let el=document.createElement('div');
+    // el.id=this.id
+    // el.className="line"
+    // let style
+    // if(this.renderType=="react"){
+    //   if(this.later!=undefined){
+    //     style={position:" absolute",height:" 2px",zIndex:" 99",transformOrigin:" left",backgroundColor:"green"}
+    //   }
+    //   else{
+    //     style={top:` calc(${this.data.cy}*1px);`,left:` calc(${this.data.cx}*1px);`,width:` calc(var(--${this.id}-length)*1px);`,position:` absolute`,height:` 2px`,zIndex:` 99`,transformOrigin:` left`,transform:` var(--${this.id}-deg)`, backgroundOolor:`green`}
+    //   }
+    //   return(
+    //     <div id={this.id+"delete"} className={"line"} style={style}/>
+    //   )
+    // }
+    // else{
+    //   console.log("normal render")
+    //   if(this.later!=undefined){
+    //     style=`position: absolute;height: 2px;z-index: 99;transform-origin: left;background-color:green;`
+    //     el.id="delete"
+    //     el.style=style
+    //   document.getElementById("Lines").append(el)
+    //   }
+      // else{
+        let p1=this.point1.render()
+        let p2=this.point2.render()
+      return ([<path id={this.id} d={`M 0 0 L 0 0`} stroke={"white"} strokeWidth={5} fill={"white"} className={"line"} style={{d:`${this.path}`}}/>,p1,p2])
+    //   }
       
-      }
-      
-    }
+    // }
     // throw("a")
   }
 }
@@ -419,6 +403,7 @@ export class Circle extends Cir {
     }
   }
   mouseDown = (ev,ui) => {
+    console.log(this.id)
     document.addEventListener("mousemove",this.drag)
     document.addEventListener("mouseup",this.mouseUp)
     this.dragging=true
@@ -471,34 +456,40 @@ export class Point extends Cir{
     // this.y=this.y
   }
   componentDidMount() {
+    console.log("p mount")
     queue.setElements(this)
     // queue.draw(this,0,"white")
     this.elem.me=this
     
-    this.dragQueue=true
-    $(`#${this.id}`).draggable({
-      grid: [200, 200],
-      drag: this.drag,
-      start:this.mouseDown,
-      stop:this.mouseUp
-    });
+    this.dragQueue=0
+    this.elem.addEventListener("mousedown",this.mouseDown)
   }
 
   mouseDown = (ev,ui) => {
+    document.addEventListener("mousemove",this.drag)
+    document.addEventListener("mouseup",this.mouseUp)
     this.data.seperateLine(this,this.parent)
-    console.log(this)
+    console.log(this.id)
     this.dragging=true
     this.mouse={x:this.x-ev.clientX,y:this.y-ev.clientY}
     this.dragQueue++
     // this.transSpeed = 0;
   }
   mouseUp=(ev,ui)=>{
+    document.removeEventListener("mousemove",this.drag)
+    document.removeEventListener("mouseup",this.mouseUp)
     this.dragging=false
-    
     let points=$(".point")
     for(let i=0;i<points.length;i++){
       if(50>this.getDistancePtoP(this,points[i].me)){
+        if(this.parent.constructor.name=="Line"){
         this.data=points[i].me.data
+        }
+        else{
+          this.data.x=points[i].me.data.x
+          this.data.y=points[i].me.data.y
+          points[i].me.data=this.data
+        }
 
         }
       }
@@ -542,23 +533,8 @@ export class Point extends Cir{
     }
   }
   render(){
-    if(this.renderType=="append"){
-      let elem=document.createElementNS("http://www.w3.org/2000/svg","circle")
-      elem.id=this.id
-      elem.setAttribute("cx",this.x)
-      elem.setAttribute("cy",this.y)
-      elem.setAttribute("r",10)
-      elem.setAttribute("stroke","white")
-      elem.setAttribute("stroke-width",0)
-      elem.setAttribute("fill","white")
-      elem.setAttribute("class","point")
-      elem.style=`cx:${this.data.cx}; cy:${this.data.cy};`
-      document.getElementById("Svg").append(elem)
+    return(<circle id={this.id} cx={this.x} cy={this.y} r={10} stroke={"white"} strokeWidth={5} fill={"white"} class="point" style={{cx:`${this.data.cx}`,cy:`${this.data.cy}`}} />)
     }
-    else{
-    return(<circle id={this.id} cx={this.x} cy={this.y} r={10} stroke={"white"} strokeWidth={0} fill={"white"} class="point" style={{cx:`${this.data.cx}`,cy:`${this.data.cy}`}} />)
-    }
-  }
 }
 export class Force extends Line {
   constructor(props){

@@ -2,14 +2,19 @@ import React from 'react';
 import './App.css';
 import './home_page.css';
 import Menu from './Menu';
+import Slider from './Slider';
 import Canvas from './Canvas';
 import {Body,Weight,Circle,Force,Point,Line} from './Body';
 import ReactDOM from 'react-dom';
+import $ from  "jquery";
+import "jquery-ui/ui/widgets/draggable";
 export default class App extends React.Component {
-  // eventLogger = (e: MouseEvent, data: Object) => {
-  //   console.log('Event: ', e);
-  //   console.log('Data: ', data);
-  // };
+
+  componentDidMount(){
+    var dragers = require("./toReact.js");
+    window.dragers=dragers
+    dragers.ex()
+  }
   render(){
   return (
     <div className="App">
@@ -36,23 +41,61 @@ export default class App extends React.Component {
         <Circle x="200" y="600" radius="50" id="b1"/>
         <Circle x="600" y="600" radius="50" id="b2"/>
         <Circle x="600" y="200" radius="50" id="b3"/>
-        <Circle x="200" y="200" radius="50" id="b4"/>
-        <Circle x="400" y="600" radius="50" id="b5"/>
-        <Circle x="600" y="400" radius="50" id="b6"/>
-        <Circle x="400" y="200" radius="50" id="b7"/>
-        <Circle x="200" y="400" radius="50" id="b8"/>
+        <Line P1={"b1P"} P2={"mainP"} id="CsLine1" after={true} />
+      {/* <Force P1={"b1P"} F={100} angle={90} id="Force" after={true} /> */}
+      <Line P1={"b2P"} P2={"mainP"} id="CsLine2" after={true} />
+      <Line P1={"b3P"} P2={"mainP"} id="CsLine3" after={true} />
       </svg>
       </header>
-      <div id="Slines">
-      <Line P1={"b1P"} P2={"mainP"} id="CsLine1" after={true} renderType="react"/>
-      {/* <Force P1={"b1P"} F={100} angle={90} id="Force" after={true} renderType="react"/> */}
-      <Line P1={"b2P"} P2={"mainP"} id="CsLine2" after={true} renderType="react"/>
-      <Line P1={"b3P"} P2={"mainP"} id="CsLine3" after={true} renderType="react"/>
-      <Line P1={"b4P"} P2={"mainP"} id="CsLine4" after={true} renderType="react"/>
-      <Line P1={"b5P"} P2={"mainP"} id="CsLine5" after={true} renderType="react"/>
-      <Line P1={"b6P"} P2={"mainP"} id="CsLine6" after={true} renderType="react"/>
-      <Line P1={"b7P"} P2={"mainP"} id="CsLine7" after={true} renderType="react"/>
-      <Line P1={"b8P"} P2={"mainP"} id="CsLine8" after={true} renderType="react"/>
+      <div id="sliders">
+        <Slider id={"testData"} side={"left"} width={100} height={200}/>
+        <Slider id={"testData2"} side={"bottom"} width={200} height={100}/>
+      
+      </div>
+      <div id={"menu"}opacity={"0.5"}style={{left: "-100px", top: "-100px"}}>
+        <div id={"menut"}>movecon</div>
+
+        <button id={"menubut1"}class={"menuButton"}onclick={"console.log(movecon)"}>
+          cosnole this
+        </button>
+        <p>
+          <button id={"menubut2"}class={"menuButton"}onclick={"collapse(move)"}>
+            collapse
+          </button>
+        </p>
+        <p>
+          <button id={"menubut3"}class={"menuButton"}onclick={"effShow(move)"}>
+            show
+          </button>
+        </p>
+        <p>
+          <button
+            id={"menubut4"}
+            class={"menuButton"}
+            onclick={"console.log(document.elementsFromPoint(943, 229))"}
+          >
+            elems here
+          </button>
+        </p>
+        <p>
+            <button
+              id={"menubut5"}
+              class={"menuButton"}
+              onclick={"console.log(document.elementsFromPoint(943, 229))"}
+            >
+              collapse all
+            </button>
+          </p>
+          <p>
+              <button
+                id={"menubut6"}
+                class={"menuButton"}
+                onclick={"console.log(document.elementsFromPoint(943, 229))"}
+              >
+                show all
+              </button>
+            </p>
+        <p></p>
       </div>
     </div>);
 }

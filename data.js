@@ -82,9 +82,6 @@ var snapper;
 var snapped;
 
 
-let snapers = $(`snapTo`);
-
-
 for (const element of $(`snapTo`)) {//intilaiz the WBs
   //   let newCont = cont.cloneNode(true);
   //   newCont.id = `${element.id}con`;
