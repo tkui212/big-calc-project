@@ -42,12 +42,12 @@ export class Data extends Component {
       this.event(this.Listeners)
     }
     })
-    Object.defineProperty(this,"transSpeed",{
-      get(){return document.getElementById("all").style.getPropertyValue(`--${this.id}-transSpeed`)},
-      set(num){document.getElementById("all").style.setProperty(`--${this.id}-transSpeed`,`${num}s linear`)
-    }})
+    // Object.defineProperty(this,"transSpeed",{
+    //   get(){return document.getElementById("all").style.getPropertyValue(`--${this.id}-transSpeed`)},
+    //   set(num){document.getElementById("all").style.setProperty(`--${this.id}-transSpeed`,`${num}s linear`)
+    // }})
     this.unpdatindgsTimeOut=true
-    this.transSpeed=0.5
+    // this.transSpeed=0.5
     this.cx=`var(--${this.id}-x)`
     this.cy=`var(--${this.id}-y)`
     this.forces=props.Fs?props.Fs:[];
@@ -74,22 +74,16 @@ export class Data extends Component {
   seperateLine(t,tP){
     let newData=new Data({x:t.x,y:t.y,id:t.id})
     t.data=newData;
-    t.elem.style.cx=newData.cx
-    t.elem.style.cy=newData.cy
-    t.elem.style.transition=`var(--${t.data.id}-transSpeed)`
+    // t.elem.style.cx=newData.cx
+    // t.elem.style.cy=newData.cy
+    // t.elem.style.transition=`var(--${t.data.id}-transSpeed)`
     console.log(t)
     console.log(tP)
     if(tP.point1.id==t.id){
       tP.data=t.data
-      // tP.elem.style.top=`calc(${newData.cy}*1px)`
-      // tP.elem.style.left=`calc(${newData.cx}*1px)`
-      // tP.elem.style.transition=`calc(var(--${tP.data2.id}-transSpeed)*var(--${tP.data.id}-transSpeed)/var(--${tP.data2.id}-transSpeed))`
-      // t.data.registerListener(tP.valueChange)
     }
     else if(tP.point2.id==t.id){
       tP.data2=t.data
-      // tP.elem.style.transition=`calc(var(--${tP.data2.id}-transSpeed)*var(--${tP.data.id}-transSpeed)/var(--${tP.data2.id}-transSpeed))`
-      // t.data.registerListener(tP.valueChange)
     }
     else{
       throw("this sulld not happen")
@@ -118,13 +112,39 @@ export class Cir extends Body {
   constructor(props){
     super(props)
     this.DataHolder=new Data({x:props.x,y:props.y,id:this.id})
+    
     Object.defineProperty(this,"data",{
       get(){return this.DataHolder},
       set(num){ 
         this.DataHolder=num;
         this.DataHolder.cons.push(this)
+        if(this.parent!=undefined){
+          if(this.parent.point1.id==this.id){
+            this.parent.data=this.DataHolder
+          }
+          else{
+            this.parent.data2=this.DataHolder
+          }
+          
+        }
+        if(this.elem!=undefined){
+          // this.transSpeed=0
+          // console.log(this.transSpeed)
+        this.elem.style.cy=`calc(${this.DataHolder.cy}*1px)`
+        this.elem.style.cx=`calc(${this.DataHolder.cx}*1px)`
+        // this.elem.style.transition=`var(--${this.DataHolder.id}-transSpeed)`
+        }
       }
     })
+    // Object.defineProperty(this,"data",{
+    //   get(){return this.DataHolder.data},
+    //   set(num){ 
+        
+    //     this.DataHolder.data=num;
+    //     this.DataHolder.data.registerListener(this.valueChange) 
+        
+    //   }
+    // })
   Object.defineProperty(this,"y",{
     get(){return this.data.y},
     set(num){ this.data.y=num;}
@@ -133,9 +153,10 @@ export class Cir extends Body {
     get(){return this.data.x},
     set(num){ this.data.x=num;}
   })
-  Object.defineProperty(this,"transSpeed",{
-    set(num){document.getElementById("all").style.setProperty(`--${this.data.id}-transSpeed`,`${num}s linear`)
-  }})
+  // Object.defineProperty(this,"transSpeed",{
+  //   get(){return document.getElementById("all").style.getPropertyValue(`--${this.DataHolder.id}-transSpeed`)},
+  //   set(num){document.getElementById("all").style.setProperty(`--${this.DataHolder.id}-transSpeed`,`${num}s linear`)
+  // }})
 }
 componentDidMount() {
   queue.setElements(this)
@@ -148,7 +169,7 @@ componentDidMount() {
       this.DataHolder.cons.push(this)
       this.elem.style.cy=`calc(${this.DataHolder.cy}*1px)`
       this.elem.style.cx=`calc(${this.DataHolder.cx}*1px)`
-      this.elem.style.transition=`var(--${this.DataHolder.id}-transSpeed)`
+      // this.elem.style.transition=`var(--${this.DataHolder.id}-transSpeed)`
     }
   })
 }
@@ -168,42 +189,16 @@ export class Line extends Body{
     else{
     this.F=props.F
     this.angle=props.angle
+    Object.defineProperty(this,"path",{
+      get(){return `var(--${this.id}-path)`},
+      set(num){ document.getElementById("all").style.setProperty(`--${this.id}-path`,`${num}`)}
+    })
     this.DataHolder={data:null,data2:null}
     this.valueChange=()=>{
-      let xLength=exactMath.formula(`(${this.x1}-${this.x2})`)
-      let yLength=exactMath.formula(`(${this.y1}-${this.y2})`)
-      let length=Math.sqrt(Math.pow(Math.abs(xLength),2)+Math.pow(Math.abs(yLength),2))
-      document.getElementById("all").style.setProperty(`--${this.id}-length`,`${length}`)
-  let angle
-      if(xLength<0&&yLength<0){
-        angle=Math.asin(exactMath.formula(`${xLength}/${length}`))* (180 / Math.PI)+90
+      this.path=`path("M ${this.x1} ${this.y1} L ${this.x2} ${this.y2}")`
       }
-      else if(xLength<0&&yLength>0){
-      angle=-(Math.asin(exactMath.formula(`${xLength}/${length}`))* (180 / Math.PI)+90)
-      }
-      else if(xLength>0&&yLength>0){
-        angle=Math.acos(exactMath.formula(`${xLength}/${length}`))* (180 / Math.PI)+180
-      }
-      else if(xLength>0&&yLength<0){
-        angle=Math.asin(exactMath.formula(`${xLength}/${length}`))* (180 / Math.PI)+90
-      }
-      if(xLength==0||yLength==0){
-        angle=0
-        if(xLength<0){
-          angle=0
-        }
-        if(xLength>0){
-          angle=180
-        }
-        if(yLength<0){
-          angle=90
-        }
-        if(yLength>0){
-          angle=270
-        }
-      }
-      document.getElementById("all").style.setProperty(`--${this.id}-deg`,`rotate(${angle}deg)`)
-    }
+
+    
     Object.defineProperty(this,"data",{
       get(){return this.DataHolder.data},
       set(num){ 
@@ -213,11 +208,11 @@ export class Line extends Body{
         this.DataHolder.data=num;
         this.DataHolder.data.registerListener(this.valueChange) 
         if(this.elem!=undefined){
-        this.elem.style.top=`calc(${this.DataHolder.data.cy}*1px)`
-        this.elem.style.left=`calc(${this.DataHolder.data.cx}*1px)`
-        this.elem.style.transition=`calc(var(--${this.DataHolder.data2.id}-transSpeed)*var(--${this.DataHolder.data.id}-transSpeed)/var(--${this.DataHolder.data2.id}-transSpeed))`
+        // this.elem.style.transition=`calc(var(--${this.DataHolder.data2.id}-transSpeed)*var(--${this.DataHolder.data.id}-transSpeed)/var(--${this.DataHolder.data2.id}-transSpeed))`
         }
+        this.valueChange()
       }
+      
     })
     Object.defineProperty(this,"data2",{
       get(){return this.DataHolder.data2},
@@ -228,8 +223,10 @@ export class Line extends Body{
         this.DataHolder.data2=num;
         this.DataHolder.data2.registerListener(this.valueChange)
         if(this.elem!=undefined){
-        this.elem.style.transition=`calc(var(--${this.DataHolder.data2.id}-transSpeed)*var(--${this.DataHolder.data.id}-transSpeed)/var(--${this.DataHolder.data2.id}-transSpeed))`
+        // this.elem.style.transition=`calc(var(--${this.DataHolder.data2.id}-transSpeed)*var(--${this.DataHolder.data.id}-transSpeed)/var(--${this.DataHolder.data2.id}-transSpeed))`
         }
+        this.valueChange()
+
         }
     })
     if(typeof props.x=="number"&&typeof props.y=="number"){
@@ -293,46 +290,12 @@ export class Line extends Body{
     get(){return parseInt(this.data2.x)},
     set(num){ this.data2.x=num;}
   })
-//   this.valueChange=()=>{
-//     let xLength=exactMath.formula(`(${this.x1}-${this.x2})`)
-//     let yLength=exactMath.formula(`(${this.y1}-${this.y2})`)
-//     let length=Math.sqrt(Math.pow(Math.abs(xLength),2)+Math.pow(Math.abs(yLength),2))
-//     document.getElementById("all").style.setProperty(`--${this.id}-length`,`${length}`)
-// let angle
-//     if(xLength<0&&yLength<0){
-//       angle=Math.asin(exactMath.formula(`${xLength}/${length}`))* (180 / Math.PI)+90
-//     }
-//     else if(xLength<0&&yLength>0){
-//     angle=-(Math.asin(exactMath.formula(`${xLength}/${length}`))* (180 / Math.PI)+90)
-//     }
-//     else if(xLength>0&&yLength>0){
-//       angle=Math.acos(exactMath.formula(`${xLength}/${length}`))* (180 / Math.PI)+180
-//     }
-//     else if(xLength>0&&yLength<0){
-//       angle=Math.asin(exactMath.formula(`${xLength}/${length}`))* (180 / Math.PI)+90
-//     }
-//     if(xLength==0||yLength==0){
-//       angle=0
-//       if(xLength<0){
-//         angle=0
-//       }
-//       if(xLength>0){
-//         angle=180
-//       }
-//       if(yLength<0){
-//         angle=90
-//       }
-//       if(yLength>0){
-//         angle=270
-//       }
-//     }
-//     document.getElementById("all").style.setProperty(`--${this.id}-deg`,`rotate(${angle}deg)`)
-//   }
   this.data.registerListener(this.valueChange)
   this.data2.registerListener(this.valueChange)
   this.valueChange()
 }
   }
+  
   componentDidMount(){
     if(this.later!=undefined){
       console.log("re rendering")
@@ -355,7 +318,7 @@ export class Line extends Body{
         style={position:" absolute",height:" 2px",zIndex:" 99",transformOrigin:" left",backgroundColor:"green"}
       }
       else{
-        style={top:` calc(${this.data.cy}*1px);`,left:` calc(${this.data.cx}*1px);`,width:` calc(var(--${this.id}-length)*1px);`,position:` absolute`,height:` 2px`,zIndex:` 99`,transformOrigin:` left`,transform:` var(--${this.id}-deg)`, backgroundOolor:`green`,transition:`calc(var(--${this.data2.id}-transSpeed)*var(--${this.data.id}-transSpeed)/var(--${this.data2.id}-transSpeed))`}
+        style={top:` calc(${this.data.cy}*1px);`,left:` calc(${this.data.cx}*1px);`,width:` calc(var(--${this.id}-length)*1px);`,position:` absolute`,height:` 2px`,zIndex:` 99`,transformOrigin:` left`,transform:` var(--${this.id}-deg)`, backgroundOolor:`green`}
       }
       return(
         <div id={this.id+"delete"} className={"line"} style={style}/>
@@ -366,9 +329,20 @@ export class Line extends Body{
       if(this.later!=undefined){
         style=`position: absolute;height: 2px;z-index: 99;transform-origin: left;background-color:green;`
         el.id="delete"
+        el.style=style
+      document.getElementById("Lines").append(el)
       }
       else{
-        style=`top: calc(${this.data.cy}*1px);left: calc(${this.data.cx}*1px);width: calc(var(--${this.id}-length)*1px);position: absolute;height: 2px;z-index: 99;transform-origin: left;transform: var(--${this.id}-deg); background-color:green; transition:calc(var(--${this.data2.id}-transSpeed)*var(--${this.data.id}-transSpeed)/var(--${this.data2.id}-transSpeed));`
+        let elem=document.createElementNS("http://www.w3.org/2000/svg","path")
+      elem.id=this.id
+      elem.setAttribute("d",`M 0 0 L 0 0`)
+      elem.setAttribute("stroke","white")
+      elem.setAttribute("stroke-width",2)
+      elem.setAttribute("fill","white")
+      // elem.setAttribute("style","white")
+      elem.style=`d:${this.path};`
+      document.getElementById("Svg").append(elem)
+        // style=`top: calc(${this.data.cy}*1px);left: calc(${this.data.cx}*1px);width: calc(var(--${this.id}-length)*1px);position: absolute;height: 2px;z-index: 99;transform-origin: left;transform: var(--${this.id}-deg); background-color:green; transition:calc(var(--${this.data2.id}-transSpeed)*var(--${this.data.id}-transSpeed)/var(--${this.data2.id}-transSpeed));`
         this.point1.renderType="append"
         this.point2.renderType="append"
         this.point1.render()
@@ -377,8 +351,7 @@ export class Line extends Body{
         this.point2.componentDidMount()
       
       }
-      el.style=style
-      document.getElementById("Lines").append(el)
+      
     }
     // throw("a")
   }
@@ -412,7 +385,6 @@ export class Circle extends Cir {
     this.port.componentDidMount()
     // this.forces[0].componentDidMount()
     this.dragQueue=true
-    document.addEventListener("mouseup",this.mouseUp)
     this.elem.addEventListener("mousedown",this.mouseDown)
   }
   update=(op)=>{
@@ -424,17 +396,23 @@ export class Circle extends Cir {
   }
   mouseDown = (ev,ui) => {
     document.addEventListener("mousemove",this.drag)
+    document.addEventListener("mouseup",this.mouseUp)
     this.dragging=true
     this.mouse={x:this.x-ev.clientX,y:this.y-ev.clientY}
-    this.transSpeed = 0;
+    // this.transSpeed = 0;
   }
   mouseUp=(ev,ui)=>{
     document.removeEventListener("mousemove",this.drag)
-    this.dragging=false
+    document.removeEventListener("mouseup",this.mouseUp)
     this.dragQueue=1
-    this.transSpeed = 0.5;
+    this.dragging=false
+    setTimeout(()=>{this.x=ev.clientX+this.mouse.x
+      this.y=ev.clientY+this.mouse.y},2)
+    
+    
+    // this.transSpeed = 0.5;
   }
-  drag=(ev,ui)=>{
+  drag=(ev,end)=>{
     this.dragQueue++
     if(this.dragging){
       this.dragging=false
@@ -453,7 +431,7 @@ export class Circle extends Cir {
     // this.forces[0].render()
     console.log("render")
     return([
-        <circle id={this.id} cx={this.x} cy={this.y} r={this.radius} stroke={this.color} strokeWidth={0} fill={this.color} style={{cx:`${this.data.cx}`,cy:`${this.data.cy}`,transition:`var(--${this.data.id}-transSpeed)`}} />
+        <circle id={this.id} cx={this.x} cy={this.y} r={this.radius} stroke={this.color} strokeWidth={0} fill={this.color} style={{cx:`${this.data.cx}`,cy:`${this.data.cy}`}} />
         ,meP])
   }
 
@@ -490,20 +468,57 @@ export class Point extends Cir{
     console.log(this)
     this.dragging=true
     this.mouse={x:this.x-ev.clientX,y:this.y-ev.clientY}
-    this.transSpeed = 0;
+    this.dragQueue++
+    // this.transSpeed = 0;
   }
   mouseUp=(ev,ui)=>{
     this.dragging=false
-    this.transSpeed = 0.5;
+    
+    let points=$(".point")
+    for(let i=0;i<points.length;i++){
+      if(50>this.getDistancePtoP(this,points[i].me)){
+        this.data=points[i].me.data
+
+        }
+      }
+      // this.transSpeed = 0.5;
+      this.dragQueue=1
   }
   drag=(ev,ui)=>{
-    if(this.dragQueue){
+    this.dragQueue++
+    if(this.dragging){
+      this.dragging=false
+      while(this.dragQueue>0){
       this.x=ev.clientX+this.mouse.x
       this.y=ev.clientY+this.mouse.y
-      this.dragQueue=false
-      setTimeout(()=>{this.dragQueue=true},30)
+      this.dragQueue--
+      this.focuseClose()
+      }
+      this.dragging=true
     }
-
+    }
+  
+  getDistancePtoP=(p1,p2)=>{
+    let x=p2.x-p1.x
+      let y=p2.y-p1.y
+      return Math.sqrt(
+        exactMath.formula(
+          `${Math.abs(exactMath.pow(x, 2))} + ${Math.abs(
+            exactMath.pow(y, 2)
+          )}`
+        )
+      )
+  }
+  focuseClose=()=>{
+    let points=$(".point")
+    for(let i=0;i<points.length;i++){
+      if(50>this.getDistancePtoP(this,points[i].me)){
+        points[i].style.fill="green"
+      }
+      else{
+        points[i].style.fill="white"
+      }
+    }
   }
   render(){
     if(this.renderType=="append"){
@@ -515,11 +530,12 @@ export class Point extends Cir{
       elem.setAttribute("stroke","white")
       elem.setAttribute("stroke-width",0)
       elem.setAttribute("fill","white")
-      elem.style=`cx:${this.data.cx}; cy:${this.data.cy};transition:var(--${this.data.id}-transSpeed);`
+      elem.setAttribute("class","point")
+      elem.style=`cx:${this.data.cx}; cy:${this.data.cy};`
       document.getElementById("Svg").append(elem)
     }
     else{
-    return(<circle id={this.id} cx={this.x} cy={this.y} r={10} stroke={"white"} strokeWidth={0} fill={"white"} style={{cx:`${this.data.cx}`,cy:`${this.data.cy}`,transition:`var(--${this.data.id}-transSpeed)`}} />)
+    return(<circle id={this.id} cx={this.x} cy={this.y} r={10} stroke={"white"} strokeWidth={0} fill={"white"} class="point" style={{cx:`${this.data.cx}`,cy:`${this.data.cy}`}} />)
     }
   }
 }
