@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import * as F from './functions.js';
-export default class Menu extends Component {
+export class Menu extends Component {
     // constructor(props) {
     //      super(props)
     //     }

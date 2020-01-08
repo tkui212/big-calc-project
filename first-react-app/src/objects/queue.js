@@ -253,10 +253,10 @@ export var queue = {
       }
     },
     draw : function(This,time,color) {
-      if(stringify(This.elem)=="{}"||stringify(This.elem)==undefined){
-        This.elem = document.getElementById(`${This.id}`);
-        This.Vline = document.getElementById(`${This.id}V`);
-        This.colliP = document.getElementById(`${This.id}ColliP`);
+      if(stringify(This.elem)=="{}"||stringify(This.elem)==undefined||This.elem==null){
+        This.elem = document.getElementById(`${This.name}`);
+        This.Vline = document.getElementById(`${This.name}V`);
+        This.colliP = document.getElementById(`${This.name}ColliP`);
       }
       This.elem.style.transition = `${time}s linear`;
       This.elem.attributes.fill.value=color
