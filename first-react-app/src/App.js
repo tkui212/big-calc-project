@@ -2,7 +2,7 @@ import React from 'react';
 import './App.css';
 import './home_page.css';
 import Menu from './Menu';
-import Slider from './Slider';
+import Slider from './Slider.js';
 import Canvas from './Canvas';
 import {Body,Weight,Circle,Force,Point,Line} from './Body';
 import ReactDOM from 'react-dom';

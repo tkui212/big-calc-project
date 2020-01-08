@@ -18,7 +18,7 @@ export default class Slider extends Component {
     render() {
             const element = <snapto
             id={this.id}
-            class={"slider"}
+            class={"slider ui-draggable ui-widget-content"}
             name={"drag"}
             title={"WB"}
             style={{left: this.left, top: this.top, zIndex: `9`, width: this.width, height: this.height}}
