@@ -203,7 +203,7 @@ $(`#${this.id}`).draggable({
             className={"slider"}
             name={"drag"}
             title={"WB"}
-            style={{left: this.left, top: this.top, zIndex: `9`, width: this.width, height: this.height}}
+            style={{left: this.left, top: this.top, zIndex: `101`, width: this.width, height: this.height}}
             key={this.id}
           >
             <p>
@@ -214,7 +214,7 @@ $(`#${this.id}`).draggable({
           id={this.id+"con"}
           className={"controller"}
           title={"control"}
-          style={{top: "461.998px", left: "363.492px", width: "100px", height: "50px"}}
+          style={{top: "461.998px", left: "363.492px", zIndex: `101`, width: "100px", height: "50px"}}
           key={this.id+"con"}
         >
           points

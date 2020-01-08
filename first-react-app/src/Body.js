@@ -173,7 +173,7 @@ export class Cir extends Body {
   // }})
 }
 componentDidMount() {
-  queue.setElements(this)
+  this.elem = document.getElementById(`${this.id}`);
   // queue.draw(this,0,"white")
   this.elem.me=this
   Object.defineProperty(this,"data",{
@@ -319,7 +319,7 @@ export class Line extends Body{
       }
     }
     this.valueChange()
-    queue.setElements(this)
+    this.elem = document.getElementById(`${this.id}`);
     this.elem.me=this
     this.elem.addEventListener("mousedown",this.mouseDown)
   }
@@ -385,7 +385,7 @@ export class Circle extends Cir {
     // this.forces.push(new Force({x:this.x,y:this.y,ops:{id:`${this.id}F`,F:100,angle:180,P:this.port, parent:this}}));
   }
   componentDidMount() {
-    queue.setElements(this)
+    this.elem = document.getElementById(`${this.id}`);
     // queue.draw(this,0,"blue")
     this.elem.me=this
     this.port.componentDidMount()
@@ -454,7 +454,7 @@ export class Point extends Cir{
     // this.y=this.y
   }
   componentDidMount() {
-    queue.setElements(this)
+    this.elem = document.getElementById(`${this.id}`);
     // queue.draw(this,0,"white")
     this.elem.me=this
     
@@ -544,7 +544,7 @@ export class Force extends Line {
       postline.componentDidMount()
     }
     else{
-    queue.setElements(this)
+      this.elem = document.getElementById(`${this.id}`);
     this.elem.me=this
     }
   }

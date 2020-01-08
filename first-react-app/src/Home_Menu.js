@@ -1,4 +1,6 @@
 import React, {Component} from 'react';
+import ReactDOM from 'react-dom';
+import App from './App';
 import * as F from './functions.js';
 export class Menu extends Component {
     // constructor(props) {
@@ -32,7 +34,7 @@ export class Menu extends Component {
                         <div id={this.props.id} className="menuos" >
                     {this.props.displaytext}
                     <div id={this.props.id+"awd"} className="contents">
-                        <a href="C:\Users\WIN10\Documents\2 drive\OneDrive\big calc project\index.html">graphs</a><a>2</a><a>3</a><a>4</a></div>
+                        <p><a href="C:\Users\WIN10\Documents\2 drive\OneDrive\big calc project\index.html">graphs</a></p><p><a onClick={()=>{document.canvas.stopTimeOut=true; ReactDOM.render(<App />, document.getElementById('root')); }}>natrual</a></p><p><a>3</a></p><p><a>4</a></p></div>
                         </div>
                         )
                 }else if(this.props.id==="geometry"){

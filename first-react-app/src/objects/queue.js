@@ -21,7 +21,7 @@ export var queue = {
       let removed = [];
       for (let i = 0; i < ar.length; i++) {//checked
         CN = CN.filter(value => {
-          if (value.containName(ar[i].id)) {
+          if (value.containName(ar[i].name)) {
             removed.push(value.This);
             if (typeof value.C != "string") {
               removed.push(value.C);
@@ -176,9 +176,7 @@ export var queue = {
       });
     },
     setElements: function(This) {
-      This.elem = document.getElementById(`${This.id}`);
-      This.Vline = document.getElementById(`${This.id}V`);
-      This.colliP = document.getElementById(`${This.id}ColliP`);
+      This.elem = document.getElementById(`${This.name}`);
     },
     disTest: function(time,collider,This ) {
       let x = exactMath.formula(
@@ -211,7 +209,7 @@ export var queue = {
       let C1=[...c1]
       while(colliders.length>0){
         for (let i = 0; i < C1.length; i++) {
-        if (colliders[0].id != C1[i].id) {
+        if (colliders[0].name != C1[i].name) {
           let calc=queue.calcings(colliders[0],C1[i])
           if (calc != null) {
             ar[ar.length]=new timeComponent(calc,C1[i],colliders[0])
@@ -253,23 +251,14 @@ export var queue = {
       }
     },
     draw : function(This,time,color) {
-      if(stringify(This.elem)=="{}"||stringify(This.elem)==undefined||This.elem==null){
+      if(stringify(This.elem)=="{}"||stringify(This.elem)==undefined){
         This.elem = document.getElementById(`${This.name}`);
-        This.Vline = document.getElementById(`${This.name}V`);
-        This.colliP = document.getElementById(`${This.name}ColliP`);
       }
+      if(!document.canvas.stopTimeOut){
       This.elem.style.transition = `${time}s linear`;
       This.elem.attributes.fill.value=color
-      This.elem.attributes.stroke.value=color
-      if(This.Cx!=undefined){
-      This.Cx.value = This.x;
-      This.Cy.value = This.y;
-      }
-      else if(This.d!=undefined){
-
-      }
-      else{
-        throw("somthing is rung")
+      This.elem.attributes[1].value = This.x;
+      This.elem.attributes[2].value = This.y;
       }
     },
     calcings : function(This,collider) {
@@ -421,15 +410,15 @@ export function timeComponent(T,C,This,C1){
       this.removeT=function(time){
         this.T=exactMath.formula(`${this.T}-${time}`)
       }
-      this.containName=function(id){
-        return (this.C.id==id||this.This.id==id)
+      this.containName=function(name){
+        return (this.C.name==name||this.This.name==name)
       }
       this.run=function(Time){
         for(let ele of this.C1){
-          if(ele.id==this.This.id){
+          if(ele.name==this.This.name){
             queue.draw(ele,Time,"white")
           }
-          else if(ele.id==this.C.id){
+          else if(ele.name==this.C.name){
             queue.draw(ele,Time,"white")
           }
           else{

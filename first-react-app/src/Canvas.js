@@ -86,35 +86,35 @@ export default class Canvas extends Component {
     else if(this.name=="3"){
         this.color="yellow"
         this.x =250
-        this.y =409
+        this.y =415
         this.vx =0
         this.vy =-10
     }
     else if(this.name=="4"){
       this.color="red"
-      this.x =250
-      this.y =300
+      this.x =400
+      this.y =200
       this.vx =0
       this.vy =0
   }
   else if(this.name=="5"){
       this.color="blue"
       this.x =149
-      this.y =300
+      this.y =400
       this.vx =10
       this.vy =0
   }
   else if(this.name=="6"){
       this.color="green"
       this.x =354
-      this.y =300
+      this.y =100
       this.vx =-10
       this.vy =0
   }
   else{
       this.color="yellow"
-      this.x =250
-      this.y =409
+      this.x =600
+      this.y =413
       this.vx =0
       this.vy =-10
   }
@@ -135,7 +135,7 @@ export default class Canvas extends Component {
       return this;
     }
     let c1=[]
-    for (let i = 0; i < 4; i++) {
+    for (let i = 0; i < 8; i++) {
         c1[i]=new create("red", i)
       }
       c1.forEach(element => {
@@ -143,6 +143,8 @@ export default class Canvas extends Component {
       });
       document.c1=c1
       document.queue=queue
+      document.canvas=this
+      console.log(document.canvas)
     // let c2=[]
     // for (let i = 4; i < 8; i++) {
     //     c2[i-4]=new create("red", i)
@@ -150,52 +152,64 @@ export default class Canvas extends Component {
     //   c2.forEach(element => {
     //     queue.setElements(element);
     //   });
+    this.stopTimeOut=false
+    this.timeOuts=[]
+    console.log(this.timeOuts)
+    console.log(document.canvas)
       let Tspeed=10
       // var RL=queue.futher(c2,60,0)
-    let result=queue.futher(c1,40,0)
+    let result=queue.futher(c1,20,0)
     runTimeLine(result,0)
     // fastRun(RL)
+    
 function fastRun(Ar){
   for(let i=0;i<Ar.length;i++){
-    setTimeout(()=>{Ar[i].run(0.5)
+    this.timeOuts.push(setTimeout(()=>{Ar[i].run(0.5)
       console.log(Ar[i])
-  },exactMath.formula(`(${i}*500)`))
+  },exactMath.formula(`(${i}*500)`)))
   }
 }
 
 var timeLine=[]
 var resultLine=[]
 let time=0
-setInterval(()=>{time+=1000; console.log(time)},1000)
+this.internal=(setInterval(()=>{time+=1000; console.log(time)
+  if(document.canvas.stopTimeOut){
+    document.canvas.timeOuts.forEach(element => {
+      clearInterval(element)
+    });
+    clearInterval(document.canvas.internal)
+  }
+},1000))
     function runTimeLine(Ar,before){
-      
+      if(!document.canvas.stopTimeOut){
       Ar[0].run(exactMath.formula(`(${Ar[0].T}-${before})/${Tspeed}`))
       // timeLine.push({T:exactMath.formula(`(${before}*1000)`),result:Ar[0]})
       // resultLine.push(Ar[0])
 
       for(let i=1;i<Ar.length;i++){
-        setTimeout(()=>{Ar[i].run(exactMath.formula(`(${Ar[i].T}-${Ar[i-1].T})/${Tspeed}`))
+        document.canvas.timeOuts.push(setTimeout(()=>{Ar[i].run(exactMath.formula(`(${Ar[i].T}-${Ar[i-1].T})/${Tspeed}`))
         timeLine.push({T:exactMath.formula(`(${Ar[i-1].T}*1000)`),result:Ar[i]})
         resultLine.push(Ar[i])
         console.log(i)
         // console.log(timeLine)
         // console.log(resultLine)
-      },exactMath.formula(`((${Ar[i-1].T}-${before})*1000)/${Tspeed}`))
+      },exactMath.formula(`((${Ar[i-1].T}-${before})*1000)/${Tspeed}`)))
       }
       let result2
       if(typeof Ar[Ar.length-1].C!="string"){
-        result2=queue.futher(Ar[Ar.length-1].C1,20,Ar[Ar.length-1].T)
+        result2=queue.futher(Ar[Ar.length-1].C1,60,Ar[Ar.length-1].T)
 
       }
       else{
-        result2=queue.futher(Ar[Ar.length-1].C1,20,Ar[Ar.length-1].T)
+        result2=queue.futher(Ar[Ar.length-1].C1,60,Ar[Ar.length-1].T)
 
       }
-      setTimeout(()=>{
+      document.canvas.timeOuts.push(setTimeout(()=>{
         runTimeLine(result2,Ar[Ar.length-1].T)
 
-      },exactMath.formula(`((${Ar[Ar.length-1].T}-${before})*1000)/${Tspeed}`))
-    }
+      },exactMath.formula(`((${Ar[Ar.length-1].T}-${before})*1000)/${Tspeed}`)))
+    }}
 
 //       throw("end")
 //     async function startup() {

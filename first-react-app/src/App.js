@@ -41,7 +41,7 @@ export default class App extends React.Component {
       {/* <Menu id="home_menu"/>
       <Canvas id="can_plate"/> */}
       
-      <svg version="1.1" id="Svg" x="0px" y="0px" width="100%" height="100%" style={{height: "inherit"}}>
+      <svg version="1.1" id="Svg" x="0px" y="0px" width="100%" height="100%" style={{height: "inherit", zIndex:"10"}}>
       <defs>
           <marker
             id="arrow"
