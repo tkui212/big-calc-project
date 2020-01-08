@@ -4,175 +4,16 @@ import "jquery-ui/ui/widgets/resizable";
 export function ex(){
   var innerHeight=window.innerHeight
   var innerWidth=window.innerWidth
-  var containsId = (a, n) => {
-    let ar = a;
-    for (let i = 0; i < ar.length; i++) {
-      if (ar[i].id == n) {
-        return true;
-      }
-    }
-    return false;
-  };
-  var containsTitle = (a, n) => {
-    let ar = a;
-    for (let i = 0; i < ar.length; i++) {
-      if (ar[i].getAttribute("title") == n) {
-        return true;
-      }
-    }
-    return false;
-  };
-  var returnId = (a, n) => {
-    let ar = a;
-    for (let i = 0; i < ar.length; i++) {
-      if (ar[i].id == n) {
-        return ar[i];
-      }
-    }
-    return false;
-  };
-  var returnTitle = (a, n) => {
-    let ar = a;
-    for (let i = 0; i < ar.length; i++) {
-      if (ar[i].getAttribute("title") == n) {
-        return ar[i];
-      }
-    }
-    return false;
-  };
+  
   
   var hi = () => {
     console.log("hi");
   };
-  var mouseElem = () => document.elementsFromPoint(mouse.x, mouse.y);
+ 
   
-  async function runEffect(el,ops) {
-    // get effect type from
-    let me = $(el)[0];
-    if(me.style.display=="block"){
-    me.der = me.effDer();
-  
-  let times=ops?ops+0.2:1
-    let childtocollapse = $(`#${me.id}>snapTo`);
-    if (childtocollapse.length > 0) {
-      let promisArr=[]
-    for (let i = 0; i < childtocollapse.length; i++) {
-      if(childtocollapse[i].style.display!="none"){
-      promisArr[i]=runEffect(childtocollapse[i],times);
-      setTimeout(() => { $(`#${childtocollapse[i].id}con`)[0].style.display="none" }, 1000/times);
-      }
-      else{
-        $(`#${childtocollapse[i].id}con`)[0].style.display="none"
-      }
-    }
-    let a=await Promise.all(promisArr)
-    me.Hide(me.der, 1000/times);
-  }
-  
-    else  {
-      me.Hide(me.der, 1000/times);
-    }
-    return new Promise(resolve => {
-      setTimeout(() => {
-        resolve(el);
-      }, 1000/times);
-    });
-  }
-  }
-  
-  function effShow(el) {
-    let me = $(el)[0];
-    if(me.style.display=="none"){
-    let childtocollapse = $(`#${me.id}>snapTo`);
-    me.Show(me.der, 1000);
-    $(`#${me.id}con`)[0].style.display="block"
-    for (const elem of childtocollapse) {
-      setTimeout(function() {
-        effShow(elem);
-      }, 1000);
-    }
-  }
-  }
   // Callback function to bring a hidden box back
   
-  function updateCon(el) {
-    console.log(el)
-    let con = $(`#${el.id + "con"}`)[0];
-    console.log(con)
-    console.log($(`#${el.id}`))
-    let eleBo = el.getBoundingClientRect();
-    if (el.style.display == "none"||el.id=="all") {
-    } else if (el.der == "up") {
-      con.style.top = eleBo.bottom;
-      con.style.left = eleBo.width / 2 - 50 + eleBo.left;
-      con.style.width = 100;
-      con.style.height = 50;
-    } else if (el.der == "down") {
-      con.style.top = eleBo.top - 50;
-      con.style.left = eleBo.width / 2 - 50 + eleBo.left;
-      con.style.width = 100;
-      con.style.height = 50;
-    } else if (el.der == "left") {
-      con.style.top = eleBo.height / 2 - 50 + eleBo.top;
-      con.style.left = eleBo.width + eleBo.left;
-      con.style.width = 50;
-      con.style.height = 100;
-    } else if (el.der == "right") {
-      con.style.top = eleBo.height / 2 - 50 + eleBo.top;
-      con.style.left = eleBo.left - 50;
-      con.style.width = 50;
-      con.style.height = 100;
-    } else {
-      try{
-      con.style.top = eleBo.bottom;
-      con.style.left = eleBo.width / 2 - 50 + eleBo.left;
-      con.style.width = 100;
-      con.style.height = 50;
-      }catch(er){
-        
-      }
-    }
-    for(const elel of $(`#${el.id}>snapTo`)){
-      updateCon(elel)
-    }
-  }
-  
-  function showAll(){
-    let elems=$(`#all>snapTo`)
-    for(const elem of elems){
-      effShow(elem)
-    }
-  }
-  function hideAll(){
-    let elems=$(`#all>snapTo`)
-    for(const elem of elems){
-      runEffect(elem)
-    }
-  }
-  
-  var totalParents = () => {
-    let ar = document.getElementsByName("drag");
-    let totar = {};
-    for (let i = 0; i < ar.length; i++) {
-      if (ar[i].parentElement.getAttribute("title") == "WB") {
-        totar[`${ar[i].id}`] = [ar[i].parentElement];
-        let current = ar[i].parentElement;
-        while (current.parentElement.getAttribute("title") == "WB") {
-          current = current.parentElement;
-          // console.log("")
-          // console.log(current)
-          totar[`${ar[i].id}`].push(current);
-          // console.log(totar[`${ar[i].id}`])
-          // console.log("")
-        }
-      }
-    }
-    return totar;
-  };
-  
-  function collapse(elem) {
-    runEffect(`#${elem.id}`);
-  }
+ 
   //functions^
   //data v
 
@@ -188,11 +29,7 @@ var keyEnent;
 var mouseEvent;
 var inputs = "";
 
-if (!Array.prototype.last) {
-  Array.prototype.last = function () {
-    return this[this.length - 1];
-  };
-}
+
 
 /**white board Title */
 let WBT = "WB";
@@ -246,151 +83,7 @@ for (const element of $(`snapTo`)) {//intilaiz the WBs
   //   let newCont = cont.cloneNode(true);
   //   newCont.id = `${element.id}con`;
   //   all.appendChild(newCont);
-  element[`istop`] = false;
-  element[`isbottom`] = false;
-  element[`isleft`] = false;
-  element[`isright`] = false;
-  element[`der`] = "down";
-  element[`effDer`] = function () {
-    let eleBo = this.getBoundingClientRect();
-    let snaBo = this.parentElement.getBoundingClientRect();
-    this.istop = false;
-    this.isleft = false;
-    this.isbottom = false;
-    this.isright = false;
-    if (this.parentElement == $("#all")[0]) {
-      if (5>Math.abs(eleBo.top - snaBo.top) ){
-        this.istop = true;
-      } else if (5>Math.abs(eleBo.bottom - snaBo.bottom)) {
-        this.isbottom = true;
-      }
-      if (5>Math.abs(eleBo.left - snaBo.left)) {
-        this.isleft = true;
-      } else if (5>Math.abs(eleBo.right - snaBo.right)) {
-        this.isright = true;
-      }
-    } else {
-      if (Math.abs(eleBo.top - snaBo.bottom) < 5) {
-        //check the numbers of the eleBo and snaBo.. thay are not what
-        this.istop = true;
-      } else if (Math.abs(eleBo.bottom - snaBo.top) < 5) {
-        this.isbottom = true;
-      }
-      if (Math.abs(eleBo.left - snaBo.right) < 5) {
-        this.isleft = true;
-      } else if (Math.abs(eleBo.right - snaBo.left) < 5) {
-        this.isright = true;
-      }
-    }
-    if ((this.istop || this.isbottom) && (this.isleft || this.isright)) {
-      if (eleBo.width > eleBo.height) {
-        this.der = this.istop ? "up" : "down";
-        return this.istop ? "up" : "down";
-      } else {
-        this.der = this.isleft ? "left" : "right";
-        return this.isleft ? "left" : "right";
-      }
-    } else {
-      this.der = this.istop ?
-        "up" :
-        this.isleft ?
-        "left" :
-        this.isbottom ?
-        "down" :
-        this.isright ?
-        "right" :
-        false;
-      return this.istop ?
-        "up" :
-        this.isleft ?
-        "left" :
-        this.isbottom ?
-        "down" :
-        this.isright ?
-        "right" :
-        false;
-    }
-  };
-
-  element[`Hide`] = function (dir, dur) {
-    updateCon(this);
-    let ops;
-    if (dir == "up") {
-      ops={top: `-=${$(`#${this.id}`).outerHeight()}`}
-    } else if (dir == "down") {
-      ops={top: `+=${$(`#${this.id}`).outerHeight()}`}
-    } else if (dir == "left") {
-      ops={left: `-=${$(`#${this.id}`).outerWidth()}`}
-    } else if (dir == "right") {
-      ops={left: `+=${$(`#${this.id}`).outerWidth()}`}
-    } else {
-
-    }
-    $(`#${this.id}con`).animate(ops, dur)
-    $(`#${this.id}`).hide(
-      "slide", {
-        direction: dir,
-
-      },
-      dur
-    );
-  };
-  element[`Show`] = function (dir, dur) {
-    updateCon(this);
-    let ops;
-    if (dir == "down") {
-      ops={top: `-=${$(`#${this.id}`).outerHeight()}`}
-    } else if (dir == "up") {
-      ops={top: `+=${$(`#${this.id}`).outerHeight()}`}
-    } else if (dir == "right") {
-      ops={left: `-=${$(`#${this.id}`).outerWidth()}`}
-    } else if (dir == "left") {
-      ops={left: `+=${$(`#${this.id}`).outerWidth()}`}
-    } else {
-
-    }
-    $(`#${this.id}con`).animate(ops, dur)
-    $(`#${this.id}`).show(
-      "slide", {direction: dir},
-      dur
-      );
-  };
-  element[`connectCon`] = function () {
-    
-    if(this.style.display=="none"){
-      WB=this.parentElement
-    }
-    else{
-      WB = this;
-    }
-    this.con($(`#${this.id + "con"}`)[0]);
-    console.log($(`#${this.id}>snapTo`))
-    for(const elel of $(`#${this.id}>snapTo`)){
-      elel.connectCon()
-    }
-  }
-  element[`getSnapings`] = function (){
-    let snapped = $(this).data("ui-draggable").snapElements;
-    let snappedTo = [];
-    for (let i = 0; i < snapped.length; i++) {
-      if (snapped[i].snapping) {
-        snappedTo.push(snapped[i].item)
-      }
-    }
-    return snappedTo
-}
-  element[`disconnectCon`] = function () {
-    WB = this;
-    dis($(`#${this.id + "con"}`)[0]);
-    for(const elel of $(`#${this.id}>snapTo`)){
-      elel.disconnectCon()
-  }
-}
-  element.style.display="block"
-  WB = element;
-  element.der = element.effDer()
-  updateCon(element);
-  console.log($(`#${element.id}`))
+  
 }
 var datapoints=$(".dataPoints")
 for(const poin of datapoints){
@@ -420,27 +113,7 @@ for (const element of $(`snapTo`)) {
 //data^
 //drag and drop v
 
-var con = (child) => {
-    if (child.parentElement.getAttribute("title")!="WB"&&(WB.id!=child.id)&&!containsId(WB.children, child.id)) {
-        // WB.parentElement.getAttribute("title")=="WB"
-        let parBo=WB.getBoundingClientRect()
-        let chiBo=child.getBoundingClientRect()
-        child.style.left =parseInt(child.style.left) - parBo.left
-        child.style.top = parseInt(child.style.top) - parBo.top-2
-        WB.appendChild(child)
-    }
-}
-var dis = (child) => {
-    if (child.parentElement.getAttribute("title")=="WB") {
-        let parBo=child.getBoundingClientRect()
-        child.style.left =parBo.left
-        child.style.top =parBo.top
-        child.style.position="absolute"
-        child.style.float="none"
-        all.insertBefore(child, document.getElementById("end of boards"))
 
-    }
-}
 
 
 $(".ui-widget-content").resizable();
@@ -461,7 +134,7 @@ $(".ui-widget-content").draggable({
   stop: function (event, ui) {
 
     this.disconnectCon()
-    
+    console.log($(this).data("ui-draggable"))
     /* Get the possible snap targets: */
     onSnap(this, this.getSnapings()[0]);
     
@@ -546,25 +219,7 @@ function opMenu(Mo) {
 // );
 
 
-var onSnap = (did, got) => {
-    // console.log(did)
-    // console.log(got)
-    if (did.getAttribute("name") == "drag") {
-      if (
-        did.getAttribute("title") == "WB" &&
-        !containsId(did.children, got.id)
-      ) {
-        console.log("con");
-        dis(did);
-        WB = got;
-        con(did);
-      } else {
-        console.log("dis");
-        dis(did);
-      }
-    }
-  };
-  
+
   function input(a) {
     var key = keyEnent.key;
     if (key == "Enter" && keyEnent.shiftKey) {
@@ -692,6 +347,12 @@ var onSnap = (did, got) => {
         // console.log(ar[0])
         // console.log("disconected from parent")
         // console.log("")
+        console.log("aw")
+        console.log("aw")
+        console.log("aw")
+        console.log("aw")
+        console.log("aw")
+        console.log("aw")
         dis(ar[0]);
       }
     }

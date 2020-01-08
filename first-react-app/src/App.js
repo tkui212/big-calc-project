@@ -1,19 +1,38 @@
 import React from 'react';
 import './App.css';
 import './home_page.css';
-import Menu from './Menu';
+import {Menu,Menuos} from './Home_Menu';
+import ContextMenu from './Ops_menu';
 import Slider from './Slider.js';
 import Canvas from './Canvas';
 import {Body,Weight,Circle,Force,Point,Line} from './Body';
 import ReactDOM from 'react-dom';
 import $ from  "jquery";
 import "jquery-ui/ui/widgets/draggable";
+import {dis,con,containsTitle,returnTitle} from './functions';
 export default class App extends React.Component {
 
   componentDidMount(){
-    var dragers = require("./toReact.js");
-    window.dragers=dragers
-    dragers.ex()
+    // var dragers = require("./toReact.js");
+    // window.dragers=dragers
+    // dragers.ex()
+
+    window.onmouseup = e => {
+      let ar = document.elementsFromPoint(e.clientX, e.clientY);
+      if (
+        ar[0].getAttribute("name") == "drag" &&
+        ar[0].getAttribute("title") != "WB"&&e.button==0
+      ) {
+        // console.log("mouseUp")
+        if (containsTitle(ar, "WB")) {
+          dis(ar[0]);
+          let got = returnTitle(ar, "WB");
+          con(ar[0],got);
+        } else {
+          dis(ar[0]);
+        }
+      }
+    };
   }
   render(){
   return (
@@ -47,56 +66,12 @@ export default class App extends React.Component {
       <Line P1={"b3P"} P2={"mainP"} id="CsLine3" after={true} />
       </svg>
       </header>
-      <div id="sliders">
+      <snapto id="sliders">
         <Slider id={"testData"} side={"left"} width={100} height={200}/>
         <Slider id={"testData2"} side={"bottom"} width={200} height={100}/>
       
-      </div>
-      <div id={"menu"}opacity={"0.5"}style={{left: "-100px", top: "-100px"}}>
-        <div id={"menut"}>movecon</div>
-
-        <button id={"menubut1"}class={"menuButton"}onclick={"console.log(movecon)"}>
-          cosnole this
-        </button>
-        <p>
-          <button id={"menubut2"}class={"menuButton"}onclick={"collapse(move)"}>
-            collapse
-          </button>
-        </p>
-        <p>
-          <button id={"menubut3"}class={"menuButton"}onclick={"effShow(move)"}>
-            show
-          </button>
-        </p>
-        <p>
-          <button
-            id={"menubut4"}
-            class={"menuButton"}
-            onclick={"console.log(document.elementsFromPoint(943, 229))"}
-          >
-            elems here
-          </button>
-        </p>
-        <p>
-            <button
-              id={"menubut5"}
-              class={"menuButton"}
-              onclick={"console.log(document.elementsFromPoint(943, 229))"}
-            >
-              collapse all
-            </button>
-          </p>
-          <p>
-              <button
-                id={"menubut6"}
-                class={"menuButton"}
-                onclick={"console.log(document.elementsFromPoint(943, 229))"}
-              >
-                show all
-              </button>
-            </p>
-        <p></p>
-      </div>
+      </snapto>
+      <ContextMenu id={"MainMenu"}/>
     </div>);
 }
 }

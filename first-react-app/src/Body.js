@@ -307,7 +307,6 @@ export class Line extends Body{
     this.point2.componentDidMount()
     if(this.later!=undefined&&this.later.after==true){
       if(typeof this.later.P1=="string"&&typeof this.later.P2=="string"){
-        console.log("a")
         this.data=document.getElementById(`${this.later.P1}`).me.data
         this.data2=document.getElementById(`${this.later.P2}`).me.data
         this.point1.data=this.data
@@ -320,7 +319,6 @@ export class Line extends Body{
       }
     }
     this.valueChange()
-    console.log(this)
     queue.setElements(this)
     this.elem.me=this
     this.elem.addEventListener("mousedown",this.mouseDown)
@@ -357,7 +355,7 @@ export class Line extends Body{
       // else{
         let p1=this.point1.render()
         let p2=this.point2.render()
-      return ([<path id={this.id} d={`M 0 0 L 0 0`} stroke={"white"} strokeWidth={5} fill={"white"} className={"line"} style={{d:`${this.path}`}}/>,p1,p2])
+      return ([<path id={this.id} d={`M 0 0 L 0 0`} stroke={"white"} strokeWidth={5} fill={"white"} className={"line"} style={{d:`${this.path}`}} key={this.id}/>,p1,p2])
     //   }
       
     // }
@@ -437,7 +435,7 @@ export class Circle extends Cir {
     // this.forces[0].render()
     console.log("render")
     return([
-        <circle id={this.id} cx={this.x} cy={this.y} r={this.radius} stroke={this.color} strokeWidth={0} fill={this.color} style={{cx:`${this.data.cx}`,cy:`${this.data.cy}`}} />
+        <circle id={this.id} cx={this.x} cy={this.y} r={this.radius} stroke={this.color} strokeWidth={0} fill={this.color} style={{cx:`${this.data.cx}`,cy:`${this.data.cy}`}} key={this.id}/>
         ,meP])
   }
 
@@ -456,7 +454,6 @@ export class Point extends Cir{
     // this.y=this.y
   }
   componentDidMount() {
-    console.log("p mount")
     queue.setElements(this)
     // queue.draw(this,0,"white")
     this.elem.me=this
@@ -469,7 +466,6 @@ export class Point extends Cir{
     document.addEventListener("mousemove",this.drag)
     document.addEventListener("mouseup",this.mouseUp)
     this.data.seperateLine(this,this.parent)
-    console.log(this.id)
     this.dragging=true
     this.mouse={x:this.x-ev.clientX,y:this.y-ev.clientY}
     this.dragQueue++
@@ -533,7 +529,7 @@ export class Point extends Cir{
     }
   }
   render(){
-    return(<circle id={this.id} cx={this.x} cy={this.y} r={10} stroke={"white"} strokeWidth={5} fill={"white"} class="point" style={{cx:`${this.data.cx}`,cy:`${this.data.cy}`}} />)
+    return(<circle id={this.id} cx={this.x} cy={this.y} r={10} stroke={"white"} strokeWidth={5} fill={"white"} className={"point"} style={{cx:`${this.data.cx}`,cy:`${this.data.cy}`}} key={this.id} />)
     }
 }
 export class Force extends Line {

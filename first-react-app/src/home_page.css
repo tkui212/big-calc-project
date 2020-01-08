@@ -101,7 +101,7 @@ snapTo[title="WB"] {
   border-width: 2;
 }
 
-#menu {
+.ContextMenu {
   text-align: center;
   font-size: 22px;
   width: 100;
@@ -138,4 +138,11 @@ p{
   margin-left: 0px !important;
   margin-bottom: 0px !important;
   margin-right: 0px !important;
+}
+#sliders{
+  width: -webkit-fill-available;
+  height: -webkit-fill-available;
+  position: absolute;
+  top: 0px;
+  left: 0px;
 }
