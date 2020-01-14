@@ -60,7 +60,7 @@ this.menuops = document.getElementsByClassName("menuButton")
     }
     render(){
         return(
-        <div id={this.id}opacity={"0.5"}className={"ContextMenu"}style={{left: "-1000px", top: "-1000px"}}>
+        <div id={this.id}opacity={"0.5"}className={"ContextMenu"}style={{left: "-1000px", top: "-1000px", zIndex:200}}>
         <div id={this.id+"t"}>movecon</div>
         <MenuButton id={this.id+"but1"} className={"menuButton"} onclick={()=>console.log(document.elementsFromPoint(943, 229))} name={"cosnole this"}/>
         <MenuButton id={this.id+"but2"} className={"menuButton"} onclick={()=>collapse(document.elementsFromPoint(943, 229)[0])} name={"collapse"}/>

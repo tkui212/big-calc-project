@@ -10,14 +10,50 @@ export default class Slider extends Component {
         this.side=props.side
         this.width=props.width
         this.height=props.height
-        if(this.side=="left"){
+        this.children=props.children
+        if(props.text==undefined){
+          this.text=this.id
+        }
+        else{
+          this.text=props.text
+        }
+        if(this.side=="left"||this.side==undefined){
           this.left=`0px`
+          this.top=`0px`
+        }
+        else if(this.side=="right"){
+          this.left=`${window.innerWidth-this.width}px`
+          this.top=`0px`
+        }
+        else if(this.side=="top"){
+          this.left=`100px`
           this.top=`0px`
         }
         else if(this.side=="bottom"){
           this.left=`0px`
           this.top=`${window.innerHeight-this.height}px`
         }
+        else if(this.side=="float"){
+          this.left=`${window.innerWidth/2-this.width/2}px`
+          this.top=`${window.innerHeight/2-this.height/2}px`
+        }
+        if(props.left!=undefined){
+          if(typeof props.left=="string"){
+            this.left=props.left
+          }
+          else{
+            this.left=`${props.left}px`
+          }
+        }
+        if(props.top!=undefined){
+          if(typeof props.top=="string"){
+            this.top=props.top
+          }
+          else{
+            this.top=`${props.top}px`
+          }
+        }
+        
     }
     mouseDown(){
       dis(this);  
@@ -43,14 +79,11 @@ $(`#${this.id}`).draggable({
   start: function (event, ui) {
     console.log("start")
     console.dir(this)
-
     //add con() for the con's of WB children
   },
 
   stop: function (event, ui) {
     console.log("stop")
-
-    
   }
 });
       this.element[`istop`] = false;
@@ -206,9 +239,8 @@ $(`#${this.id}`).draggable({
             style={{left: this.left, top: this.top, zIndex: `101`, width: this.width, height: this.height}}
             key={this.id}
           >
-            <p>
-              points data
-            </p>
+            {this.text}
+            {this.children}
           </snapto>
           let con=<div
           id={this.id+"con"}
@@ -217,7 +249,7 @@ $(`#${this.id}`).draggable({
           style={{top: "461.998px", left: "363.492px", zIndex: `101`, width: "100px", height: "50px"}}
           key={this.id+"con"}
         >
-          points
+          {this.text}
         </div>
              return ([element,con])  }}
 

@@ -69,7 +69,7 @@ export default class App extends React.Component {
       <snapto id="sliders">
         <Slider id={"testData"} side={"left"} width={100} height={200}/>
         <Slider id={"testData2"} side={"bottom"} width={200} height={100}/>
-      
+        <Slider id={"tools"} side={"left"} left= {0} top= {26} width= {50} height= {400} text={" t o o l s"}/>
       </snapto>
       <ContextMenu id={"MainMenu"}/>
     </div>);

@@ -35,6 +35,7 @@ export class Menu extends Component {
                         <div id={this.props.id} className="menuos" >
                     {this.props.displaytext}
                     <div id={this.props.id+"awd"} className="contents">
+                        {/* //onClick={()=>{document.canvas.stopTimeOut=true; ReactDOM.render(<Graphs />, document.getElementById('root')); }} */}
                         <p><a onClick={()=>{document.canvas.stopTimeOut=true; ReactDOM.render(<Graphs />, document.getElementById('root')); }}>graphs</a></p><p><a onClick={()=>{document.canvas.stopTimeOut=true; ReactDOM.render(<App />, document.getElementById('root')); }}>natrual</a></p><p><a>3</a></p><p><a>4</a></p></div>
                         </div>
                         )

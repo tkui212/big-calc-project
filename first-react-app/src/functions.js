@@ -3,6 +3,7 @@ import "jquery-ui/ui/widgets/draggable";
 import "jquery-ui/ui/widgets/resizable";
 import "jquery-ui/ui/effect";
 import "jquery-ui/ui/effect";
+import {Vg, point,c} from "./graph"
 // export function hi() {
 //   console.log("hi");
 // };
@@ -227,3 +228,23 @@ export var onSnap = (did, got) => {
     }
   }
 };
+
+
+
+
+//graphs partsV
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
