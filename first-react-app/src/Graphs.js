@@ -10,7 +10,7 @@ import ReactDOM from 'react-dom';
 import $ from  "jquery";
 import "jquery-ui/ui/widgets/draggable";
 import {dis,con,containsTitle,returnTitle} from './functions';
-export default class App extends React.Component {
+export default class Graphs extends React.Component {
 
   componentDidMount(){
     // var dragers = require("./toReact.js");

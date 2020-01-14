@@ -135,7 +135,7 @@ export default class Canvas extends Component {
       return this;
     }
     let c1=[]
-    for (let i = 0; i < 8; i++) {
+    for (let i = 0; i < 2; i++) {
         c1[i]=new create("red", i)
       }
       c1.forEach(element => {
@@ -156,9 +156,9 @@ export default class Canvas extends Component {
     this.timeOuts=[]
     console.log(this.timeOuts)
     console.log(document.canvas)
-      let Tspeed=10
+      let Tspeed=1
       // var RL=queue.futher(c2,60,0)
-    let result=queue.futher(c1,20,0)
+    let result=queue.futher(c1,5,0)
     runTimeLine(result,0)
     // fastRun(RL)
     
@@ -198,11 +198,11 @@ this.internal=(setInterval(()=>{time+=1000; console.log(time)
       }
       let result2
       if(typeof Ar[Ar.length-1].C!="string"){
-        result2=queue.futher(Ar[Ar.length-1].C1,60,Ar[Ar.length-1].T)
+        result2=queue.futher(Ar[Ar.length-1].C1,20,Ar[Ar.length-1].T)
 
       }
       else{
-        result2=queue.futher(Ar[Ar.length-1].C1,60,Ar[Ar.length-1].T)
+        result2=queue.futher(Ar[Ar.length-1].C1,20,Ar[Ar.length-1].T)
 
       }
       document.canvas.timeOuts.push(setTimeout(()=>{
