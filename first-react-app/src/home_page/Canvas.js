@@ -1,10 +1,5 @@
 import React, { Component } from "react";
-import {exactMath,queue,timeComponent,c1,animation} from "./objects/queue.js";
-// import {circle} from "./objects/circle.js";
-// import React, { Component } from "react";
-// import React, { Component } from "react";
-// import React, { Component } from "react";
-import "./home_page.css";
+import {exactMath,queue,timeComponent,c1,animation} from "../objects/queue.js";
 
 export default class Canvas extends Component {
   constructor(props) {
@@ -12,13 +7,6 @@ export default class Canvas extends Component {
   }
   render() {
     return (
-      // <canvas
-      //   id=
-      //   height=
-      //   width=
-      //   style={{ padding: "0" }}
-      //   ref={this.canvasRef}
-      // />
       <svg
         version="1.1"
         id="svg"

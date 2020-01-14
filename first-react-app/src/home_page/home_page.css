@@ -12,7 +12,21 @@ body {
   margin: 0;
   height: 100%;
 }
-/*the log-in element and his sub elements */
+
+.App-header {
+  background-color: #282c34;
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  /* font-size: calc(10px + 2vmin); */
+  /* color: white; */
+  text-decoration-color: black;
+}
+
+.App-link {
+  color: #61dafb;
+}
+
 #login {
   background-color: blueviolet;
 
@@ -100,7 +114,14 @@ snapTo[title="WB"] {
   border-color: black;
   border-width: 2;
 }
-
+div[title="item"] {
+  text-align: center;
+  font-size: 35px !important;
+  position: absolute;
+  background-color: rgba(255, 255, 255, 0.6);
+  border-color: black;
+  border-width: 2;
+}
 .ContextMenu {
   text-align: center;
   font-size: 22px;
@@ -145,4 +166,13 @@ p{
   position: absolute;
   top: 0px;
   left: 0px;
+}
+.dataInput{
+  font-size: 25px;
+  border-top-width: 0px;
+  border-right-width: 0px;
+  border-bottom-width: 0px;
+  border-left-width: 0px;
+  padding-top: 0px;
+  padding-bottom: 0px;
 }

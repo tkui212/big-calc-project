@@ -1,8 +1,8 @@
 import React, {Component} from 'react';
 import ReactDOM from 'react-dom';
-import App from './App';
-import Graphs from './Graphs';
-import * as F from './functions.js';
+import Phy_page from '../phy/Phy_page';
+import Graphs from '../graph/Graphs_page';
+import * as F from '../functions.js';
 export class Menu extends Component {
     // constructor(props) {
     //      super(props)
@@ -36,7 +36,7 @@ export class Menu extends Component {
                     {this.props.displaytext}
                     <div id={this.props.id+"awd"} className="contents">
                         {/* //onClick={()=>{document.canvas.stopTimeOut=true; ReactDOM.render(<Graphs />, document.getElementById('root')); }} */}
-                        <p><a onClick={()=>{document.canvas.stopTimeOut=true; ReactDOM.render(<Graphs />, document.getElementById('root')); }}>graphs</a></p><p><a onClick={()=>{document.canvas.stopTimeOut=true; ReactDOM.render(<App />, document.getElementById('root')); }}>natrual</a></p><p><a>3</a></p><p><a>4</a></p></div>
+                        <p><a onClick={()=>{document.canvas.stopTimeOut=true; ReactDOM.render(<Graphs />, document.getElementById('root')); }}>graphs</a></p><p><a onClick={()=>{document.canvas.stopTimeOut=true; ReactDOM.render(<Phy_page />, document.getElementById('root')); }}>natrual</a></p><p><a>3</a></p><p><a>4</a></p></div>
                         </div>
                         )
                 }else if(this.props.id==="geometry"){

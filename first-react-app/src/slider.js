@@ -203,7 +203,6 @@ $(`#${this.id}`).draggable({
       got = this;
     }
     con($(`#${this.id + "con"}`)[0],got);
-    console.log($(`#${this.id}>snapTo`))
     for(const elel of $(`#${this.id}>snapTo`)){
       elel.connectCon()
     }
@@ -229,6 +228,8 @@ $(`#${this.id}`).draggable({
   this.element.style.display="block"
   this.element.der = this.element.effDer()
   updateCon(this.element);
+  this.element.connectCon()
+  this.element.disconnectCon()
     }
     render() {
             let element = <snapto

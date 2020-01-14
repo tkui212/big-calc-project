@@ -3,7 +3,7 @@ import "jquery-ui/ui/widgets/draggable";
 import "jquery-ui/ui/widgets/resizable";
 import "jquery-ui/ui/effect";
 import "jquery-ui/ui/effect";
-import {Vg, point,c} from "./graph"
+import {Vg, point,c} from "./graph/graph"
 // export function hi() {
 //   console.log("hi");
 // };
@@ -34,7 +34,6 @@ export var con = (child,parent) => {
 export var dis = (child) => {
   if (child.parentElement.getAttribute("title")=="WB") {
       let parBo=child.getBoundingClientRect()
-      console.log(parBo)
       child.style.left =parBo.left+"px"
       child.style.top =parBo.top+"px"
       child.style.position="absolute"

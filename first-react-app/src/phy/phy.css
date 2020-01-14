@@ -1,48 +1,69 @@
-body {
-    margin-top: 0px !important;
-    margin-left: 0px !important;
-    margin-bottom: 0px !important;
-    margin-right: 0px !important;
-    overflow: hidden;
+menu {
+    width: inherit;
+    margin: 0;
+    height: 18%;
+    background-color: lawngreen;
+    z-index: 10;
   }
-  #move {
-    width: 150px;
-    height: 150px;
-
+  
+  html,
+  body {
+    background-color: black;
+    margin: 0;
+    height: 100%;
+  }
+  
+  .App-header {
+    background-color: #282c34;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    /* font-size: calc(10px + 2vmin); */
+    /* color: white; */
+    text-decoration-color: black;
+  }
+  
+  .App-link {
+    color: #61dafb;
+  }
+  
+  #svg {
     position: absolute;
-    z-index: 5;
-    left: 450px;
-    top: 200px;
-    overflow: visible !important;
+    top: 18%;
   }
 
-  #move2 {
-    width: 150px;
-    height: 150px;
-
+  a {
+    margin: 0;
+  }
+  .slider{
     position: absolute;
-    z-index: 5;
-    left: 550px;
-    top: 100px;
+    background-color: white;
   }
-
+  
+  /* circle,line,.line{
+    transition: 0.5s;
+    animation-timing-function: linear;
+    -webkit-animation-timing-function: linear;
+  } */
+  
   snapTo[title="WB"] {
     text-align: center;
     font-size: 35;
     width: 150px;
     height: 150px;
-
+    /* padding: 0.5em; */
     position: absolute;
     background-color: rgba(255, 255, 255, 0.6);
     border-color: black;
     border-width: 2;
   }
-
-  #menu {
+  
+  .ContextMenu {
     text-align: center;
     font-size: 22px;
     width: 100;
     height: 220px;
+    margin-left: 2px;
     text-shadow: 0.2px 0px 0.5px;
     z-index: 100;
     box-shadow: 0 4px 5px 3px rgba(0, 0, 0, 0.2);
@@ -52,24 +73,12 @@ body {
     background: rgba(255, 255, 255, 0.6);
     -webkit-text-fill-color: rgba(2, 2, 2, 1);
   }
-
-  .dataPoints {
-    float: left;
-    font-size: 20;
-    z-index: 15;
-    border: 1px solid #dddddd;
-    border-color: rgb(0, 0, 0);
-    background-color: aliceblue;
-    width: min-content;
-    height: min-content;
-          }
-
   .ui-widget-content {
     z-index: 5;
     left: 0px;
     top: 0px;
   }
-
+  
   .controller {
     width: 50px;
     height: 100px;
@@ -78,16 +87,20 @@ body {
     border-color: black;
     border-width: 2;
     z-index: 18;
+    /* padding:0.5; */
   }
-
-  #code {
-    z-index: 999;
-  }
-
-  p {
+  p{
     font-size: 25;
     margin-top: 0px !important;
     margin-left: 0px !important;
     margin-bottom: 0px !important;
     margin-right: 0px !important;
-  } 
+  }
+  #sliders{
+    width: -webkit-fill-available;
+    height: -webkit-fill-available;
+    position: absolute;
+    top: 0px;
+    left: 0px;
+  }
+  

@@ -1,39 +1,15 @@
 import React from 'react';
-import './App.css';
-import './home_page.css';
-import {Menu,Menuos} from './Home_Menu';
-import ContextMenu from './Ops_menu';
-import Slider from './Slider.js';
-import Canvas from './Canvas';
+import './phy.css';
+import {Menu,Menuos} from '../home_page/Home_Menu';
+import ContextMenu from '../Ops_menu';
+import Slider from '../Slider.js';
+import Data from '../data.js';
 import {Body,Weight,Circle,Force,Point,Line} from './Body';
 import ReactDOM from 'react-dom';
 import $ from  "jquery";
 import "jquery-ui/ui/widgets/draggable";
-import {dis,con,containsTitle,returnTitle} from './functions';
-export default class App extends React.Component {
-
-  componentDidMount(){
-    // var dragers = require("./toReact.js");
-    // window.dragers=dragers
-    // dragers.ex()
-
-    // window.onmouseup = e => {
-    //   let ar = document.elementsFromPoint(e.clientX, e.clientY);
-    //   if (
-    //     ar[0].getAttribute("name") == "drag" &&
-    //     ar[0].getAttribute("title") != "WB"&&e.button==0
-    //   ) {
-    //     // console.log("mouseUp")
-    //     if (containsTitle(ar, "WB")) {
-    //       dis(ar[0]);
-    //       let got = returnTitle(ar, "WB");
-    //       con(ar[0],got);
-    //     } else {
-    //       dis(ar[0]);
-    //     }
-    //   }
-    // };
-  }
+import {dis,con,containsTitle,returnTitle} from '../functions';
+export default class Phy_page extends React.Component {
   render(){
   return (
     <div className="App">
@@ -69,7 +45,8 @@ export default class App extends React.Component {
       <snapto id="sliders">
         <Slider id={"testData"} side={"left"} width={100} height={200}/>
         <Slider id={"testData2"} side={"bottom"} width={200} height={100}/>
-        <Slider id={"tools"} side={"left"} left= {0} top= {26} width= {50} height= {400} text={" t o o l s"}/>
+        {/* <Slider id={"tools"} side={"left"} left= {0} top= {26} width= {50} height= {400} text={" t o o l s"}/> */}
+        <Data id={"d3Data"} text={"circle b3 data"} left={750} top={250} width={100} height={200} dataSource={{id:"b3"}}/>
       </snapto>
       <ContextMenu id={"MainMenu"}/>
     </div>);

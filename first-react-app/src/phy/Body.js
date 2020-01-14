@@ -1,8 +1,7 @@
 
 import React, { Component } from "react";
-import {queue,timeComponent,c1,animation} from "./objects/queue.js";
-import "./home_page.css";
-import {toDegrees,toRadians,log,cpuAverage} from './functions.js'
+import {queue,timeComponent,c1,animation} from "../objects/queue.js";
+import {toDegrees,toRadians,log,cpuAverage} from '../functions.js'
 import $ from  "jquery";
 import "jquery-ui/ui/widgets/draggable";
 // import "./jquery-ui-1.12.1/jquery-ui.js";

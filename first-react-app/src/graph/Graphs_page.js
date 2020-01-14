@@ -1,13 +1,9 @@
 import React from 'react';
-import './App.css';
-import './home_page.css';
-import ContextMenu from './Ops_menu';
-import Slider from './Slider.js';
-import Canvas from './Canvas';
-import {Body,Weight,Circle,Force,Point,Line} from './Body';
+import ContextMenu from '../Ops_menu';
+import Slider from '../Slider.js';
 import $ from  "jquery";
 import "jquery-ui/ui/widgets/draggable";
-import {dis,con,updateCon,onSnap} from './functions';
+import {dis,con,updateCon,onSnap} from '../functions';
 import './Graphs.css';
 import {Vg, point,clearall,getM,setC} from "./graph"
 export default class Graphs extends React.Component {
@@ -68,7 +64,8 @@ let x0 = 0,
     console.trace("wizard")
     pointsWB.innerHTML='<p>points data</p>'
   for(const po of phyGV.vg.points){
-      pointsWB.innerHTML=pointsWB.innerHTML+`<div id="point${po.x}" class="dataPoints" title="item" name="drag">point${po.x} data
+      pointsWB.innerHTML=pointsWB.innerHTML+`
+      <div id="point${po.x}" class="dataPoints" title="item" name="drag" style="position: relative;">point${po.x} data
           <p style="width: max-content;">
             x:<input class="dataX" style="width: 54px;" value=${po.x} onkeypress='pointDataEdit("x",this.value,phyGV.vg.points[${po.x}])' >
           </p>
@@ -87,8 +84,8 @@ let x0 = 0,
   
   }
   for(const poin of datapoints){
-          poin.style.position="absolute"
-          poin.style.float="none"
+          poin.style.position="relative"
+          poin.style.float="left"
   }
   $(".dataPoints").draggable({
       snap: `snapTo`,
@@ -155,8 +152,8 @@ for(const poin of datapoints){
 
 }
 for(const poin of datapoints){
-      poin.style.position="absolute"
-      poin.style.float="none"
+      poin.style.position="relative"
+      poin.style.float="left"
 }
 $(".dataPoints").draggable({
   snap: `snapTo`,
@@ -188,9 +185,10 @@ $(".dataPoints").draggable({
 });
 
 c = c2;
+setC(c)
 let phyGA = new graph(VtoA(phyGV.vg.points), 0, 0, 150, 150);
 c = c1;
-
+setC(c)
 let phyGX = new graph(VtoX(phyGV.vg.points), 0, 0, 150, 150);
 function AtoV(Ps) {}
 function VtoX(Ps) {
@@ -256,8 +254,16 @@ let inpt0 = document.getElementById("inputt0");
 let inpt = document.getElementById("inputt");
 inpv0.addEventListener("keypress",(ev)=>{
   if(ev.key=="Enter"&&inpv0.value!=""&&inpv.value!=""&&inpt0.value!=""&&inpt.value!=""){
-    GV(inpv.value,inpv0.value,inpt0.value,inpt.value)
-  }})
+    GV(inpv.value,inpv0.value,inpt0.value,inpt.value)}})
+    inpv.addEventListener("keypress",(ev)=>{
+  if(ev.key=="Enter"&&inpv0.value!=""&&inpv.value!=""&&inpt0.value!=""&&inpt.value!=""){
+    GV(inpv.value,inpv0.value,inpt0.value,inpt.value)}})
+    inpt0.addEventListener("keypress",(ev)=>{
+  if(ev.key=="Enter"&&inpv0.value!=""&&inpv.value!=""&&inpt0.value!=""&&inpt.value!=""){
+    GV(inpv.value,inpv0.value,inpt0.value,inpt.value)}})
+    inpt.addEventListener("keypress",(ev)=>{
+  if(ev.key=="Enter"&&inpv0.value!=""&&inpv.value!=""&&inpt0.value!=""&&inpt.value!=""){
+    GV(inpv.value,inpv0.value,inpt0.value,inpt.value)}})
   }
   render(){
   return (
@@ -278,7 +284,7 @@ inpv0.addEventListener("keypress",(ev)=>{
         ></canvas>
       </Slider>
 
-      <Slider id={"calc"} left={"900px"} top={"0px"} height={300} width={200} text={"calcolator"}>
+      <Slider id={"calc"} left={"700px"} top={"0px"} height={300} width={200} text={"calcolator"}>
         <Slider id={"calc_history"} left={"-154px"} top={"30px"} text={"calc's history"} conText={"calc"}/>
       <div>
         calcolator here
@@ -302,44 +308,44 @@ inpv0.addEventListener("keypress",(ev)=>{
         side={"bottom"} width= {823} height= {200}
         text={"points data"}
       >
-        <div id="point1" class="dataPoints" title="item" name="drag">
+        <div id="point1" className="dataPoints" title="item" name="drag">
           point1 data:
           <p style={{width:" max-content"}}>
-            x:<input class="dataX" style={{width:" 54px"}} value="1" />
+            x:<input className="dataX" style={{width:" 54px"}} defaultValue="1" />
           </p>
 
           <p style={{width:" max-content"}}>
-            y:<input class="dataY" style={{width:" 54px"}} />
+            y:<input className="dataY" style={{width:" 54px"}} />
           </p>
         </div>
-        <div id="point2" class="dataPoints" title="item" name="drag">
+        <div id="point2" className="dataPoints" title="item" name="drag">
           point2 data
           <p style={{width:" max-content"}}>
-            x:<input class="dataX" style={{width:" 54px"}} value="1" />
+            x:<input className="dataX" style={{width:" 54px"}} defaultValue="1" />
           </p>
 
           <p style={{width:" max-content"}}>
-            y:<input class="dataY" style={{width:" 54px"}} />
+            y:<input className="dataY" style={{width:" 54px"}} />
           </p>
         </div>
-        <div id="point3" class="dataPoints" title="item" name="drag">
+        <div id="point3" className="dataPoints" title="item" name="drag">
           point3 data
           <p style={{width:" max-content"}}>
-            x:<input class="dataX" style={{width:" 54px"}} value="1" />
+            x:<input className="dataX" style={{width:" 54px"}} defaultValue="1" />
           </p>
 
           <p style={{width:" max-content"}}>
-            y:<input class="dataY" style={{width:" 54px"}} />
+            y:<input className="dataY" style={{width:" 54px"}} />
           </p>
         </div>
-        <div id="point4" class="dataPoints" title="item" name="drag">
+        <div id="point4" className="dataPoints" title="item" name="drag">
           point4 data
           <p style={{width:" max-content"}}>
-            x:<input class="dataX" style={{width:" 54px"}} value="1" />
+            x:<input className="dataX" style={{width:" 54px"}} defaultValue="1" />
           </p>
 
           <p style={{width:" max-content"}}>
-            y:<input class="dataY" style={{width:" 54px"}} />
+            y:<input className="dataY" style={{width:" 54px"}} />
           </p>
         </div>
       </Slider>

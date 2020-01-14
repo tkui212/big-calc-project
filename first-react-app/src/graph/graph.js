@@ -1,8 +1,6 @@
-var canvas = document.querySelector(`#canvas_plate`);
-
-let c=canvas;
+let c=null;
 export function setC(C){
-  c=C
+  c=C 
 }
 export function line(p1, p2, width) {
   let x1 = p1.dx || p1[0] || 0;
