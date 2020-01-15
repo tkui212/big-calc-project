@@ -4,7 +4,7 @@ import {Menu,Menuos} from '../home_page/Home_Menu';
 import ContextMenu from '../Ops_menu';
 import Slider from '../slider.js';
 // import Data from '../data.js';
-import {Body,Weight,Circle,Force,Point,Line} from './Body';
+import {Console,Body,Weight,Circle,Force,Point,Line} from './Body';
 import ReactDOM from 'react-dom';
 import $ from  "jquery";
 import "jquery-ui/ui/widgets/draggable";
@@ -46,7 +46,7 @@ export default class Phy_page extends React.Component {
         <Slider id={"testData"} side={"left"} width={100} height={200}/>
         <Slider id={"testData2"} side={"bottom"} width={200} height={100}/>
         {/* <Slider id={"tools"} side={"left"} left= {0} top= {26} width= {50} height= {400} text={" t o o l s"}/> */}
-        {/* <Data id={"d3Data"} text={"circle b3 data"} left={750} top={250} width={100} height={200} dataSource={{id:"b3"}}/> */}
+        <Console id={"d3Data"} text={"circle b3 data"} left={700} top={200} parent={()=>document.getElementById("b3").me}/>
       </snapto>
       <ContextMenu id={"MainMenu"}/>
     </div>);

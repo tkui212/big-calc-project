@@ -2,7 +2,7 @@
 import React, { Component } from "react";
 import ReactDOM from 'react-dom';
 import {queue,timeComponent,c1,animation} from "../objects/queue.js";
-import {toDegrees,toRadians,log,cpuAverage} from '../functions.js'
+import {toDegrees,toRadians,createElement} from '../functions.js'
 import $ from  "jquery";
 import "jquery-ui/ui/effects/effect-slide";
 import "jquery-ui/ui/widgets/draggable";
@@ -45,38 +45,26 @@ export class Console extends Component {
         this.top=this.parent.y+"px"
       }
   }
+  render() {this.onMountCreateMe=true;return (null)}
   componentDidMount(){
+    if(this.onMountCreateMe){
+      this.onMountCreateMe=false
+      this.parent=this.parent()
+      this.parent.toConsole(this)
+    }
+    else{
     this.element=document.getElementById(this.id)
     $(`#${this.id}`).resizable();
       $(`#${this.id}`).draggable({
 snap: `snapTo:not(#${this.id}):not(#${this.id}>snapTo)`,
 snapTolerance: 10
 });
-
+    }
   }
-  render() {
-          let element = <div
-          id={this.id}
-          className={"dataPoints"}
-          name={"drag"}
-          title={"item"}
-          style={{left: this.left, top: this.top, zIndex: `201`, width: this.width, height: this.height}}
-          key={this.id}
-        >
-            {this.text}
-          <Value name="x" value="1"/>
-          <Value name="y" value="2"/>
-          <Value name="id" value="2"/>
-      </div>
-           return (element)  
-}
+
   create(){
-      let el=document.createElement("div")
-      el.id=this.id
-      el.className="dataPoints"
-      el.name="drag"
-      el.title="item"
-      el.style=`left: ${this.left}; top: ${this.top}; z-index: 201; width: 15%; height: ${this.height}; overflow:hidden;`
+      let el=createElement("div",{id:this.id,className:"dataPoints",name:"drag",title:"item",
+        style:`left: ${this.left}; top: ${this.top}; z-index: 201; width: 15%; height: ${this.height}; `})
       el.append(this.text)
 
       for (let key in this.values) {
@@ -87,9 +75,44 @@ snapTolerance: 10
         // let val=document.getElementById(this.id+key)
       }
       console.log(this.values)
+      console.log("data ops show")
+
+let sl =createElement("div",{id:this.id+"SS",style:`z-index:201;height:10%;position:absolute;background-color:green;width:100%;left:-100%;top:0%;display:none;`})
+el.append(sl)
+let ms=createElement("div",{id:this.id+"S",style:`z-index:202;height:90%;position:absolute;background-color:green;width:100%;left:-100%;top:30px;display:none;`})
+el.append(ms)
+let buttons=[]
+for(let i=0;i<5;i++){
+  buttons[i]=createElement("button",{id:this.id+"SB"+i,style:`width:90%;height:15%;`})
+  buttons[i].func=()=>{console.log(this)}
+  buttons[i].addEventListener("click",function(){console.log(this.id)})
+  ms.append(buttons[i])
+}
+document.addEventListener("mouseup",()=>{
+    sl.style.display="none"
+    ms.style.display="none"
+  });
+
+el.addEventListener("mouseup",(e)=>{
+if(e.button==2){
+  setTimeout(()=>{$(`#${sl.id}`).show(
+  "slide", {direction: "right"},
+  200
+  );},1)
+  setTimeout(()=>{$(`#${ms.id}`).show(
+      "slide", {direction: "up"},
+      200
+      );},200)
+    }
+    else{
+      sl.style.display="none"
+      ms.style.display="none"
+    }
+    })
       document.getElementById("sliders").append(el)
       this.componentDidMount()
   }
+
 }
 
 export class Value extends Component {
@@ -118,7 +141,7 @@ create(){
   let el=document.createElement("input")
   el.id=this.id+"Input"
   el.className="dataInput"
-  el.style=`fontSide:25px;`
+  el.style=`fontSide:25px; width:100%`
   if(typeof this.value=="object"){
     el.defaultValue=this.value[this.name]
   }
@@ -342,9 +365,24 @@ componentDidMount() {
     }
   })
 }
-toConsole(){
-  this.console=new Console({id:this.id+"console",text:this.id+" data",values:{x:this,y:this,id:this},parent:this,left:parseInt(this.x)+50,top:parseInt(this.y)+50})
+toConsole(copy){
+  let obj={id:this.id+"console",text:this.id+" data",values:{x:this,y:this,id:this},parent:this,left:parseInt(this.x)+50,top:parseInt(this.y)+50}
+  if(document.getElementById(this.id+"console")==null){
+  if(typeof copy=="object"&&copy.constructor.name=="Console"){
+    
+    for(let key in copy){
+      if(copy[key]==undefined){
+        copy[key]=obj[key]
+      }
+    }
+    console.log(copy)
+    this.console=copy
   this.console.create()
+  }
+  else{
+  this.console=new Console(obj)
+  this.console.create()
+  }}
   // this.data.registerListener(()=>{})
 }
 render(){

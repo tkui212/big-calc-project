@@ -7,6 +7,13 @@ import {Vg, point,c} from "./graph/graph"
 // export function hi() {
 //   console.log("hi");
 // };
+export function createElement(type,props){
+  let elem=document.createElement(type)
+  for (let key in props) {
+    elem[key]=props[key]
+  }
+  return elem
+}
 export function toDegrees (angle) {
   return angle * (180 / Math.PI);
 }
