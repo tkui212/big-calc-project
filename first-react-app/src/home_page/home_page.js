@@ -2,7 +2,7 @@ import React from 'react';
 import './home_page.css';
 import {Menu,Menuos} from './Home_Menu';
 import ContextMenu from '../Ops_menu';
-import Slider from '../Slider.js';
+// import Slider from '../Slider.js';
 import Data from '../data.js';
 import Canvas from './Canvas';
 import ReactDOM from 'react-dom';

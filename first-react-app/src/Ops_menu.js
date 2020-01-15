@@ -25,7 +25,7 @@ export default class ContextMenu extends Component {
     
         this.menuops[0].textContent="cosnole this"
         // this.menuops[0].setAttribute("onclick",()=>console.log(id))
-        this.menuops[0].me.onclick=()=>console.log(id)
+        this.menuops[0].me.onclick=()=>{console.log(id); elem.me.toConsole()}
         if(elem.getAttribute("title")=="control"){
             this.menuops[1].me.onclick=()=>runEffect(`#${id.slice(0,id.length-3)}`)
             this.menuops[2].textContent="show"

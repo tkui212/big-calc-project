@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import $ from  "jquery";
-import "jquery-ui/ui/widgets/draggable";
+import "../public/draggable";
 import "jquery-ui/ui/effects/effect-slide";
 import {dis,con,updateCon,onSnap} from './functions';
 export default class Slider extends Component {

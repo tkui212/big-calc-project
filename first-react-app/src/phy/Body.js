@@ -1,10 +1,129 @@
 
 import React, { Component } from "react";
+import ReactDOM from 'react-dom';
 import {queue,timeComponent,c1,animation} from "../objects/queue.js";
 import {toDegrees,toRadians,log,cpuAverage} from '../functions.js'
 import $ from  "jquery";
-import "jquery-ui/ui/widgets/draggable";
+import "jquery-ui/ui/effects/effect-slide";
+import ".../public/draggable";
 // import "./jquery-ui-1.12.1/jquery-ui.js";
+export class Console extends Component {
+  constructor(props) {
+      super(props)
+      this.id=props.id
+      this.side=props.side
+      this.width=props.width
+      this.height=props.height
+      this.children=props.children
+      this.dataSource=props.dataSource
+      this.values=props.values
+      this.parent=props.parent
+      if(props.text==undefined){
+        this.text=this.id
+      }
+      else{
+        this.text=props.text
+      }
+      if(props.left!=undefined){
+        if(typeof props.left=="string"){
+          this.left=props.left
+        }
+        else{
+          this.left=`${props.left}px`
+        }
+      }
+      if(props.top!=undefined){
+        if(typeof props.top=="string"){
+          this.top=props.top
+        }
+        else{
+          this.top=`${props.top}px`
+        }
+      }
+      if(this.parent!=undefined){
+        this.left=this.parent.x
+        this.top=this.parent.y
+      }
+  }
+  componentDidMount(){
+    this.element=document.getElementById(this.id)
+    $(`#${this.id}`).resizable();
+      $(`#${this.id}`).draggable({
+snap: `snapTo:not(#${this.id}):not(#${this.id}>snapTo)`,
+snapTolerance: 10
+});
+
+if(this.dataSource!=undefined&&this.dataSource.id!=undefined){
+  this.data=document.getElementById(this.dataSource.id).me.data
+  console.log(this.data)
+}
+
+  }
+  render() {
+          let element = <div
+          id={this.id}
+          className={"dataPoints"}
+          name={"drag"}
+          title={"item"}
+          style={{left: this.left, top: this.top, zIndex: `201`, width: this.width, height: this.height}}
+          key={this.id}
+        >
+            {this.text}
+          <Value name="x" value="1"/>
+          <Value name="y" value="2"/>
+          <Value name="id" value="2"/>
+      </div>
+           return (element)  
+}
+  create(){
+      let el=document.createElement("div")
+      el.id=this.id
+      el.className="dataPoints"
+      el.name="drag"
+      el.title="item"
+      el.style=`left: ${this.left}; top: ${this.top}; z-index: 201; width: ${this.width}; height: ${this.height};`
+      el.append(this.text)
+      for (let key in this.values) {
+        console.log(key)
+        console.log(this.values[key])
+      }
+      for(let i=0;i<this.values.length;i++){
+        // let child=new Value({id:this.id+""})
+        // el.append()
+        console.log(this.values[i])
+      }
+      console.log(this.values)
+      document.getElementById("sliders").append(el)
+      this.componentDidMount()
+  }
+}
+
+export class Value extends Component {
+  constructor(props) {
+      super(props)
+      this.id=props.id
+      this.dataSource=props.dataSource
+      this.name=props.name
+      this.value=props.value
+  }
+  render() {
+           return (
+          <p>
+              {this.name}:<input className={"dataInput"} style={{width:" 54px",fontSide:"25px"}} defaultValue={this.value}/>
+          </p>)  
+}
+create(){
+          let el=document.createElement("input")
+          el.id=this.id
+          el.className="dataInput"
+          el.style=`width:54px;fontSide:25px;`
+          el.defaultValue=this.value
+          let p=document.createElement("p")
+          p.append(this.name)
+          p.append(el)
+          return p
+}
+}
 
 
 export class Data extends Component {
@@ -102,7 +221,6 @@ export class Data extends Component {
       }
     }
   }
-  // setCssProperty(name,value)
 }
 export class Body extends Component {
   constructor(props){
@@ -185,6 +303,10 @@ componentDidMount() {
       // this.elem.style.transition=`var(--${this.DataHolder.id}-transSpeed)`
     }
   })
+}
+toConsole(){
+  this.console=new Console({id:"dataTest1",text:"test text",values:{x:this.x},parent:this})
+  this.console.create()
 }
 render(){
   return(<circle id={this.id} cx={this.x} cy={this.y} r={10} stroke={"white"} strokeWidth={0} fill={"white"} style={{cx:`${this.data.cx}`,cy:`${this.data.cy}`}} />)
