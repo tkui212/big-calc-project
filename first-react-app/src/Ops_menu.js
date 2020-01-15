@@ -12,6 +12,8 @@ export default class ContextMenu extends Component {
         console.log(elem.constructor.name)
         if(elem.constructor.name=="HTMLDivElement"&&elem.title=="item"){
            
+        }else if(elem.constructor.name=="HTMLParagraphElement"){
+           
         }
         else if(elem.constructor.name=="SVGCircleElement"){
         

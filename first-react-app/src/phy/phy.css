@@ -103,4 +103,6 @@ menu {
     top: 0px;
     left: 0px;
   }
-  
+  .side{
+    display: flex;
+  }

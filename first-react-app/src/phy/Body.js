@@ -2,7 +2,7 @@
 import React, { Component } from "react";
 import ReactDOM from 'react-dom';
 import {queue,timeComponent,c1,animation} from "../objects/queue.js";
-import {toDegrees,toRadians,createElement} from '../functions.js'
+import {toDegrees,toRadians,createElement,mouseElem} from '../functions.js'
 import $ from  "jquery";
 import "jquery-ui/ui/effects/effect-slide";
 import "jquery-ui/ui/widgets/draggable";
@@ -84,17 +84,31 @@ el.append(ms)
 let buttons=[]
 for(let i=0;i<5;i++){
   buttons[i]=createElement("button",{id:this.id+"SB"+i,style:`width:90%;height:15%;`})
-  buttons[i].func=()=>{console.log(this)}
-  buttons[i].addEventListener("click",function(){console.log(this.id)})
+  buttons[i].func=function(){console.log(this.func)}
+  buttons[i].addEventListener("click",buttons[i].func)
   ms.append(buttons[i])
 }
+buttons[0].textContent="add"
+buttons[0].removeEventListener("click",buttons[0].func)
+buttons[0].func=()=>{
+  let key=null
+  let child=new 
+  Value({id:this.id+key,name:key,value:0})
+  console.log(el)
+  el.append(child.create())}
+  buttons[0].addEventListener("click",buttons[0].func)
+
+
+
+
+
 document.addEventListener("mouseup",()=>{
     sl.style.display="none"
     ms.style.display="none"
   });
 
 el.addEventListener("mouseup",(e)=>{
-if(e.button==2){
+if(e.button==2&&mouseElem(e)[0].constructor.name=="HTMLDivElement"){
   setTimeout(()=>{$(`#${sl.id}`).show(
   "slide", {direction: "right"},
   200
@@ -137,7 +151,7 @@ create(){
   let p=document.createElement("p")
   p.id=this.id
   p.style="height: max-content;"
-  p.append(this.name)
+  
   let el=document.createElement("input")
   el.id=this.id+"Input"
   el.className="dataInput"
@@ -148,13 +162,61 @@ create(){
   else{
     el.defaultValue=this.value
   }
-  p.append(el)
+  
   this.elem=p
   this.inputElem=el
   this.inputElem.addEventListener("keypress",(ev)=>{
     if(ev.key=="Enter"&&this.inputElem.value!=""){
       this.value[this.name]=this.inputElem.value
       }})
+      
+let sl =createElement("div",{id:this.id+"SS",className:"side",style:`z-index:201;height:20%;position:absolute;background-color:green;width:100%;right:100%;display:none; display: flex;`})
+p.append(sl)
+// let ms=createElement("div",{id:this.id+"S",style:`z-index:202;height:90%;position:absolute;background-color:green;width:100%;left:-100%;top:30px;display:none;`})
+// p.append(ms)
+let buttons=[]
+for(let i=0;i<5;i++){
+  buttons[i]=createElement("button",{id:this.id+"SB"+i,className:"side",style:`width:50px;height:90%;`})
+  buttons[i].func=function(){console.log(this.func)}
+  buttons[i].addEventListener("click",buttons[i].func)
+  sl.append(buttons[i])
+}
+buttons[0].textContent="delete"
+buttons[0].removeEventListener("click",buttons[0].func)
+buttons[0].func=()=>{
+  console.log(p)
+  p.parentElement.removeChild(p)}
+
+  p.append(this.name)
+  p.append(el)
+  buttons[0].addEventListener("click",buttons[0].func)
+
+
+
+
+
+document.addEventListener("mouseup",()=>{
+    sl.style.display="none"
+    // ms.style.display="none"
+  });
+
+  p.addEventListener("mouseup",(e)=>{
+if(e.button==2&&mouseElem(e)[0].constructor.name=="HTMLParagraphElement"){
+  setTimeout(()=>{$(`#${sl.id}`).show(
+  "slide", {direction: "right"},
+  200
+  );},1)
+
+  // setTimeout(()=>{$(`#${ms.id}`).show(
+  //     "slide", {direction: "up"},
+  //     200
+  //     );},200)
+    }
+    else{
+      sl.style.display="none"
+      // ms.style.display="none"
+    }
+    })
   return p
 
 }
