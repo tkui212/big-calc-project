@@ -1,6 +1,6 @@
 import React from 'react';
 import ContextMenu from '../Ops_menu';
-import Slider from '../Slider.js';
+import Slider from '../slider.js';
 import $ from  "jquery";
 import "jquery-ui/ui/widgets/draggable";
 import {dis,con,updateCon,onSnap} from '../functions';
