@@ -53,11 +53,6 @@ snap: `snapTo:not(#${this.id}):not(#${this.id}>snapTo)`,
 snapTolerance: 10
 });
 
-if(this.dataSource!=undefined&&this.dataSource.id!=undefined){
-  this.data=document.getElementById(this.dataSource.id).me.data
-  console.log(this.data)
-}
-
   }
   render() {
           let element = <div
@@ -81,11 +76,12 @@ if(this.dataSource!=undefined&&this.dataSource.id!=undefined){
       el.className="dataPoints"
       el.name="drag"
       el.title="item"
-      console.log(this.left)
       el.style=`left: ${this.left}; top: ${this.top}; z-index: 201; width: 15%; height: ${this.height}; overflow:hidden;`
       el.append(this.text)
+
       for (let key in this.values) {
-        let child=new Value({id:this.id+key,name:key,value:this.values[key],dataSource:this.dataSource})
+        let child=new 
+        Value({id:this.id+key,name:key,value:this.values[key],dataSource:this.dataSource})
         el.append(child.create())
         this.parent.registerListener(()=>child.update())
         // let val=document.getElementById(this.id+key)
@@ -104,6 +100,10 @@ export class Value extends Component {
       this.name=props.name
       this.value=props.value
   }
+  componentDidMount(){
+    this.elem=document.getElementById(this.id)
+    this.inputElem=document.getElementById(this.id+"Input")
+  }
   render() {
            return (
           <p>
@@ -111,31 +111,39 @@ export class Value extends Component {
           </p>)  
 }
 create(){
-          let el=document.createElement("input")
-          el.id=this.id
-          el.className="dataInput"
-          el.style=`fontSide:25px;`
-          if(typeof this.value=="object"){
-            el.defaultValue=this.value[this.name]
-          }
-          else{
-            el.defaultValue=this.value
-          }
-          let p=document.createElement("p")
-          p.style="      height: max-content;"
-          p.append(this.name)
-          p.append(el)
-          return p
-}
-update(value){
-  this.elem=document.getElementById(this.id)
-  if(value!=undefined){
-    this.elem.value=value
+  let p=document.createElement("p")
+  p.id=this.id
+  p.style="height: max-content;"
+  p.append(this.name)
+  let el=document.createElement("input")
+  el.id=this.id+"Input"
+  el.className="dataInput"
+  el.style=`fontSide:25px;`
+  if(typeof this.value=="object"){
+    el.defaultValue=this.value[this.name]
   }
   else{
-    this.elem.value=this.value[this.name]
+    el.defaultValue=this.value
+  }
+  p.append(el)
+  this.elem=p
+  this.inputElem=el
+  this.inputElem.addEventListener("keypress",(ev)=>{
+    if(ev.key=="Enter"&&this.inputElem.value!=""){
+      this.value[this.name]=this.inputElem.value
+      }})
+  return p
+
+}
+update(value){
+  if(value!=undefined){
+    this.inputElem.value=value
+  }
+  else{
+    this.inputElem.value=this.value[this.name]
   }
 }
+
 }
 
 
