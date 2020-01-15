@@ -20,7 +20,8 @@ function Vg(points, posX, posY,sizeX,sizeY) {
   this.HTY = sizeY / ((p[0] - p.lastIndexOf())||1);
   //**used for calcs */
 
-  this.getM =(p1,p2)=>((p1.y - p2.y) / (p1.x - p2.x))
+  this.GetM=(i)=>(this.points[i+1]?(this.points[i+1].y-this.points[i].y)/(this.points[i+1].x-this.points[i].x):((this.points[i-1].y-this.points[i].y)/(this.points[i-1].x-this.points[i].x)))
+  
   this.fillPoints = function () {
     if(this.points[0].isDraw&&this.points[1].isDraw){
     let me =this
@@ -33,9 +34,8 @@ function Vg(points, posX, posY,sizeX,sizeY) {
         if (this.points[i].x == Xnum||!this.points[i].isDraw) {
           //if the time match the time of the point
           p.push(this.points[i]);
-          
         } else {
-          let m = this.getM(this.points[i + 1], this.points[i]);
+          let m = this.GetM(i);
           m = m.toFixed(2)
           p.push(new point(Xnum, m * (Xnum - this.points[i].x) + this.points[i].y,me)); //(x, y=xm+b)
           // console.table(p[p.length - 1])
@@ -51,7 +51,7 @@ function Vg(points, posX, posY,sizeX,sizeY) {
           p.push(this.points[i]);
           p[p.length-1].parent=this        }
     }
-    if (this.points[this.points.length - 1].x == Xnum) {
+    if (this.points.last().x == Xnum) {
       //if the time match the time of the point
       p.push(this.points[this.points.length - 1]);
     }
@@ -91,7 +91,28 @@ function Vg(points, posX, posY,sizeX,sizeY) {
     this.p0.updait()
     // console.table(this.points)
     // console.log(this.points.length)
-    this.points.forEach(value => {value.parent=this; value.updait(); })
+    for(let i=0;i<this.points.length;i++){
+      value=this.points[i]
+      value.parent=this;
+      value.m=this.getmm(i)
+      value.updait();
+    }
+  }
+  this.getmm=(i)=>{
+    try{
+      return (this.points[i+1].y-this.points[i-1].y)/(this.points[i+1].x-this.points[i-1].x)
+      }
+      catch{
+        try{
+          return (this.points[i+1].y-this.points[i].y)/(this.points[i+1].x-this.points[i].x)
+        }
+        catch{
+          try{
+            return ((this.points[i-1].y-this.points[i].y)/(this.points[i-1].x-this.points[i].x))
+          }
+          catch{}
+        }
+      }
   }
   this.graphPointLinesDraw=function(p1,p2){
     c.setLineDash([5, 5]);
@@ -167,10 +188,10 @@ function Vg(points, posX, posY,sizeX,sizeY) {
 }
 function point(x, y) {
   this.parent
-  // this.parent=parent//remembers old !!!!!!!!!!!!!!!!!!!!!!!!!!!! problem here
   this.x = x;
   this.y = y;
   this.isDraw=true
+  this.m=0
   /**draw x posisen */
   try {
     this.updait()
@@ -184,6 +205,14 @@ function point(x, y) {
     this.updait()
     if(this.isDraw){
       this.tauch = circle(this.dx, this.dy, 5);
+      // let p1=new point(this.x+1,this.m+this.y)
+      // let p2=new point(this.x-1,this.y-this.m)
+      // p1.parent=this.parent
+      // p2.parent=this.parent
+      // p1.updait()
+      // p2.updait()
+      // line(p1,p2,2)
+      text(this.m,this.dx+10,this.dy+30,10)
     }
   };
   this.updait = function () {
@@ -197,5 +226,4 @@ function point(x, y) {
     this.dy = this.mY + this.parent.maxY() * this.HTY - this.y * this.HTY;
     this.helpY = (this.dy != undefined) ? this.mY - this.dy : null
   }
-  this.getM =(p1,p2)=>((p1.y - p2.y) / (p1.x - p2.x))
 }

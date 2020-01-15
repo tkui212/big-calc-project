@@ -1,24 +1,409 @@
-
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
     <title>Document</title>
+    <link rel="stylesheet" type="text/css" href="Scalc..css">
+    <script src='exact-math.js'></script> 
     <style type="text/css" media="screen">
-    body { margin-top: 0px !important; }
-    body { margin-left: 0px !important; }
+      body {
+        margin-top: 0px !important;
+        margin-left: 0px !important;
+        margin-bottom: 0px !important;
+        margin-right: 0px !important;
+      }
+      #move {
+        width: 150px;
+        height: 150px;
+        /* padding: 0.5em; */
+        position: absolute;
+        z-index: 5;
+        left: 450px;
+        top: 200px;
+        overflow: visible !important;
+      }
 
-</style>
-</head>
-<body>
-    <input id="inp" onkeypress="input(this.value)" value="GV(1,0,0,5)"/>
-    <canvas id="canvas_plate"></canvas>
-</body>
-<script type="text/javascript" src="Gdata.js"></script>
-<script type="text/javascript" src="graph/functions.js"></script>
-<script type="text/javascript" src="graph.js"></script>
-<script type="text/javascript" src="graph/data.js"></script>
-<script type="text/javascript" src="physics.js"></script>
+      #move2 {
+        width: 150px;
+        height: 150px;
+        /* padding: 0.5em; */
+        position: absolute;
+        z-index: 5;
+        left: 550px;
+        top: 100px;
+      }
 
+      snapTo[title="WB"] {
+        text-align: center;
+        font-size: 35;
+        width: 150px;
+        height: 150px;
+        /* padding: 0.5em; */
+        position: absolute;
+        background-color: rgba(255, 255, 255, 0.6);
+        border-color: black;
+        border-width: 2;
+      }
+
+      #menu {
+        text-align: center;
+        font-size: 22px;
+        width: 100;
+        height: 220px;
+        text-shadow: 0.2px 0px 0.5px;
+        z-index: 100;
+        box-shadow: 0 4px 5px 3px rgba(0, 0, 0, 0.2);
+        position: fixed;
+        left: -100px;
+        top: -100px;
+        background: rgba(255, 255, 255, 0.6);
+        -webkit-text-fill-color: rgba(2, 2, 2, 1);
+      }
+
+      .dataPoints {
+        float: left;
+        font-size: 20;
+        /* position: absolute; */
+        z-index: 15;
+        /* left: 1px;
+      top: 10px; */
+        border: 1px solid #dddddd;
+        border-color: rgb(0, 0, 0);
+        background-color: aliceblue;
+        width: min-content;
+        height: min-content;
+              }
+
+      .ui-widget-content {
+        z-index: 5;
+        left: 0px;
+        top: 0px;
+      }
+
+      .controller {
+        width: 50px;
+        height: 100px;
+        position: absolute;
+        background: rgba(255, 255, 255, 0.9);
+        border-color: black;
+        border-width: 2;
+        z-index: 18;
+        /* padding:0.5; */
+      }
+
+      #code {
+        z-index: 999;
+      }
+
+      #all {
+        position: absolute;
+        z-index: 0;
+      }
+
+      p {
+        font-size: 25;
+        margin-top: 0px !important;
+        margin-left: 0px !important;
+        margin-bottom: 0px !important;
+        margin-right: 0px !important;
+      }
+    </style>
+    <link
+      rel="stylesheet"
+      href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css"
+    />
+
+    <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+    <!-- <script src="https://code.jquery.com/jquery-3.4.1.js"></script> -->
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+  </head>
+
+  <body>
+    <snapto id="all">
+      <snapto
+        id="tools"
+        class="ui-widget-content ui-corner-all ui-resizable ui-draggable ui-draggable-handle"
+        title="WB"
+        name="drag"
+        style="left: 0px; top: 26px; z-index: 9; width: 26px; height: 351px;"
+      >
+        t o o l s
+      </snapto>
+
+      <div
+        id="toolscon"
+        class="controller"
+        title="control"
+        style="top: 153.484px; left: 29.984px; width: 50px; height: 100px;"
+      >
+        tools
+      </div>
+
+      <snapto
+        id="graths"
+        class="ui-widget-content ui-corner-all ui-resizable ui-draggable ui-draggable-handle"
+        title="WB"
+        name="drag"
+        style="left: 1248px; top: 90px; z-index: 9; height: 382px;"
+      >
+        related graphs
+        <canvas
+          id="can1"
+          style=" width: 150; height: 150;"
+        ></canvas>
+        <canvas
+          id="can2"
+          style=" width: 150; height: 150;"
+        ></canvas>
+      </snapto>
+
+      <div
+        id="grathscon"
+        class="controller"
+        title="control"
+        style="top: 385.983px; left: 1274.99px; width: 100px; height: 50px;"
+      >
+        graphs
+      </div>
+
+      <snapto id="calc" class="ui-widget-content ui-corner-all ui-resizable ui-draggable ui-draggable-handle" title="WB" name="drag" style="left: 900px; top: 0px; z-index: 9; height: auto; width: auto; display: block;">
+          calcolator
+  
+          <snapto id="calc_history" class="ui-widget-content ui-corner-all ui-resizable ui-draggable ui-draggable-handle" title="WB" name="drag" style="left: -154px; top: 30px; z-index: 11; display: block;">
+  calc's history
+          </snapto>
+          <!--TERMS OF USEBY USING THE CODE, YOU AGREE:1. THAT THE MATERIALS ARE PROVIDED "AS IS" AND WITHOUT WARRANTIES OF ANY KIND2. NOT TO CHANGE ANY OF THE JAVASCRIPT CODE, INCLUDING THE LICENSE TEXT3. NOT TO REMOVE THE LINE OF TEXT "powered by calculator.net"4. THAT THE COPYRIGHT BELONGS TO calculator.net5. NOT TO REMOVE THE TERMS OF USE--><!--BEGIN OF SCIENTIFIC CALCULATOR CODE-->
+        <table><tbody><tr><td id="sciout"><div><div id="sciOutPut">0</div></div><div style="padding-top:3px;width:100%"><div><span onclick="r('sin')" class="scifunc">sin</span><span onclick="r('cos')" class="scifunc">cos</span><span onclick="r('tan')" class="scifunc">tan</span><span class="scird"></span></div><div><span onclick="r('asin')" class="scifunc">sin<sup>-1</sup></span><span onclick="r('acos')" class="scifunc">cos<sup>-1</sup></span><span onclick="r('atan')" class="scifunc">tan<sup>-1</sup></span><span onclick="r('pi')" class="scifunc">π</span><span onclick="r('e')" class="scifunc">e</span></div><div><span onclick="r('pow')" class="scifunc">x<sup>y</sup></span><span onclick="r('x3')" class="scifunc">x<sup>3</sup></span><span onclick="r('x2')" class="scifunc">x<sup>2</sup></span><span onclick="r('ex')" class="scifunc">e<sup>x</sup></span><span onclick="r('10x')" class="scifunc">10<sup>x</sup></span></div><div><span onclick="r('apow')" class="scifunc"><sup>y</sup>√x</span><span onclick="r('3x')" class="scifunc"><sup>3</sup>√x</span><span onclick="r('sqrt')" class="scifunc">√x</span><span onclick="r('ln')" class="scifunc">ln</span><span onclick="r('log')" class="scifunc">log</span></div><div><span onclick="r('(')" class="scifunc">(</span><span onclick="r(')')" class="scifunc">)</span><span onclick="r('1/x')" class="scifunc">1/x</span><span onclick="r('pc')" class="scifunc">%</span><span onclick="r('n!')" class="scifunc">n!</span></div></div><div style="padding-top:3px;"><div><span onclick="r(7)" class="scinm">7</span><span onclick="r(8)" class="scinm">8</span><span onclick="r(9)" class="scinm">9</span><span onclick="r('+')" class="sciop">+</span><span onclick="r('MS')" class="sciop">MS</span></div><div><span onclick="r(4)" class="scinm">4</span><span onclick="r(5)" class="scinm">5</span><span onclick="r(6)" class="scinm">6</span><span onclick="r('-')" class="sciop">–</span><span onclick="r('M+')" class="sciop">M+</span></div><div><span onclick="r(1)" class="scinm">1</span><span onclick="r(2)" class="scinm">2</span><span onclick="r(3)" class="scinm">3</span><span onclick="r('*')" class="sciop">×</span><span onclick="r('M-')" class="sciop">M-</span></div><div><span onclick="r(0)" class="scinm">0</span><span onclick="r('.')" class="scinm">.</span><span onclick="r('EXP')" class="sciop">EXP</span><span onclick="r('/')" class="sciop">÷</span><span onclick="r('MR')" class="sciop">MR</span></div><div><span onclick="r('+/-')" class="sciop">±</span><span onclick="r('RND')" class="sciop">RND</span><span onclick="r('C')" class="scieq">C</span><span onclick="r('=')" class="scieq">=</span><span onclick="r('MC')" class="sciop">MC</span></div></div></td></tr><tr><td id="calfootnote">powered by <a href="https://www.calculator.net" rel="nofollow">calculator.net</a></td></tr></tbody></table><!--END OF SCIENTIFIC CALCULATOR CODE--></snapto>
+
+      <div
+        id="calccon"
+        class="controller"
+        title="control"
+        style="top: 213.983px; left: 1033.91px; width: 100px; height: 50px;"
+      >
+        calc
+      </div>
+
+      <div
+        id="calc_historycon"
+        class="controller"
+        title="control"
+        style="top: 185.903px; left: 876.905px; width: 100px; height: 50px; display: block;"
+      >
+        calcH
+      </div>
+
+      <snapto
+        id="grath_wizard"
+        class="ui-widget-content ui-draggable ui-draggable-handle"
+        title="WB"
+        name="drag"
+        style="left: 940.906px; top: 504px; z-index: 10; width: 210px; height: auto;"
+      >
+        <p>grath builder wizard</p>
+        <p>v0:<input id="inputV0" onkeypress="wizardExe()"/></p>
+        <p>v:<input id="inputV" onkeypress="wizardExe()"/></p>
+        <p>t0:<input id="inputt0" onkeypress="wizardExe()"/></p>
+        <p>t:<input id="inputt" onkeypress="wizardExe()"/></p>
+      </snapto>
+
+      <div
+        id="grath_wizardcon"
+        class="controller"
+        title="control"
+        style="top: 461.998px; left: 1059.41px; width: 100px; height: 50px;"
+      >
+        wizard
+      </div>
+
+      <snapto
+        id="points"
+        class="ui-widget-content ui-corner-all ui-resizable ui-draggable ui-draggable-handle"
+        title="WB"
+        name="drag"
+        style="left: 0px; top: 512px; z-index: 9; width: 823px; height: 200;"
+      >
+        <p>
+          points data
+        </p>
+        <div id="point1" class="dataPoints" title="item" name="drag">
+          point1 data:
+          <p style="width: max-content;">
+            x:<input class="dataX" style="width: 54px;" value="1" />
+          </p>
+
+          <p style="width: max-content;">
+            y:<input class="dataY" style="width: 54px;" />
+          </p>
+        </div>
+        <div id="point2" class="dataPoints" title="item" name="drag">
+          point2 data
+          <p style="width: max-content;">
+            x:<input class="dataX" style="width: 54px;" value="1" />
+          </p>
+
+          <p style="width: max-content;">
+            y:<input class="dataY" style="width: 54px;" />
+          </p>
+        </div>
+        <div id="point3" class="dataPoints" title="item" name="drag">
+          point3 data
+          <p style="width: max-content;">
+            x:<input class="dataX" style="width: 54px;" value="1" />
+          </p>
+
+          <p style="width: max-content;">
+            y:<input class="dataY" style="width: 54px;" />
+          </p>
+        </div>
+        <div id="point4" class="dataPoints" title="item" name="drag">
+          point4 data
+          <p style="width: max-content;">
+            x:<input class="dataX" style="width: 54px;" value="1" />
+          </p>
+
+          <p style="width: max-content;">
+            y:<input class="dataY" style="width: 54px;" />
+          </p>
+        </div>
+      </snapto>
+
+      <div
+        id="pointscon"
+        class="controller"
+        title="control"
+        style="top: 461.998px; left: 363.492px; width: 100px; height: 50px;"
+      >
+        points
+      </div>
+
+      <snapto
+        id="grath_history"
+        class="ui-widget-content ui-corner-all ui-resizable ui-draggable ui-draggable-handle"
+        title="WB"
+        name="drag"
+        style="left: 159.985px; top: 0px; z-index: 9; height: 197px; width: 97px;"
+      >
+        graph history
+      </snapto>
+
+      <div
+        id="grath_historycon"
+        class="controller"
+        title="control"
+        style="top: 200.981px; left: 160.47px; width: 100px; height: 50px;"
+      >
+        graph history
+      </div>
+
+      <snapto
+        id="menuopse"
+        class="ui-widget-content ui-corner-all ui-resizable ui-draggable ui-draggable-handle"
+        title="WB"
+        name="drag"
+        style="left: 358.981px; top: 0px; z-index: 9; width: 109px;"
+      >
+        menu opsens
+      </snapto>
+
+      <div
+        id="menuopsecon"
+        class="controller"
+        title="control"
+        style="top: 153.992px; left: 365.471px; width: 100px; height: 50px;"
+      >
+        menu
+      </div>
+
+      <div id="end of boards"></div>
+
+      <canvas id="canvas_plate" style="background-color: green;"></canvas>
+
+      <div id="menu" opacity="0.5" style="left: -100px; top: -100px;">
+        <div id="menut">movecon</div>
+
+        <button id="menubut1" class="menuButton" onclick="console.log(movecon)">
+          cosnole this
+        </button>
+        <p>
+          <button id="menubut2" class="menuButton" onclick="collapse(move)">
+            collapse
+          </button>
+        </p>
+        <p>
+          <button id="menubut3" class="menuButton" onclick="effShow(move)">
+            show
+          </button>
+        </p>
+        <p>
+          <button
+            id="menubut4"
+            class="menuButton"
+            onclick="console.log(document.elementsFromPoint(943, 229))"
+          >
+            elems here
+          </button>
+        </p>
+        <p>
+            <button
+              id="menubut5"
+              class="menuButton"
+              onclick="console.log(document.elementsFromPoint(943, 229))"
+            >
+              collapse all
+            </button>
+          </p>
+          <p>
+              <button
+                id="menubut6"
+                class="menuButton"
+                onclick="console.log(document.elementsFromPoint(943, 229))"
+              >
+                show all
+              </button>
+            </p>
+        <p></p>
+      </div>
+
+      <input
+        id="code"
+        onkeypress="input(this.value)"
+        value="dev input"
+        style="left:-100px; top:-1000px;position: absolute;"
+      />
+      <div
+        class="controller"
+        title="control"
+        style="left:-100px; top:-100px;position: absolute;"
+      ></div>
+
+      
+      <div id="end"></div>
+
+      <!-- <div id="allcon" class="controller" title="control"
+      style="top: 665.99px; left: 388.498px; width: 100px; height: 50px;">
+    </div> -->
+    </snapto>
+    <snapto
+        id="WB"
+        class="ui-widget-content ui-draggable ui-draggable-handle"
+        title="WB"
+        name="drag"
+        style="left: -100px; top: -100px; z-index: 9; height: 50px; width: 50px;"
+      >
+        dont chainge class and name
+      </snapto>
+
+  </body>
+  <script type="text/javascript" src="Gdata.js"></script>
+  <script type="text/javascript" src="functions.js"></script>
+  <script type="text/javascript" src="graph.js"></script>
+  <script type="text/javascript" src="data.js"></script>
+  <script type="text/javascript" src="physics.js"></script>
+  <script type="text/javascript" src="drag_and_drop.js"></script>
+  <script type="text/javascript" src="menu.js"></script>
+  <script type="text/javascript" src="event.js"></script>
+  <script type="text/javascript" src="Scalc.js"></script>
+  <!-- <script type="text/javascript" src="calc.js"></script> -->
 </html>

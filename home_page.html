@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" type="text/css" href="home_page.css">
+    <title>Home_page</title>
+
+    <link
+    rel="stylesheet"
+    href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css"
+  />
+
+  <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+  <!-- <script src="https://code.jquery.com/jquery-3.4.1.js"></script> -->
+  <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+</head>
+<body>
+        <menu id="home_menu">
+                <login id="login" class="menuos" onmouseover="this.enter()" onmouseout="this.exit()" style="height: 113px;">
+                    Login
+                    <div id="loginawd" class="contents" style="display: none;">
+                            <input type="text" id="login_name" placeholder="username">
+                            <input type="password" id="login_password" placeholder="password">
+                          
+                            <a>don't have one? Create new account for free!</a></div>
+                    
+                </login>
+                <logo id="logo" class="menuos" onmouseover="this.enter()" onmouseout="this.exit()">
+                    logo
+                <div id="logoawd" class="contents" style="display: none;"><p>1</p><p>2</p><p>3</p><p>4</p></div></logo>
+                <physic id="physic" class="menuos" onmouseover="this.enter()" onmouseout="this.exit()" style="height: 113px;">
+                    Physic
+                <div id="physicawd" class="contents" style="display: none;"><p>1</p><p>2</p><p>3</p><p>4</p></div></physic>
+                <geometry id="geometry" class="menuos" onmouseover="this.enter()" onmouseout="this.exit()">
+                    Geometry
+                <div id="geometryawd" class="contents" style="display: none;"><p>1</p><p>2</p><p>3</p><p>4</p></div></geometry>
+                
+            </menu>
+            <canvas id="can_plate" height="540" width="window.innerWidth" style=" border: solid 1px; padding: 0;"></canvas>
+</body>
+<script type="text/javascript" src="home_page.js"></script>
+<!-- <script type="text/javascript" src="functions.js"></script> -->
+
+</html>
