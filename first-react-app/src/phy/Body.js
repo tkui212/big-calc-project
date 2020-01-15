@@ -5,7 +5,7 @@ import {queue,timeComponent,c1,animation} from "../objects/queue.js";
 import {toDegrees,toRadians,log,cpuAverage} from '../functions.js'
 import $ from  "jquery";
 import "jquery-ui/ui/effects/effect-slide";
-import ".../public/draggable";
+import "jquery-ui/ui/widgets/draggable";
 // import "./jquery-ui-1.12.1/jquery-ui.js";
 export class Console extends Component {
   constructor(props) {
@@ -40,9 +40,9 @@ export class Console extends Component {
           this.top=`${props.top}px`
         }
       }
-      if(this.parent!=undefined){
-        this.left=this.parent.x
-        this.top=this.parent.y
+      else if(this.parent!=undefined){
+        this.left=this.parent.x+"px"
+        this.top=this.parent.y+"px"
       }
   }
   componentDidMount(){
@@ -81,16 +81,14 @@ if(this.dataSource!=undefined&&this.dataSource.id!=undefined){
       el.className="dataPoints"
       el.name="drag"
       el.title="item"
-      el.style=`left: ${this.left}; top: ${this.top}; z-index: 201; width: ${this.width}; height: ${this.height};`
+      console.log(this.left)
+      el.style=`left: ${this.left}; top: ${this.top}; z-index: 201; width: 15%; height: ${this.height}; overflow:hidden;`
       el.append(this.text)
       for (let key in this.values) {
-        console.log(key)
-        console.log(this.values[key])
-      }
-      for(let i=0;i<this.values.length;i++){
-        // let child=new Value({id:this.id+""})
-        // el.append()
-        console.log(this.values[i])
+        let child=new Value({id:this.id+key,name:key,value:this.values[key],dataSource:this.dataSource})
+        el.append(child.create())
+        this.parent.registerListener(()=>child.update())
+        // let val=document.getElementById(this.id+key)
       }
       console.log(this.values)
       document.getElementById("sliders").append(el)
@@ -116,12 +114,27 @@ create(){
           let el=document.createElement("input")
           el.id=this.id
           el.className="dataInput"
-          el.style=`width:54px;fontSide:25px;`
-          el.defaultValue=this.value
+          el.style=`fontSide:25px;`
+          if(typeof this.value=="object"){
+            el.defaultValue=this.value[this.name]
+          }
+          else{
+            el.defaultValue=this.value
+          }
           let p=document.createElement("p")
+          p.style="      height: max-content;"
           p.append(this.name)
           p.append(el)
           return p
+}
+update(value){
+  this.elem=document.getElementById(this.id)
+  if(value!=undefined){
+    this.elem.value=value
+  }
+  else{
+    this.elem.value=this.value[this.name]
+  }
 }
 }
 
@@ -231,9 +244,22 @@ export class Body extends Component {
     this.renderType=props.renderType?props.renderType:"normal"
     this.dragging=false
     this.mouse={x:0,y:0}
+    this.Listeners=[]
   }
   render() {return (<div id={this.id}></div>);}
   componentDidMount() {}
+  
+  registerListener(listener) {
+    this.Listeners.push(listener)
+  }
+  event(){
+    this.Listeners.forEach(Fun => {
+        Fun.call()
+      });
+  }
+  removeListener(id){
+    this.Listeners=this.Listeners.filter((value)=>value.id!=id)
+  }
   update = (op) => {for (let key in op) {if (this.hasOwnProperty(key)){this[key]= op[key];}}};
 }
 export class Cir extends Body {
@@ -244,7 +270,11 @@ export class Cir extends Body {
     Object.defineProperty(this,"data",{
       get(){return this.DataHolder},
       set(num){ 
+          this.DataHolder.removeListener(this.id)
+          this.DataHolder.removeCon(this.id)
+          
         this.DataHolder=num;
+        this.DataHolder.registerListener(()=>this.event())
         this.DataHolder.cons.push(this)
         if(this.parent!=undefined&&this.parent.constructor.name=="Line"){
           if(this.parent.point1.id==this.id){
@@ -305,8 +335,9 @@ componentDidMount() {
   })
 }
 toConsole(){
-  this.console=new Console({id:"dataTest1",text:"test text",values:{x:this.x},parent:this})
+  this.console=new Console({id:this.id+"console",text:this.id+" data",values:{x:this,y:this,id:this},parent:this,left:parseInt(this.x)+50,top:parseInt(this.y)+50})
   this.console.create()
+  // this.data.registerListener(()=>{})
 }
 render(){
   return(<circle id={this.id} cx={this.x} cy={this.y} r={10} stroke={"white"} strokeWidth={0} fill={"white"} style={{cx:`${this.data.cx}`,cy:`${this.data.cy}`}} />)
