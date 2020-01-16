@@ -14,7 +14,7 @@ export class Console extends Component {
       this.side=props.side
       this.width=props.width
       this.height=props.height
-      this.children=props.children
+      this.children=[]
       this.dataSource=props.dataSource
       this.values=props.values
       this.parent=props.parent
@@ -58,7 +58,11 @@ export class Console extends Component {
       $(`#${this.id}`).draggable({
 snap: `snapTo:not(#${this.id}):not(#${this.id}>snapTo)`,
 snapTolerance: 10
-});
+}).click(function() {
+  $(this).draggable({ disabled: false });
+}).dblclick(function() {
+  $(this).draggable({ disabled: true });
+});;
     }
   }
 
@@ -70,6 +74,7 @@ snapTolerance: 10
       for (let key in this.values) {
         let child=new 
         Value({id:this.id+key,name:key,value:this.values[key],dataSource:this.dataSource})
+        this.children.push(child) 
         el.append(child.create())
         this.parent.registerListener(()=>child.update())
         // let val=document.getElementById(this.id+key)
@@ -89,15 +94,30 @@ for(let i=0;i<5;i++){
   ms.append(buttons[i])
 }
 buttons[0].textContent="add"
-buttons[0].removeEventListener("click",buttons[0].func)
+buttons[0].removeEventListener("click",buttons[1].func)
 buttons[0].func=()=>{
   let key=null
   let child=new 
-  Value({id:this.id+key,name:key,value:0})
-  console.log(el)
-  el.append(child.create())}
-  buttons[0].addEventListener("click",buttons[0].func)
+  Value({id:this.id+key,name:"null",value:this.dataSource})
+  this.children.push(child)
+  el.append(child.create())
+  this.values["null"]=this.dataSource
+  this.parent.registerListener(()=>child.update())
+}
 
+  buttons[0].addEventListener("click",buttons[0].func)
+  
+
+  buttons[1].textContent="update"
+  buttons[1].removeEventListener("click",buttons[1].func)
+  buttons[1].func=()=>{
+    for(let value of this.children){
+      value.update()
+    }
+  }
+  
+    buttons[1].addEventListener("click",buttons[1].func)
+  
 
 
 
@@ -170,7 +190,7 @@ create(){
       this.value[this.name]=this.inputElem.value
       }})
       
-let sl =createElement("div",{id:this.id+"SS",className:"side",style:`z-index:201;height:20%;position:absolute;background-color:green;width:100%;right:100%;display:none; display: flex;`})
+let sl =createElement("div",{id:this.id+"SS",className:"side",style:`z-index:201;height:20%;position:absolute;background-color:green;width:100%;right:100%;display:none;`})
 p.append(sl)
 // let ms=createElement("div",{id:this.id+"S",style:`z-index:202;height:90%;position:absolute;background-color:green;width:100%;left:-100%;top:30px;display:none;`})
 // p.append(ms)
@@ -187,9 +207,29 @@ buttons[0].func=()=>{
   console.log(p)
   p.parentElement.removeChild(p)}
 
-  p.append(this.name)
+//   buttons[1].textContent="edit"
+// buttons[1].removeEventListener("click",buttons[1].func)
+// buttons[1].func=()=>{
+//   if($(text).attr('contenteditable')=="true"){
+//     $(text).attr('contenteditable',"false")
+//     console.log(this.name)
+    
+//     console.log(this.name)
+//   }
+//   else{
+//     
+    
+//   }
+
+//   }
+  let text=createElement("span",{id:"text"})
+  text.textContent=this.name
+  text.addEventListener("keyup",()=>{this.name=text.textContent; this.update()})
+  $(text).attr('contenteditable',"true")
+  p.append(text)
   p.append(el)
   buttons[0].addEventListener("click",buttons[0].func)
+  // buttons[1].addEventListener("click",buttons[1].func)
 
 
 
@@ -428,7 +468,7 @@ componentDidMount() {
   })
 }
 toConsole(copy){
-  let obj={id:this.id+"console",text:this.id+" data",values:{x:this,y:this,id:this},parent:this,left:parseInt(this.x)+50,top:parseInt(this.y)+50}
+  let obj={id:this.id+"console",text:this.id+" data",values:{x:this,y:this,id:this},parent:this,left:parseInt(this.x)+50,top:parseInt(this.y)+50,dataSource:this}
   if(document.getElementById(this.id+"console")==null){
   if(typeof copy=="object"&&copy.constructor.name=="Console"){
     
