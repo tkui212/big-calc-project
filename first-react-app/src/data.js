@@ -175,7 +175,6 @@ export class Value extends Component {
   }
   componentDidMount(){
     this.elem=document.getElementById(this.id)
-    this.valueElem=document.getElementById(this.id+"Input")
   }
   render() {
            return (
@@ -191,13 +190,17 @@ create(){
   p.append(sl)
 
 let value=createElement("span",{id:this.id+"value",textContent:"null",contenteditable:"true"})
+let separetor=createElement("span",{id:this.id+"sper",textContent:": "})
+this.valueElem=value
 let key=createElement("span",{id:this.id+"key",textContent:this.name,contenteditable:"true"})
 // text.textContent=
 key.addEventListener("keyup",()=>{this.name=key.textContent; this.update()})
-// $(key).attr('contenteditable',"true")
+$(key).attr('contenteditable',"true")
+$(value).attr('contenteditable',"true")
 p.append(key)
+p.append(separetor)
 p.append(value)
-  if(this.value.constructor.name=="object"){
+  if(typeof this.value=="object"){
     value.textContent=this.value[this.name]
   }
   else{
@@ -256,10 +259,12 @@ if(e.button==2&&mouseElem(e)[0].constructor.name=="HTMLParagraphElement"){
 }
 update(value){
   if(value!=undefined){
-    this.valueElem.value=value
+    this.valueElem.textContent=value
   }
   else{
-    if(this.value[this.name].constructor.name=="Object"){
+    let copy=this.value[this.name]
+    console.log(copy)
+    if(copy!=undefined&&copy.constructor.name=="Object"){
       console.log("object")
       if(document.getElementById(this.id+"object")==null){
       let con=new Console({id:this.id+"object",text:this.name+" data",values:{x:this.value[this.name],y:this.value[this.name],id:this.value[this.name]},parent:this.value[this.name],left:0,top:"100%",dataSource:this.value[this.name],width:"100%"})
@@ -270,7 +275,8 @@ update(value){
       if(document.getElementById(this.id+"object")!=null){
         this.elem.removeChild(document.getElementById(this.id+"object"))
       }
-    this.valueElem.value=this.value[this.name]
+    this.valueElem.textContent=this.value[this.name]
+    console.log(this.value[this.name])
     }
   }
 }
