@@ -13,6 +13,9 @@ export class Console extends Component {
       this.id=props.id
       this.side=props.side
       this.width=props.width
+      if(this.width==undefined){
+        this.width="15%"
+      }
       this.height=props.height
       this.children=[]
       this.dataSource=props.dataSource
@@ -47,6 +50,9 @@ export class Console extends Component {
   }
   render() {this.onMountCreateMe=true;return (null)}
   componentDidMount(){
+    for(let el of this.children){
+      el.componentDidMount()
+    }
     if(this.onMountCreateMe){
       this.onMountCreateMe=false
       this.parent=this.parent()
@@ -66,9 +72,9 @@ snapTolerance: 10
     }
   }
 
-  create(){
+  create(ops){
       let el=createElement("div",{id:this.id,className:"dataPoints",name:"drag",title:"item",
-        style:`left: ${this.left}; top: ${this.top}; z-index: 201; width: 15%; height: ${this.height}; `})
+        style:`left: ${this.left}; top: ${this.top}; z-index: 201; width: ${this.width}; height: ${this.height}; `})
       el.append(this.text)
 
       for (let key in this.values) {
@@ -119,6 +125,16 @@ buttons[0].func=()=>{
     buttons[1].addEventListener("click",buttons[1].func)
   
 
+    
+  buttons[2].textContent="console this"
+  buttons[2].removeEventListener("click",buttons[2].func)
+  buttons[2].func=()=>{
+    console.log(this)
+  }
+  
+    buttons[2].addEventListener("click",buttons[2].func)
+  
+
 
 
 
@@ -143,6 +159,9 @@ if(e.button==2&&mouseElem(e)[0].constructor.name=="HTMLDivElement"){
       ms.style.display="none"
     }
     })
+    if(ops=="return"){
+      return el
+    }
       document.getElementById("sliders").append(el)
       this.componentDidMount()
   }
@@ -207,21 +226,6 @@ buttons[0].func=()=>{
   console.log(p)
   p.parentElement.removeChild(p)}
 
-//   buttons[1].textContent="edit"
-// buttons[1].removeEventListener("click",buttons[1].func)
-// buttons[1].func=()=>{
-//   if($(text).attr('contenteditable')=="true"){
-//     $(text).attr('contenteditable',"false")
-//     console.log(this.name)
-    
-//     console.log(this.name)
-//   }
-//   else{
-//     
-    
-//   }
-
-//   }
   let text=createElement("span",{id:"text"})
   text.textContent=this.name
   text.addEventListener("keyup",()=>{this.name=text.textContent; this.update()})
@@ -265,7 +269,19 @@ update(value){
     this.inputElem.value=value
   }
   else{
+    if(typeof this.value[this.name]=="object"){
+      console.log("object")
+      if(document.getElementById(this.id+"object")==null){
+      let con=new Console({id:this.id+"object",text:this.name+" data",values:{x:this.value[this.name],y:this.value[this.name],id:this.value[this.name]},parent:this.value[this.name],left:0,top:"100%",dataSource:this.value[this.name],width:"100%"})
+      this.elem.append(con.create("return"))
+      }
+    }
+    else{
+      if(document.getElementById(this.id+"object")!=null){
+        this.elem.removeChild(document.getElementById(this.id+"object"))
+      }
     this.inputElem.value=this.value[this.name]
+    }
   }
 }
 
