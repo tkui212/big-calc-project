@@ -4,6 +4,11 @@ import $ from  "jquery";
 import "jquery-ui/ui/effects/effect-slide";
 import "jquery-ui/ui/widgets/draggable";
 // import "./jquery-ui-1.12.1/jquery-ui.js";
+var stringify = require("json-stringify-safe");
+
+    function log(text) {
+      return JSON.parse(stringify(text));
+    }
 export class Console extends Component {
   constructor(props) {
       super(props)
@@ -82,8 +87,6 @@ snapTolerance: 10
         this.parent.registerListener(()=>child.update())
         // let val=document.getElementById(this.id+key)
       }
-      console.log(this.values)
-      console.log("data ops show")
 
 let sl =createElement("div",{id:this.id+"SS",style:`z-index:201;height:10%;position:absolute;background-color:green;width:100%;left:-100%;top:0%;display:none;`})
 el.append(sl)
@@ -200,23 +203,11 @@ $(value).attr('contenteditable',"true")
 p.append(key)
 p.append(separetor)
 p.append(value)
-  if(typeof this.value=="object"){
-    value.textContent=this.value[this.name]
-  }
-  else{
-    value.textContent=this.value
-  }
-  
 
   this.valueElem=value
   this.valueElem.addEventListener("keypress",(ev)=>{
-    if(ev.key=="Enter"&&this.valueElem.value!=""){
-      this.value[this.name]=this.valueElem.value
-      }})
-      
+    if(ev.key=="Enter"&&this.valueElem.value!=""){this.value[this.name]=this.valueElem.value}})
 
-// let ms=createElement("div",{id:this.id+"S",style:`z-index:202;height:90%;position:absolute;background-color:green;width:100%;left:-100%;top:30px;display:none;`})
-// p.append(ms)
 let buttons=[]
 for(let i=0;i<5;i++){
   buttons[i]=createElement("button",{id:this.id+"SB"+i,className:"side",style:`width:50px;height:90%;`})
@@ -226,34 +217,21 @@ for(let i=0;i<5;i++){
 }
 buttons[0].textContent="delete"
 buttons[0].removeEventListener("click",buttons[0].func)
-buttons[0].func=()=>{
-  console.log(p)
-  p.parentElement.removeChild(p)}
-
-  buttons[0].addEventListener("click",buttons[0].func)
-  // buttons[1].addEventListener("click",buttons[1].func)
+buttons[0].func=()=>{p.parentElement.removeChild(p)}
+  
+buttons[0].addEventListener("click",buttons[0].func)
 
 
 
 
 
-document.addEventListener("mouseup",()=>{
-    sl.style.display="none"
-    // ms.style.display="none"
-  });
-
+document.addEventListener("mouseup",()=>{sl.style.display="none"});
   p.addEventListener("mouseup",(e)=>{
-if(e.button==2&&mouseElem(e)[0].constructor.name=="HTMLParagraphElement"){
-  setTimeout(()=>{$(`#${sl.id}`).show(
-  "slide", {direction: "right"},
-  200
-  );},1)
-    }
-    else{
-      sl.style.display="none"
-      // ms.style.display="none"
-    }
-    })
+    if(e.button==2&&mouseElem(e)[0].constructor.name=="HTMLParagraphElement"){
+      setTimeout(()=>{$(`#${sl.id}`).show("slide", {direction: "right"},200);},1)}
+    else{sl.style.display="none"}})
+  
+  this.update()
   return p
 
 }
@@ -264,20 +242,14 @@ update(value){
   else{
     let copy=this.value[this.name]
     console.log(copy)
-    if(copy!=undefined&&copy.constructor.name=="Object"){
-      console.log("object")
-      if(document.getElementById(this.id+"object")==null){
-      let con=new Console({id:this.id+"object",text:this.name+" data",values:{x:this.value[this.name],y:this.value[this.name],id:this.value[this.name]},parent:this.value[this.name],left:0,top:"100%",dataSource:this.value[this.name],width:"100%"})
-      this.elem.append(con.create("return"))
-      }
+    if(copy!=undefined&&typeof copy=="object"){
+      console.log("make your own here cus effisentsy")
+      this.valueElem.textContent=log(this.value[this.name])
     }
     else{
-      if(document.getElementById(this.id+"object")!=null){
-        this.elem.removeChild(document.getElementById(this.id+"object"))
-      }
     this.valueElem.textContent=this.value[this.name]
-    console.log(this.value[this.name])
     }
+    console.log(this.valueElem.textContent)
   }
 }
 
