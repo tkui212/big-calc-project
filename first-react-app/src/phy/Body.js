@@ -35,13 +35,15 @@ export class Data extends Component {
       get(){return document.getElementById("all").style.getPropertyValue(`--${this.id}-x`)},
       set(num){document.getElementById("all").style.setProperty(`--${this.id}-x`,`${num}`)
       this.event(this.Listeners)
-    }
+    },
+    enumerable:true
     })
     Object.defineProperty(this,"y",{
       get(){return document.getElementById("all").style.getPropertyValue(`--${this.id}-y`)},
       set(num){document.getElementById("all").style.setProperty(`--${this.id}-y`,`${num}`)
       this.event(this.Listeners)
-    }
+    },
+    enumerable:true
     })
     this.unpdatindgsTimeOut=true
     // this.transSpeed=0.5

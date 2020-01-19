@@ -16,7 +16,7 @@ export class Console extends Component {
       this.side=props.side
       this.width=props.width
       if(this.width==undefined){
-        this.width="15%"
+        this.width="max-content"
       }
       this.height=props.height
       this.children=[]
@@ -76,7 +76,7 @@ snapTolerance: 10
 
   create(ops){
       let el=createElement("div",{id:this.id,className:"dataPoints",name:"drag",title:"item",
-        style:`left: ${this.left}; top: ${this.top}; z-index: 201; width: ${this.width}; height: ${this.height}; `})
+        style:`left: ${this.left}; top: ${this.top}; z-index: 201; width: auto; height: auto; max-width:300px;`})
       el.append(this.text)
 
       for (let key in this.values) {
@@ -90,11 +90,11 @@ snapTolerance: 10
 
 let sl =createElement("div",{id:this.id+"SS",style:`z-index:201;height:10%;position:absolute;background-color:green;width:100%;left:-100%;top:0%;display:none;`})
 el.append(sl)
-let ms=createElement("div",{id:this.id+"S",style:`z-index:202;height:90%;position:absolute;background-color:green;width:100%;left:-100%;top:30px;display:none;`})
+let ms=createElement("div",{id:this.id+"S",style:`z-index:202;height:auto;position:absolute;background-color:green;width:100%;left:-100%;top:0px;display:none;`})
 el.append(ms)
 let buttons=[]
 for(let i=0;i<5;i++){
-  buttons[i]=createElement("button",{id:this.id+"SB"+i,style:`width:90%;height:15%;`})
+  buttons[i]=createElement("button",{id:this.id+"SB"+i,style:`width:90%;height:auto;margin-bottom: 10%;`})
   buttons[i].func=function(){console.log(this.func)}
   buttons[i].addEventListener("click",buttons[i].func)
   ms.append(buttons[i])
@@ -134,7 +134,14 @@ buttons[0].func=()=>{
   
     buttons[2].addEventListener("click",buttons[2].func)
   
-
+    buttons[3].textContent="delete this"
+    buttons[3].removeEventListener("click",buttons[3].func)
+    buttons[3].func=()=>{
+      this.element.remove()
+    }
+    
+      buttons[3].addEventListener("click",buttons[3].func)
+    
 
 
 
@@ -192,7 +199,7 @@ create(){
   let sl =createElement("div",{id:this.id+"SS",className:"side",style:`z-index:201;height:20%;position:absolute;background-color:green;width:100%;right:100%;display:none;`})
   p.append(sl)
 
-let value=createElement("span",{id:this.id+"value",textContent:"null",contenteditable:"true"})
+let value=createElement("span",{id:this.id+"value",textContent:"null",contenteditable:"true",style:"white-space: pre-line"})
 let separetor=createElement("span",{id:this.id+"sper",textContent:": "})
 this.valueElem=value
 let key=createElement("span",{id:this.id+"key",textContent:this.name,contenteditable:"true"})
@@ -206,7 +213,8 @@ p.append(value)
 
   this.valueElem=value
   this.valueElem.addEventListener("keypress",(ev)=>{
-    if(ev.key=="Enter"&&this.valueElem.value!=""){this.value[this.name]=this.valueElem.value}})
+    if(ev.key=="Enter"&&this.valueElem.value!=""&&typeof this.value[this.name]!="object"){
+      this.value[this.name]=this.valueElem.value}})
 
 let buttons=[]
 for(let i=0;i<5;i++){
@@ -240,17 +248,75 @@ update(value){
     this.valueElem.textContent=value
   }
   else{
-    let copy=this.value[this.name]
-    console.log(copy)
-    if(copy!=undefined&&typeof copy=="object"){
-      console.log("make your own here cus effisentsy")
-      this.valueElem.textContent=log(this.value[this.name])
-    }
-    else{
-    this.valueElem.textContent=this.value[this.name]
-    }
-    console.log(this.valueElem.textContent)
+    console.log(this.value[this.name])
+    this.valueElem.textContent=stringfy(this.value[this.name],300)
   }
 }
 
 }
+function stringfy(obj,max_width){
+  let text=""
+  if(typeof obj=="object"){
+    console.log(Object.keys(obj))
+    for (let key in obj) {
+      
+      console.log(key)
+      let newText=""
+      if (typeof obj[key]=="object"&&obj[key].constructor.name=="Array")
+      {
+        newText=`\n ${key}: [${simpleStringfy(obj[key][0])}`
+        for(let i=1;i<obj[key].length;i++){
+          newText=newText+", "+simpleStringfy(obj[key][i])
+        }
+        newText=newText+`]`
+      }
+      else if (typeof obj[key]=="object")
+      {
+        newText=`\n ${key}: ${obj[key].constructor.name}`
+      }
+      else if(typeof obj[key]=="function"){
+        newText=`\n ${key}: function`
+      }
+      else{
+        newText=`\n ${key}: ${obj[key]}`
+      }
+      if(newText!=undefined&&newText.length>max_width/10){
+        text=text+`${newText.slice(0,30)}...`
+      }
+      else{
+        text=text+newText
+      }
+      console.log(newText)
+      if(newText!=undefined){
+      console.log(newText.length)
+    }
+  }
+  }
+  else{
+    text=`${obj}`
+  }
+  return text
+}
+function simpleStringfy(obj){
+  let text=""
+
+    if (typeof obj=="object")
+      {
+        text=obj.constructor.name
+      }
+      else if(typeof obj=="function"){
+        text="function"
+      }
+      else{
+        text=obj
+      }
+  return text
+}
+function displayTextWidth(text, font) {
+  var myCanvas = displayTextWidth.canvas || (displayTextWidth.canvas = document.createElement("canvas"));
+  var context = myCanvas.getContext("2d");
+  context.font = font;
+  
+  var metrics = context.measureText(text);
+  return Number(metrics.width);
+};
