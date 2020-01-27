@@ -1,7 +1,30 @@
 var stringify = require("json-stringify-safe");
 
-function log(text) {
-  return JSON.parse(stringify(text));
+function log(text,depth) {
+  let ret=text
+if(isNaN(depth)){
+  depth=2
+}
+  if(depth<1){
+    return ret
+  }
+  if(typeof text!=="object"||text==null){
+    ret=text
+  }
+  else if(text.constructor.name=="Array"){
+    ret=[...text]
+    for(let i=0;i<text.length;i++){
+      let obj=text[i]
+      ret[i]=log(obj,depth-1)
+    }
+  }
+  else if(typeof text=="object"){
+    ret={...text}
+    for(let key in ret){
+      ret[key]=log(ret[key],depth-1)
+    }
+  }
+  return ret;
 }
 export const exactMath = require("exact-math");
 export var c1 = [];
@@ -11,40 +34,7 @@ var svg = document.querySelector("#svg");
 export var queue = {
     TC: [],
     TC1: [],
-    updateEl: function(Ar,Cn,c1) {
-      let CN=[...Cn]
-      let ar=[...Ar]
-      let C1=[...c1]
-      if (ar.length == 0) {
-        return CN
-      }
-      let removed = [];
-      for (let i = 0; i < ar.length; i++) {//checked
-        CN = CN.filter(value => {
-          if (value.containName(ar[i].name)) {
-            removed.push(value.This);
-            if (typeof value.C != "string") {
-              removed.push(value.C);
-            }
-            return false
-          }
-          return true;
-        });
-      }
-      removed = removed.filterDup();
-      if (removed[0] == undefined) {
-        removed = ar;
-      }
-
-        CN = CN.concat(queue.collisens(removed,C1));
-      // await queue.filterDup(ar)
-      CN= queue.sort(CN);
-      // console.log(log(CN))
-      if (CN[0] == undefined) {
-        CN = [];
-      }
-      return CN
-    },
+    
     filter: function(Cn) {
       let CN=[...Cn]
       CN = CN.filter(value => {
@@ -107,30 +97,20 @@ export var queue = {
       });
     },
     futher: function(c1,length,startTime) {
-      // console.log(Cn)
-      let C1=log(c1)
-      let CN=queue.collisens(C1,C1)
+      let C1=log(c1,2)
+      let col=queue.collisens(C1,C1)[0]
       let ar=[]
       let Time=startTime
-        if(CN[0].T!==0){
-          Time=exactMath.formula(`${Time}+${CN[0].T}`)
-          CN=queue.moveAll(CN[0].T,C1,CN)
-        }
-        while (CN[0].T<1&&ar.length<length+1) {
-        let elle = CN[0];
-        ar.push(new timeComponent(Time,typeof elle.C == "string"?elle.C:{...elle.C},{...elle.This},log(C1)))//ye
-        // console.log("")
-          // console.log(log({T:Time,TC:CN,C1:C1,result:ar}))
-          // console.log("")
-        CN=queue.collisenExe(CN,C1);//checked
-        // console.log(log(C1))
-        if (CN.length != 0 || CN != 0) {//checked
-          CN=queue.filter(CN);//checked
-          CN=queue.sort(CN);//checkd
-        }
-        Time=exactMath.formula(`${Time}+${CN[0].T}`)
-        CN=queue.moveAll(CN[0].T,C1,CN)
-        // console.log(log(C1))
+        while (col.T<startTime+100&&ar.length<length+1) {
+          Time=exactMath.formula(`${Time}+${col.T}`)
+          C1=queue.moveAll(col.T,C1)
+          if(typeof col.C!="string"){
+            col.C=C1[col.C.id]
+          }
+          col.This=C1[col.This.id]
+          C1=queue.collisenExe(col,C1);//checked
+        ar.push(new timeComponent(Time,typeof col.C == "string"?col.C:log(col.C,2),log(col.This,2),log(C1,2)))//y
+        col=queue.collisens(C1,C1)[0]
       }
     ar.pop()
     // console.log(ar)
@@ -154,13 +134,11 @@ export var queue = {
         resolve("end");
       });
     },
-    moveAll: function(num,C1,CN) {
-
+    moveAll: function(num,C1) {
       for (let i = 0; i < C1.length; i++) {
         C1[i]=queue.moveTimesCon(num,C1[i])
       }
-      CN=queue.removeTime(num,CN);
-      return CN
+      return C1
     },
     runCollisens: async function() {
       while (queue.getCsInSecond().length > 0) {
@@ -176,7 +154,7 @@ export var queue = {
       });
     },
     setElements: function(This) {
-      This.elem = document.getElementById(`${This.name}`);
+      This.elem = document.getElementById(`${This.id}`);
     },
     disTest: function(time,collider,This ) {
       let x = exactMath.formula(
@@ -205,11 +183,11 @@ export var queue = {
       // console.log(" collisens ");
       let ar = [];
       let counter = 0;
-      let colliders=[...CN]
-      let C1=[...c1]
+      let colliders=log(CN)
+      let C1=log(c1)
       while(colliders.length>0){
         for (let i = 0; i < C1.length; i++) {
-        if (colliders[0].name != C1[i].name) {
+        if (colliders[0].id != C1[i].id) {
           let calc=queue.calcings(colliders[0],C1[i])
           if (calc != null) {
             ar[ar.length]=new timeComponent(calc,C1[i],colliders[0])
@@ -228,37 +206,34 @@ export var queue = {
     return queue.sort(ar)
     },
     moveTimesCon : function(time, This) {
-      let copy=This
-      copy.x = exactMath.formula(`${copy.x} +${copy.vx} * ${time}`);
-      copy.y = exactMath.formula(`${copy.y} +${copy.vy} * ${time}`);
-      return copy
+      This.x = exactMath.formula(`${This.x} +${This.vx} * ${time}`);
+      This.y = exactMath.formula(`${This.y} +${This.vy} * ${time}`);
+      return This
     },
     collisenExe : function(CN,C1) {
-      let copy=CN[0].This
-      let copyC=CN[0].C
-      if (typeof copyC == "string") {
+      if (typeof CN.C == "string") {
         // console.log(copy.color + " colliding with " + copyC);
-        copy=queue.wallExe(copy, copyC);
-        return queue.updateEl([copy],CN,C1);
+        CN.This=queue.wallExe(CN.This, CN.C);
+        C1[CN.This.id]=CN.This
+        return C1;
       }
       else{
         // console.log(copy.color + " executing on " + copyC.color);
-        let colliders=queue.collisen(copy,copyC);
-        copy=colliders.This
-        copyC=colliders.C
-        // console.log(0<C1.length)
-        return queue.updateEl([copy,copyC],CN,C1);
+        let colliders=queue.collisen(CN.This,CN.C);
+        C1[CN.This.id]=colliders.This
+        C1[CN.C.id]=colliders.C
+        return C1;
       }
     },
     draw : function(This,time,color) {
-      if(stringify(This.elem)=="{}"||stringify(This.elem)==undefined){
-        This.elem = document.getElementById(`${This.name}`);
-      }
+      // if(stringify(This.elem)=="{}"||stringify(This.elem)==undefined){
+      //   This.elem = document.getElementById(`${This.id}`);
+      // }
       if(!document.canvas.stopTimeOut){
-      This.elem.style.transition = `${time}s linear`;
-      This.elem.attributes.fill.value=color
-      This.elem.attributes[1].value = This.x;
-      This.elem.attributes[2].value = This.y;
+      This.me.elem.style.transition = `${time}s linear`;
+      This.me.elem.attributes.fill.value=color
+      This.me.x = This.x;
+      This.me.y = This.y;
       }
     },
     calcings : function(This,collider) {
@@ -410,19 +385,19 @@ export function timeComponent(T,C,This,C1){
       this.removeT=function(time){
         this.T=exactMath.formula(`${this.T}-${time}`)
       }
-      this.containName=function(name){
-        return (this.C.name==name||this.This.name==name)
+      this.containid=function(id){
+        return (this.C.id==id||this.This.id==id)
       }
       this.run=function(Time){
         for(let ele of this.C1){
-          if(ele.name==this.This.name){
+          if(ele.id==this.This.id){
             queue.draw(ele,Time,"white")
           }
-          else if(ele.name==this.C.name){
+          else if(ele.id==this.C.id){
             queue.draw(ele,Time,"white")
           }
           else{
-          queue.draw(ele,Time,ele.color)
+          queue.draw(ele,Time,ele.me.color)
           }
         }
 

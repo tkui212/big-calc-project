@@ -12,6 +12,11 @@ menu {
     margin: 0;
     height: 100%;
   }
+  ::-webkit-scrollbar {
+    width: 0px;  /* Remove scrollbar space */
+    height: 0px;
+    background: transparent;  /* Optional: just make scrollbar invisible */
+}
   
   .App-header {
     background-color: #282c34;

@@ -229,6 +229,9 @@ toConsole(copy){
 render(){
   return(<circle id={this.id} cx={this.x} cy={this.y} r={10} stroke={"white"} strokeWidth={0} fill={"white"} style={{cx:`${this.data.cx}`,cy:`${this.data.cy}`}} />)
 }
+toSimple(){
+  return {x:parseInt(this.x),y:parseInt(this.y),vx:this.vx,vy:this.vy,id:this.id,me:this}
+}
 }
 export class Line extends Body{
   constructor(props){

@@ -1,28 +1,41 @@
 import React, { Component } from "react";
-import {toDegrees,toRadians,createElement,mouseElem} from './functions.js'
+import {createElement,mouseElem,log} from './functions.js'
 import $ from  "jquery";
 import "jquery-ui/ui/effects/effect-slide";
 import "jquery-ui/ui/widgets/draggable";
 // import "./jquery-ui-1.12.1/jquery-ui.js";
-var stringify = require("json-stringify-safe");
+var con = (child,parent) => {
+  if(child.parentElement!=parent){
+    console.log("con")
 
-    function log(text) {
-      return JSON.parse(stringify(text));
-    }
+      let parBo=parent.getBoundingClientRect()
+      let chiBo=child.getBoundingClientRect()
+      child.style.left =chiBo.left - parBo.left+"px"
+      child.style.top = chiBo.top - parBo.top-2+"px"
+      parent.appendChild(child)
+  }
+}
+var dis = (child) => {
+  if(child.parentElement!=document.getElementById("sliders")){
+    console.log("dis")
+
+      let parBo=child.getBoundingClientRect()
+      console.log(log(parBo))
+      child.style.left =parBo.left+"px"
+      child.style.top =parBo.top+"px"
+      $("#sliders")[0].appendChild(child)
+  }
+}
 export class Console extends Component {
   constructor(props) {
       super(props)
       this.id=props.id
       this.side=props.side
-      this.width=props.width
-      if(this.width==undefined){
-        this.width="max-content"
-      }
-      this.height=props.height
       this.children=[]
       this.dataSource=props.dataSource
       this.values=props.values
       this.parent=props.parent
+      this.Vparent=props.Vparent
       if(props.text==undefined){
         this.text=this.id
       }
@@ -45,23 +58,32 @@ export class Console extends Component {
           this.top=`${props.top}px`
         }
       }
-      else if(this.parent!=undefined){
-        this.left=this.parent.x+"px"
-        this.top=this.parent.y+"px"
+      else if(this.Vparent!=undefined){
+        this.left=this.Vparent.x+"px"
+        this.top=this.Vparent.y+"px"
       }
   }
   render() {this.onMountCreateMe=true;return (null)}
   componentDidMount(){
+    console.log("comps start")
     for(let el of this.children){
       el.componentDidMount()
     }
     if(this.onMountCreateMe){
+      console.log("comps bad")
+
       this.onMountCreateMe=false
       this.parent=this.parent()
       this.parent.toConsole(this)
     }
     else{
+      console.log("comps good")
+
     this.element=document.getElementById(this.id)
+    console.log($(`#${this.id}`))
+    console.log($(`${this.id}`))
+    console.log(this.element)
+    console.log(this.id)
     $(`#${this.id}`).resizable();
       $(`#${this.id}`).draggable({
 snap: `snapTo:not(#${this.id}):not(#${this.id}>snapTo)`,
@@ -75,10 +97,19 @@ snapTolerance: 10
   }
 
   create(ops){
-      let el=createElement("div",{id:this.id,className:"dataPoints",name:"drag",title:"item",
-        style:`left: ${this.left}; top: ${this.top}; z-index: 201; width: auto; height: auto; max-width:300px;`})
+    let el=createElement("div",{id:this.id,className:"dataPoints",name:"drag",title:"item",style:`left: ${this.left}; top: ${this.top}; z-index: 201; width: auto;height: auto; max-width:300px;overflow:scroll;`})
+    this.element=el
       el.append(this.text)
-
+if(this.values==undefined){
+  for (let key in this.parent) {
+    let child=new
+    Value({id:this.id+key,name:key,value:this.parent[key],dataSource:this.dataSource})
+    this.children.push(child) 
+    el.append(child.create())
+    this.parent.registerListener(()=>child.update())
+    // let val=document.getElementById(this.id+key)
+  }
+}else{
       for (let key in this.values) {
         let child=new 
         Value({id:this.id+key,name:key,value:this.values[key],dataSource:this.dataSource})
@@ -87,10 +118,9 @@ snapTolerance: 10
         this.parent.registerListener(()=>child.update())
         // let val=document.getElementById(this.id+key)
       }
+    }
 
-let sl =createElement("div",{id:this.id+"SS",style:`z-index:201;height:10%;position:absolute;background-color:green;width:100%;left:-100%;top:0%;display:none;`})
-el.append(sl)
-let ms=createElement("div",{id:this.id+"S",style:`z-index:202;height:auto;position:absolute;background-color:green;width:100%;left:-100%;top:0px;display:none;`})
+let ms=createElement("div",{id:this.id+"S",style:`z-index:202;height:auto;position:absolute;background-color:green;width:min-content;left:-100%;top:0px;text-align:center;`})
 el.append(ms)
 let buttons=[]
 for(let i=0;i<5;i++){
@@ -98,81 +128,43 @@ for(let i=0;i<5;i++){
   buttons[i].func=function(){console.log(this.func)}
   buttons[i].addEventListener("click",buttons[i].func)
   ms.append(buttons[i])
-}
-buttons[0].textContent="add"
-buttons[0].removeEventListener("click",buttons[1].func)
-buttons[0].func=()=>{
-  let key=null
-  let child=new 
-  Value({id:this.id+key,name:"null",value:this.dataSource})
-  this.children.push(child)
-  el.append(child.create())
-  this.values["null"]=this.dataSource
-  this.parent.registerListener(()=>child.update())
-}
-
-  buttons[0].addEventListener("click",buttons[0].func)
-  
-
-  buttons[1].textContent="update"
-  buttons[1].removeEventListener("click",buttons[1].func)
-  buttons[1].func=()=>{
-    for(let value of this.children){
-      value.update()
-    }
+  buttons[i]["setB"]=function(text,func){
+    this.textContent=text
+    this.removeEventListener("click",this.func)
+    this.func=func
+    this.addEventListener("click",this.func)
   }
-  
-    buttons[1].addEventListener("click",buttons[1].func)
-  
-
-    
-  buttons[2].textContent="console this"
-  buttons[2].removeEventListener("click",buttons[2].func)
-  buttons[2].func=()=>{
-    console.log(this)
-  }
-  
-    buttons[2].addEventListener("click",buttons[2].func)
-  
-    buttons[3].textContent="delete this"
-    buttons[3].removeEventListener("click",buttons[3].func)
-    buttons[3].func=()=>{
-      this.element.remove()
-    }
-    
-      buttons[3].addEventListener("click",buttons[3].func)
-    
-
-
-
-document.addEventListener("mouseup",()=>{
-    sl.style.display="none"
-    ms.style.display="none"
+}
+buttons[0].setB("add",()=>{let key=null;let child=new Value({id:this.id+key,name:"null",value:this.dataSource});this.children.push(child);el.append(child.create());this.values["null"]=this.dataSource;this.parent.registerListener(()=>child.update());});
+buttons[1].setB("update",()=>{for(let value of this.children){value.update()}})
+  buttons[2].setB("console this",()=>{console.log(this)});
+  buttons[3].setB("delete this",()=>{this.element.remove()});
+  dis(ms)
+document.addEventListener("mousedown",()=>{
+    ms.style.visibility="hidden"
   });
 
-el.addEventListener("mouseup",(e)=>{
+el.addEventListener("mousedown",(e)=>{
 if(e.button==2&&mouseElem(e)[0].constructor.name=="HTMLDivElement"){
-  setTimeout(()=>{$(`#${sl.id}`).show(
-  "slide", {direction: "right"},
-  200
-  );},1)
-  setTimeout(()=>{$(`#${ms.id}`).show(
-      "slide", {direction: "up"},
+    setTimeout(()=>{
+      let bor=ms.getBoundingClientRect()
+      let ber=el.getBoundingClientRect()
+      console.log()
+      ms.style.left=ber.left-bor.width+"px"
+      ms.style.top=ber.top+"px"
+      ms.style.visibility="visible"
+      $(`#${ms.id}`).show(
+      "slide", {direction: "right"},
       200
-      );},200)
-    }
-    else{
-      sl.style.display="none"
-      ms.style.display="none"
-    }
-    })
+      );},1)
+  }})
     if(ops=="return"){
       return el
     }
       document.getElementById("sliders").append(el)
       this.componentDidMount()
+      console.log("comp")
   }
-
 }
 
 export class Value extends Component {
@@ -213,8 +205,8 @@ p.append(value)
 
   this.valueElem=value
   this.valueElem.addEventListener("keypress",(ev)=>{
-    if(ev.key=="Enter"&&this.valueElem.value!=""&&typeof this.value[this.name]!="object"){
-      this.value[this.name]=this.valueElem.value}})
+    if(ev.key=="Enter"&&this.valueElem.value!=""&&typeof this.dataSource[this.name]!="object"){
+      this.dataSource[this.name]=this.valueElem.value}})
 
 let buttons=[]
 for(let i=0;i<5;i++){
@@ -222,14 +214,15 @@ for(let i=0;i<5;i++){
   buttons[i].func=function(){console.log(this.func)}
   buttons[i].addEventListener("click",buttons[i].func)
   sl.append(buttons[i])
+  buttons[i]["setB"]=function(text,func){
+    this.textContent=text
+    this.removeEventListener("click",this.func)
+    this.func=func
+    this.addEventListener("click",this.func)
+  }
 }
-buttons[0].textContent="delete"
-buttons[0].removeEventListener("click",buttons[0].func)
-buttons[0].func=()=>{p.parentElement.removeChild(p)}
-  
-buttons[0].addEventListener("click",buttons[0].func)
-
-
+buttons[0].setB("delete",()=>{p.parentElement.removeChild(p)})
+buttons[0].setB("console this",()=>{new Console({parent:this.dataSource[this.name],id:`${this.id}${this.name}n`,dataSource:this.dataSource}).create()})
 
 
 
@@ -244,12 +237,16 @@ document.addEventListener("mouseup",()=>{sl.style.display="none"});
 
 }
 update(value){
+  console.log(this)
   if(value!=undefined){
     this.valueElem.textContent=value
   }
+  else if(this.dataSource[this.name]==undefined){
+    this.valueElem.textContent=stringfy(this.dataSource[this.name],300)
+  }
   else{
-    console.log(this.value[this.name])
-    this.valueElem.textContent=stringfy(this.value[this.name],300)
+    console.log(this.dataSource[this.name])
+    this.valueElem.textContent=stringfy(this.dataSource[this.name],300)
   }
 }
 
