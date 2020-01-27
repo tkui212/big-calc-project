@@ -117,6 +117,7 @@ export class Body extends Component {
     this.dragging=false
     this.mouse={x:0,y:0}
     this.Listeners=[]
+    this.Weight=props.Weight
   }
   render() {return (<div id={this.id}></div>);}
   componentDidMount() {}
@@ -492,19 +493,17 @@ export class Point extends Cir{
      */
   constructor(props){
     super(props)
-    // this.x=this.x
-    // this.y=this.y
+    this.pind=props.pind
   }
   componentDidMount() {
     this.elem = document.getElementById(`${this.id}`);
-    // queue.draw(this,0,"white")
     this.elem.me=this
-    
     this.dragQueue=0
     this.elem.addEventListener("mousedown",this.mouseDown)
   }
 
   mouseDown = (ev,ui) => {
+    if(!this.pind){
     document.addEventListener("mousemove",this.drag)
     document.addEventListener("mouseup",this.mouseUp)
     this.data.seperateLine(this,this.parent)
@@ -512,11 +511,13 @@ export class Point extends Cir{
     this.mouse={x:this.x-ev.clientX,y:this.y-ev.clientY}
     this.dragQueue++
     // this.transSpeed = 0;
+    }
   }
   mouseUp=(ev,ui)=>{
     document.removeEventListener("mousemove",this.drag)
     document.removeEventListener("mouseup",this.mouseUp)
     this.dragging=false
+    if(this.parent!=undefined){
     let points=$(".point")
     for(let i=0;i<points.length;i++){
       if(50>this.getDistancePtoP(this,points[i].me)){
@@ -531,6 +532,7 @@ export class Point extends Cir{
 
         }
       }
+    }
       // this.transSpeed = 0.5;
       this.dragQueue=1
   }
@@ -577,6 +579,9 @@ export class Point extends Cir{
 export class Force extends Line {
   constructor(props){
     super(props)
+    this.N=props.N
+    this.data=props.data
+    this.angle=props.angle
   }
   componentDidMount(){
     if(this.later!=undefined){

@@ -34,16 +34,12 @@ export default class ContextMenu extends Component {
         this.menuops[0].textContent="cosnole this"
         // this.menuops[0].setAttribute("onclick",()=>console.log(id))
         this.menuops[0].me.onclick=()=>{console.log(id); elem.me.toConsole()}
-        if(elem.getAttribute("title")=="control"){
-            this.menuops[1].me.onclick=()=>runEffect(`#${id.slice(0,id.length-3)}`)
-            this.menuops[2].textContent="show"
-            this.menuops[2].me.onclick=()=>effShow(`#${id.slice(0,id.length-3)}`)
-        }
-        else{
-            this.menuops[1].me.onclick=()=>{console.log(id); runEffect(`#${id}`)}
-            this.menuops[2].textContent="no show for you"
-            this.menuops[2].me.onclick=()=>console.log("i said no!")
-        }
+        
+        this.menuops[1].textContent="pin this"
+            this.menuops[1].me.onclick=()=>{elem.me.pind=true}
+            this.menuops[2].textContent="unpin this"
+            this.menuops[2].me.onclick=()=>elem.me.pind=false
+        
         this.menuops[3].textContent="elems here"
         this.menuops[3].me.onclick=()=>console.log(document.elementsFromPoint(parseInt(menuBo.left), parseInt(menuBo.top)))
         this.menuops[4].me.onclick=()=>hideAll()

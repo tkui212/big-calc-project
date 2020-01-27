@@ -78,7 +78,6 @@ export class Console extends Component {
     }
     else{
       console.log("comps good")
-
     this.element=document.getElementById(this.id)
     console.log($(`#${this.id}`))
     console.log($(`${this.id}`))
@@ -254,29 +253,12 @@ update(value){
 function stringfy(obj,max_width){
   let text=""
   if(typeof obj=="object"){
-    console.log(Object.keys(obj))
+    text=simpleStringfy(obj)+"{"
     for (let key in obj) {
-      
       console.log(key)
       let newText=""
-      if (typeof obj[key]=="object"&&obj[key].constructor.name=="Array")
-      {
-        newText=`\n ${key}: [${simpleStringfy(obj[key][0])}`
-        for(let i=1;i<obj[key].length;i++){
-          newText=newText+", "+simpleStringfy(obj[key][i])
-        }
-        newText=newText+`]`
-      }
-      else if (typeof obj[key]=="object")
-      {
-        newText=`\n ${key}: ${obj[key].constructor.name}`
-      }
-      else if(typeof obj[key]=="function"){
-        newText=`\n ${key}: function`
-      }
-      else{
-        newText=`\n ${key}: ${obj[key]}`
-      }
+        newText=`${key}: ${simpleStringfy(obj[key])}, `
+      
       if(newText!=undefined&&newText.length>max_width/10){
         text=text+`${newText.slice(0,30)}...`
       }
@@ -292,7 +274,7 @@ function stringfy(obj,max_width){
   else{
     text=`${obj}`
   }
-  return text
+  return text+"}"
 }
 function simpleStringfy(obj){
   let text=""
