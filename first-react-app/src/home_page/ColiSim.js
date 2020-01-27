@@ -50,9 +50,14 @@ export default class ColiSim extends Component {
     this.stopTimeOut=false
     this.timeOuts=[]
     let Tspeed=5
-    let result=queue.futher(c1,10,0)
-    console.log(result)
-    let step=0
+    
+var timeLine=[]
+var resultLine=[]
+let time=0
+let step=0
+    let result
+setTimeout(()=>{result=queue.futher(c1,10,0);    runTimeLine(result,0)
+},2000)
     document.addEventListener("keydown",(e)=>{
       if(e.key=="ArrowRight"){
         step++
@@ -65,11 +70,7 @@ export default class ColiSim extends Component {
       console.log(result[step])
       console.log(step)
         })
-    runTimeLine(result,0)
 
-var timeLine=[]
-var resultLine=[]
-let time=0
 this.internal=(setInterval(()=>{time+=1000; console.log(time)
   if(document.canvas.stopTimeOut){
     document.canvas.timeOuts.forEach(element => {

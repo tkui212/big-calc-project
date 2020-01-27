@@ -140,11 +140,11 @@ buttons[1].setB("update",()=>{for(let value of this.children){value.update()}})
   buttons[2].setB("console this",()=>{console.log(this)});
   buttons[3].setB("delete this",()=>{this.element.remove()});
   dis(ms)
-document.addEventListener("mousedown",()=>{
+document.addEventListener("mouseup",()=>{
     ms.style.visibility="hidden"
   });
 
-el.addEventListener("mousedown",(e)=>{
+el.addEventListener("mouseup",(e)=>{
 if(e.button==2&&mouseElem(e)[0].constructor.name=="HTMLDivElement"){
     setTimeout(()=>{
       let bor=ms.getBoundingClientRect()
