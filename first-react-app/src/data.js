@@ -128,7 +128,7 @@ if(this.values==undefined){
       }
     }
 
-let ms=createElement("div",{id:this.id+"S",style:`z-index:202;height:auto;position:absolute;background-color:green;width:min-content;left:-100%;top:0px;text-align:center;`})
+let ms=createElement("div",{id:this.id+"S",style:`z-index:202;height:auto;position:absolute;background-color:green;width:min-content;left:-100%;top:0px;text-align:center;visibility:hidden;`})
 el.append(ms)
 let buttons=[]
 for(let i=0;i<5;i++){
@@ -193,10 +193,10 @@ export class Value extends Component {
           </p>)  
 }
 create(){
-  let p=createElement("p",{id:this.id,style:"height: max-content; left:10%;"})
+  let p=createElement("p",{id:this.id,style:"height: max-content;"})
   this.elem=p
 
-  let sl =createElement("div",{id:this.id+"SS",className:"side",style:`z-index:201;position:absolute;background-color:green;`})
+  let sl =createElement("div",{id:this.id+"SS",className:"side",style:`z-index:201;position:absolute;background-color:green;visibility:hidden;`})
   p.append(sl)
 
 let value=createElement("span",{id:this.id+"value",textContent:"null",contenteditable:"true",style:"white-space: pre-line"})

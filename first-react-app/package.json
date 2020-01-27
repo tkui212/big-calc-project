@@ -14,15 +14,13 @@
     "react": "^16.12.0",
     "react-dnd": "^10.0.2",
     "react-dom": "^16.12.0",
-    "react-scripts": "3.3.0",
-    "server": "3.3.0"
+    "react-scripts": "3.3.0"
   },
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject",
-    "server":"src/server/server.js"
+    "eject": "react-scripts eject"
   },
   "eslintConfig": {
     "extends": "react-app"

@@ -43,7 +43,7 @@ export default class Phy_page extends React.Component {
         <Slider id={"testData"} side={"left"} width={100} height={200}/>
         <Slider id={"testData2"} side={"bottom"} width={200} height={100}/>
         
-        <Console id={"Hc2"} text={"point data"} left={300} top={500} parent={()=>document.getElementById("H").me} width={"250px"} values={{data:this}}/>
+        <Console id={"Hc2"} text={"point data"} left={300} top={500} parent={()=>document.getElementById("H").me} dataSource={()=>document.getElementById("H").me.data} width={"250px"} values={{data:this}}/>
         <Console id={"Hconsole"} text={"pinner point"} left={470} top={20} parent={()=>document.getElementById("H").me} values={{x:this,y:this,pind:this}}/>
       </snapto>
       <ContextMenu id={"MainMenu"}/>
