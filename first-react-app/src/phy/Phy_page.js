@@ -12,6 +12,10 @@ import "jquery-ui/ui/widgets/draggable";
 import {dis,con,containsTitle,returnTitle} from '../functions';
 export default class Phy_page extends React.Component {
   render(){
+    var io2 = require('socket.io-client');
+var socket2 = io2.connect('http://localhost:3001');
+socket2.emit('i am client', {data: 'foo!'})
+socket2.emit('i am client', {data: 'foo!'})
   return (
     <div className="App">
     <header className="App-header">
