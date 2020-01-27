@@ -34,6 +34,15 @@ export class Console extends Component {
       this.children=[]
       this.dataSource=props.dataSource
       this.values=props.values
+      this.width=props.width
+      this.height=props.height
+      if(this.width==undefined){
+        this.width="auto"
+      }
+      if(this.height==undefined){
+        this.height="auto"
+      }
+      
       this.parent=props.parent
       this.Vparent=props.Vparent
       if(props.text==undefined){
@@ -96,7 +105,7 @@ snapTolerance: 10
   }
 
   create(ops){
-    let el=createElement("div",{id:this.id,className:"dataPoints",name:"drag",title:"item",style:`left: ${this.left}; top: ${this.top}; z-index: 201; width: auto;height: auto; max-width:300px;overflow:scroll;`})
+    let el=createElement("div",{id:this.id,className:"dataPoints",name:"drag",title:"item",style:`left: ${this.left}; top: ${this.top}; z-index: 201; width: ${this.width};height: ${this.height}; max-width:300px;overflow:scroll;`})
     this.element=el
       el.append(this.text)
 if(this.values==undefined){
@@ -184,7 +193,7 @@ export class Value extends Component {
           </p>)  
 }
 create(){
-  let p=createElement("p",{id:this.id,style:"height: max-content; width:max-content;"})
+  let p=createElement("p",{id:this.id,style:"height: max-content; left:10%;"})
   this.elem=p
 
   let sl =createElement("div",{id:this.id+"SS",className:"side",style:`z-index:201;height:20%;position:absolute;background-color:green;width:100%;right:100%;display:none;`})
@@ -264,14 +273,16 @@ function stringfy(obj,max_width){
       console.log(newText.length)
     }
   }
+  if(text!=undefined&&text.length>max_width/10){
+    text=`${text.slice(0,25)}...`
+  }
+  return text+"}"
   }
   else{
     text=`${obj}`
   }
-  if(text!=undefined&&text.length>max_width/10){
-    text=`${text.slice(0,29)}...`
-  }
-  return text+"}"
+
+  return text
 }
 function simpleStringfy(obj){
   let text=""

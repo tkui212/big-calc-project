@@ -115,8 +115,8 @@ snapTo[title="WB"] {
   border-width: 2;
 }
 div[title="item"] {
-  text-align: center;
-  font-size: 20px !important;
+  text-align:  -webkit-center;
+  font-size: 15px !important;
   position: absolute;
   background-color: rgba(255, 255, 255, 0.6);
   border-color: black;
