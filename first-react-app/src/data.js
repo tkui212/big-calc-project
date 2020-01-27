@@ -105,7 +105,7 @@ snapTolerance: 10
   }
 
   create(ops){
-    let el=createElement("div",{id:this.id,className:"dataPoints",name:"drag",title:"item",style:`left: ${this.left}; top: ${this.top}; z-index: 201; width: ${this.width};height: ${this.height}; max-width:300px;overflow:scroll;`})
+    let el=createElement("div",{id:this.id,className:"dataPoints",name:"drag",title:"item",style:`left: ${this.left}; top: ${this.top}; z-index: 201; width: ${this.width};height: ${this.height}; max-width:200px;max-height:400px;overflow:scroll;`})
     this.element=el
       el.append(this.text)
 if(this.values==undefined){
@@ -196,7 +196,7 @@ create(){
   let p=createElement("p",{id:this.id,style:"height: max-content; left:10%;"})
   this.elem=p
 
-  let sl =createElement("div",{id:this.id+"SS",className:"side",style:`z-index:201;height:20%;position:absolute;background-color:green;width:100%;right:100%;display:none;`})
+  let sl =createElement("div",{id:this.id+"SS",className:"side",style:`z-index:201;position:absolute;background-color:green;`})
   p.append(sl)
 
 let value=createElement("span",{id:this.id+"value",textContent:"null",contenteditable:"true",style:"white-space: pre-line"})
@@ -281,7 +281,7 @@ function stringfy(obj,max_width){
     }
   }
   if(text!=undefined&&text.length>max_width/10){
-    text=`${text.slice(0,25)}...`
+    text=`${text.slice(0,15)}...`
   }
   return text+"}"
   }
