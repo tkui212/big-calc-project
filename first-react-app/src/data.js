@@ -233,13 +233,20 @@ buttons[0].setB("delete",()=>{p.parentElement.removeChild(p)})
 buttons[0].setB("console this",()=>{new Console({parent:this.dataSource[this.name],id:`${this.id}${this.name}n`,dataSource:this.dataSource}).create()})
 
 
-
-document.addEventListener("mouseup",()=>{sl.style.display="none"});
+dis(sl)
+document.addEventListener("mouseup",()=>{sl.style.visibility="hidden"});
   p.addEventListener("mouseup",(e)=>{
     if(e.button==2&&mouseElem(e)[0].constructor.name=="HTMLParagraphElement"){
-      setTimeout(()=>{$(`#${sl.id}`).show("slide", {direction: "right"},200);},1)}
+      setTimeout(()=>{
+        let bor=sl.getBoundingClientRect()
+        let ber=p.getBoundingClientRect()
+        console.log()
+        sl.style.left=ber.left-bor.width+"px"
+        sl.style.top=ber.top+"px"
+        sl.style.visibility="visible"
+        $(`#${sl.id}`).show("slide", {direction: "right"},200);},1)}
     else{sl.style.display="none"}})
-  
+
   this.update()
   return p
 
