@@ -184,7 +184,7 @@ export class Value extends Component {
           </p>)  
 }
 create(){
-  let p=createElement("p",{id:this.id,style:"height: max-content;"})
+  let p=createElement("p",{id:this.id,style:"height: max-content; width:max-content;"})
   this.elem=p
 
   let sl =createElement("div",{id:this.id+"SS",className:"side",style:`z-index:201;height:20%;position:absolute;background-color:green;width:100%;right:100%;display:none;`})
@@ -258,13 +258,7 @@ function stringfy(obj,max_width){
       console.log(key)
       let newText=""
         newText=`${key}: ${simpleStringfy(obj[key])}, `
-      
-      if(newText!=undefined&&newText.length>max_width/10){
-        text=text+`${newText.slice(0,30)}...`
-      }
-      else{
         text=text+newText
-      }
       console.log(newText)
       if(newText!=undefined){
       console.log(newText.length)
@@ -273,6 +267,9 @@ function stringfy(obj,max_width){
   }
   else{
     text=`${obj}`
+  }
+  if(text!=undefined&&text.length>max_width/10){
+    text=`${text.slice(0,29)}...`
   }
   return text+"}"
 }
