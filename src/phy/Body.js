@@ -57,6 +57,7 @@ export class Data extends Component {
       this.Listeners.push(listener)
     }
   }
+  data.add(this)
   }
   event(ar){
     if(this.unpdatindgsTimeOut){
@@ -108,6 +109,14 @@ export class Data extends Component {
     }
   }
 }
+class PhysicBody{
+  constructor(props){
+    //forces
+    //mass
+    //gravity
+  }
+  //updateForces
+}
 export class Body extends Component {
   constructor(props){
     super(props)
@@ -116,7 +125,6 @@ export class Body extends Component {
     this.dragging=false
     this.mouse={x:0,y:0}
     this.Listeners=[]
-    this.Weight=props.Weight
     data.add(this.id,this)
   }
   render() {return (<div id={this.id}></div>);}
