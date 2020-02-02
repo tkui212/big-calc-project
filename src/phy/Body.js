@@ -26,7 +26,7 @@ export class Data extends Component {
       throw("make me")
     }
     else{
-    this.id=props.id
+    this.id=props.id+"Data"
     if(props.x==undefined){
       throw("x sappose to be defined")
     }
@@ -57,7 +57,8 @@ export class Data extends Component {
       this.Listeners.push(listener)
     }
   }
-  data.add(this)
+  console.log("f")
+  data.add(this.id,this)
   }
   event(ar){
     if(this.unpdatindgsTimeOut){
@@ -75,6 +76,7 @@ export class Data extends Component {
     this.cons=this.cons.filter((value)=>value.id!=id)
   }
   seperateLine(t,tP){
+    data.remove(t.id+"Data")
     let newData=new Data({x:t.x,y:t.y,id:t.id})
     t.data=newData;
     // t.elem.style.cx=newData.cx
@@ -117,14 +119,14 @@ class forceData{
     this.angle=0
     this.length=0
   }
-
 }
+
 class PhysicBody{
   constructor(props){
     //forces
     this.forces=[]
     this.forcesApplyed=[]
-    this.TotalForce
+    this.TotalForce=0
     //mass
     this.m=1
     //gravity
@@ -322,7 +324,7 @@ export class Line extends Body{
       this.data=this.point1.data
     }
     else if(props.P1!=undefined){
-      this.data=props.P1.data
+      this.data=data.Body[props.P1].data
     }
     this.point1.data=this.data
 
@@ -332,7 +334,7 @@ export class Line extends Body{
      this.data2=this.point2.data
   }
   else if(props.P2!=undefined){
-    this.data2=props.P2.data
+    this.data2=data.Body[props.P2].data
   }
   this.point2.data=this.data2
   }
@@ -462,11 +464,13 @@ export class Point extends Cir{
     for(let i=0;i<points.length;i++){
       if(50>this.getDistancePtoP(this,points[i].me)){
         if(this.parent.constructor.name=="Line"){
+          data.remove(this.data.id)
         this.data=points[i].me.data
         }
         else{
           this.data.x=points[i].me.data.x
           this.data.y=points[i].me.data.y
+          data.remove(points[i].me.data.id)
           points[i].me.data=this.data
         }
 
@@ -519,55 +523,20 @@ export class Point extends Cir{
 export class Force extends Line {
   constructor(props){
     super(props)
-    this.N=props.N
-    this.data=props.data
     this.angle=props.angle
+    this.f=props.f
   }
   componentDidMount(){
-    if(this.later!=undefined){
-      console.log("re rendering")
-      let postline=new Force(this.later)
-      postline.render()
-      postline.componentDidMount()
-    }
-    else{
-      this.elem = document.getElementById(`${this.id}`);
+    this.elem = document.getElementById(`${this.id}`);
     this.elem.me=this
-    }
   }
   render(){
-    let el=document.createElement('img');
-    el.src="./F.png"
-    el.id=this.id
-    el.className="line"
-    // el.style=`top: calc(${this.value.cy}*1px);left: calc(${this.value.cx}*1px);width: 100px;position: absolute;height: 20px;z-index: 99;transform-origin: left;transform: rotate(90deg);mix-blend-mode: multiply;`
-    // document.getElementById("Lines").append(el)
     let style
-    if(this.renderType=="react"){
-      if(this.later!=undefined){
-        style={position:" absolute",height:" 20px",zIndex:" 99",transformOrigin:" left",mixBlendMode: "multiply"}
+        style={top:`${this.point1.y}px`,left:`${this.point1.x}px`,width:`${this.f}px`,position:` absolute`,height:` 20px`,zIndex:` 99`,transformOrigin:` left`,transform:`${this.angle}`, mixBlendMode: "multiply"}
+        let p1=this.point1.render()
+        let p2=this.point2.render()
+        return ([<path id={this.id} d={`M 0 0 L 0 0`} stroke={"white"} strokeWidth={5} fill={"white"} className={"line"} style={{d:`${this.path}`}} key={this.id}/>,p1,p2])
       }
-      else{
-        style={top:` calc(${this.data.cy}*1px);`,left:` calc(${this.data.cx}*1px);`,width:` calc(var(--${this.id}-length)*1px);`,position:` absolute`,height:` 20px`,zIndex:` 99`,transformOrigin:` left`,transform:` var(--${this.id}-deg)`, mixBlendMode: "multiply"}
-      }
-      return(
-        <div id={this.id+"delete"} className={"line"} style={style}/>
-      )
-    }
-    else{
-      console.log("normal render")
-      if(this.later!=undefined){
-        style=`position: absolute;height: 20px;z-index: 99;transform-origin: left;mix-blend-mode: multiply;`
-        el.id="delete"
-      }
-      else{
-        style=`top: calc(${this.data.cy}*1px);left: calc(${this.data.cx}*1px);width: calc(var(--${this.id}-length)*1px);position: absolute;height: 20px;z-index: 99;transform-origin: left;transform: var(--${this.id}-deg); mix-blend-mode: multiply;`
-      }
-      el.style=style
-      document.getElementById("Lines").append(el)
-    }
-    // throw("a")
-  }
 }
 
 // export class Graph extends Component{

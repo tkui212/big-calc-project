@@ -27,11 +27,12 @@ function toGroups(bodys) {
 
 class engine{
   constructor(props){
-    this.bodys
-    this.gravity
-    this.speed
-    this.future
-    this.v
+    this.gravity=props.gravity
+    this.bodys=props.bodys
+    this.start=props.start
+    this.tick=props.tick
+    this.speed=props.speed
+    this.future=props.future
   }
   
 }
