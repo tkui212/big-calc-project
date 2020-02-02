@@ -111,7 +111,7 @@ export class Data extends Component {
 }
 class forceData{
   constructor(props){
-    
+    this.id=props.id
     this.vx=0
     this.vy=0
     this.angle=0
@@ -124,6 +124,7 @@ class PhysicBody{
     //forces
     this.forces=[]
     this.forcesApplyed=[]
+    this.TotalForce
     //mass
     this.m=1
     //gravity
