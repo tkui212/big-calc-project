@@ -109,11 +109,27 @@ export class Data extends Component {
     }
   }
 }
+class forceData{
+  constructor(props){
+    
+    this.vx=0
+    this.vy=0
+    this.angle=0
+    this.length=0
+  }
+
+}
 class PhysicBody{
   constructor(props){
     //forces
+    this.forces=[]
+    this.forcesApplyed=[]
     //mass
+    this.m=1
     //gravity
+  }
+  updateForces=()=>{
+
   }
   //updateForces
 }
