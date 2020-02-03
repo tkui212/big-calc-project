@@ -8,6 +8,7 @@ import {toDegrees,toRadians,createElement,mouseElem} from '../functions.js'
 import $ from  "jquery";
 import "jquery-ui/ui/effects/effect-slide";
 import "jquery-ui/ui/widgets/draggable";
+import F from "./F.png"
 // import "./jquery-ui-1.12.1/jquery-ui.js";
 
 export class Data extends Component {
@@ -57,7 +58,6 @@ export class Data extends Component {
       this.Listeners.push(listener)
     }
   }
-  console.log("f")
   data.add(this.id,this)
   }
   event(ar){
@@ -76,14 +76,10 @@ export class Data extends Component {
     this.cons=this.cons.filter((value)=>value.id!=id)
   }
   seperateLine(t,tP){
-    data.remove(t.id+"Data")
-    let newData=new Data({x:t.x,y:t.y,id:t.id})
-    t.data=newData;
-    // t.elem.style.cx=newData.cx
-    // t.elem.style.cy=newData.cy
-    // t.elem.style.transition=`var(--${t.data.id}-transSpeed)`
-    console.log(t)
-    console.log(tP)
+    t.data.removeCon(t.id)
+    data.Data[t.id+"Data"].x=t.data.x
+    data.Data[t.id+"Data"].y=t.data.y
+    t.data=data.Data[t.id+"Data"]
     if(t.parent!=undefined&&t.parent.constructor.name=="Line"){
     if(tP.point1.id==t.id){
       tP.data=t.data
@@ -113,7 +109,7 @@ export class Data extends Component {
 }
 class forceData{
   constructor(props){
-    this.id=props.id
+    this.id=props.id+"F"
     this.vx=0
     this.vy=0
     this.angle=0
@@ -438,7 +434,7 @@ export class Point extends Cir{
     this.pind=props.pind
   }
   componentDidMount() {
-    this.elem = document.getElementById(`${this.id}`);
+    this.elem =document.getElementById(`${this.id}`);
     this.elem.me=this
     this.dragQueue=0
     this.elem.addEventListener("mousedown",this.mouseDown)
@@ -460,18 +456,16 @@ export class Point extends Cir{
     document.removeEventListener("mouseup",this.mouseUp)
     this.dragging=false
     if(this.parent!=undefined){
-    let points=$(".point")
-    for(let i=0;i<points.length;i++){
-      if(50>this.getDistancePtoP(this,points[i].me)){
+    let points=data.Point
+    for(let key in points){
+      if(50>this.getDistancePtoP(this,points[key])){
         if(this.parent.constructor.name=="Line"){
-          data.remove(this.data.id)
-        this.data=points[i].me.data
+        this.data=points[key].data
         }
         else{
-          this.data.x=points[i].me.data.x
-          this.data.y=points[i].me.data.y
-          data.remove(points[i].me.data.id)
-          points[i].me.data=this.data
+          this.data.x=points[key].data.x
+          this.data.y=points[key].data.y
+          points[key].data=this.data
         }
 
         }
@@ -506,13 +500,13 @@ export class Point extends Cir{
       )
   }
   focuseClose=()=>{
-    let points=$(".point")
-    for(let i=0;i<points.length;i++){
-      if(50>this.getDistancePtoP(this,points[i].me)){
-        points[i].style.fill="green"
+    let points=data.Point
+    for(let key in points){
+      if(50>this.getDistancePtoP(this,points[key])){
+        points[key].elem.style.fill="green"
       }
       else{
-        points[i].style.fill="white"
+        points[key].elem.style.fill="white"
       }
     }
   }
@@ -526,16 +520,13 @@ export class Force extends Line {
     this.angle=props.angle
     this.f=props.f
   }
-  componentDidMount(){
-    this.elem = document.getElementById(`${this.id}`);
-    this.elem.me=this
-  }
   render(){
+    console.log(this.data)
     let style
-        style={top:`${this.point1.y}px`,left:`${this.point1.x}px`,width:`${this.f}px`,position:` absolute`,height:` 20px`,zIndex:` 99`,transformOrigin:` left`,transform:`${this.angle}`, mixBlendMode: "multiply"}
+        style={top:`calc(${this.data.cy}*1px)`,left:`calc(${this.data.cx}*1px)`,width:`${this.f}px`,position:` absolute`,height:` 20px`,zIndex:` 99`,transformOrigin:` left`,transform:`rotate(${this.angle}deg)`, mixBlendMode: "multiply"}
         let p1=this.point1.render()
         let p2=this.point2.render()
-        return ([<path id={this.id} d={`M 0 0 L 0 0`} stroke={"white"} strokeWidth={5} fill={"white"} className={"line"} style={{d:`${this.path}`}} key={this.id}/>,p1,p2])
+        return ([<img id={this.id} src={F} className={"line"} style={style} key={this.id}/>,p1,p2])
       }
 }
 

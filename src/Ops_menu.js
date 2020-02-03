@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 import {mouseElem,effShow,collapse,hideAll,showAll, runEffect} from './functions';
 import $ from  "jquery";
 import "jquery-ui/ui/effects/effect-slide";
-function setButton()
+function setButton(){}
 export default class ContextMenu extends Component {
     constructor(props){
         super(props)
