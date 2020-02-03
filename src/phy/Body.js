@@ -110,6 +110,7 @@ export class Data extends Component {
 class forceData{
   constructor(props){
     this.id=props.id+"F"
+    this.value=props.value
     this.vx=0
     this.vy=0
     this.angle=0
@@ -517,16 +518,53 @@ export class Point extends Cir{
 export class Force extends Line {
   constructor(props){
     super(props)
+    this.Fdata=new forceData({angle:props.angle,F:props.f,id:this.id})
+    Object.defineProperty(this,"angle",{
+      get(){return this.Fdata.angle},
+      set(num){
+      document.getElementById("all").style.setProperty(`--${this.id}-deg`,`rotate(${num}deg)`)
+      this.Fdata.angle=num;
+      this.event(this.Listeners);
+    },
+    enumerable:true
+    })
     this.angle=props.angle
-    this.f=props.f
+    this.F=props.f
+
+  }
+  componentDidMount(){
+    console.log(this.id)
+    this.point1.componentDidMount()
+    this.point2.componentDidMount()
+    this.elem = document.getElementById(`${this.id}`);
+    this.elem.me=this
+    this.elem.addEventListener("mouseover",this.over)
+  }
+  over=(e)=>{
+    this.elem.addEventListener("mousemove",this.moveOver)
+    this.elem.addEventListener("mouseout",this.out)
+    let obj={id:this.id+"console",text:this.id+"C",values:{F:this,angle:this},parent:this,left:e.x,top:e.y,dataSource:this}
+    this.console=new Console(obj)
+    this.console.create()
+  }
+  moveOver=(e)=>{
+    this.console.element.style.top=e.y+10+"px"
+    this.console.element.style.left=e.x+10+"px"
+  }
+  out=(e)=>{
+    $(this.console.element).remove()
+    delete this.console
+  }
+  toConsole(){
+    let obj={id:this.id+"console",text:this.id+"C",values:{x:this,y:this,id:this},parent:this,left:parseInt(this.x)+50,top:parseInt(this.y)+50,dataSource:this}
+    this.console=new Console(obj)
+    this.console.create()
+    // this.data.registerListener(()=>{})
   }
   render(){
-    console.log(this.data)
-    let style
-        style={top:`calc(${this.data.cy}*1px)`,left:`calc(${this.data.cx}*1px)`,width:`${this.f}px`,position:` absolute`,height:` 20px`,zIndex:` 99`,transformOrigin:` left`,transform:`rotate(${this.angle}deg)`, mixBlendMode: "multiply"}
         let p1=this.point1.render()
         let p2=this.point2.render()
-        return ([<img id={this.id} src={F} className={"line"} style={style} key={this.id}/>,p1,p2])
+        return ([<img id={this.id} src={F} className={"line"} style={{top:`calc(${this.data.cy}*1px)`,left:`calc(${this.data.cx}*1px)`,width:`${this.F}px`,position:` absolute`,height:` 20px`,zIndex:` 99`,transformOrigin:` left`,transform:`var(--${this.id}-deg)`, mixBlendMode: "multiply"}} key={this.id}/>,p1,p2])
       }
 }
 
