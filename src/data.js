@@ -26,14 +26,6 @@ var dis = (child) => {
       $("#sliders")[0].appendChild(child)
   }
 }
-class opsData{
-  constructor(props){
-    this.ops={delete:()=>{p.parentElement.removeChild(p)},"console this":()=>{new Console({parent:this.dataSource[this.name],id:`${this.id}${this.name}n`,dataSource:this.dataSource}).create()}}
-buttons[0].setB("delete",)
-buttons[0].setB("console this",)
-
-  }
-}
 export class Value2 extends Component {
   constructor(props) {
       super(props)
@@ -41,7 +33,7 @@ export class Value2 extends Component {
       this.dataSource=props.dataSource
       this.name=props.name
       this.value=props.value
-
+      
   }
   componentDidMount(){
     this.elem=document.getElementById(this.id)
@@ -53,7 +45,10 @@ export class Value2 extends Component {
     this.valueElem.addEventListener("keypress",(ev)=>{
       if(ev.key=="Enter"&&this.valueElem.value!=""&&typeof this.dataSource[this.name]!="object"){
         this.dataSource[this.name]=this.valueElem.value}})
-  }
+
+      this.ops={delete:()=>{this.elem.parentElement.removeChild(this.elem)},
+      "console this":()=>{new Console({parent:this.dataSource[this.name],id:`${this.id}${this.name}n`,dataSource:this.dataSource}).create()}}
+      }
   render() {
            return (
           <p id={this.id} style={{height:"max-content"}}>

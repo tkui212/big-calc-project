@@ -9,7 +9,7 @@ export default class ContextMenu extends Component {
         this.id=props.id
     }
     opMenu(Mo){
-        for(let el in )
+        // for(let el in )
         let elem=mouseElem(Mo)[0]
         console.log(elem.constructor.name)
         if(elem.constructor.name=="HTMLDivElement"&&elem.title=="item"){
