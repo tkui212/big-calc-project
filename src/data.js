@@ -26,6 +26,58 @@ var dis = (child) => {
       $("#sliders")[0].appendChild(child)
   }
 }
+class opsData{
+  constructor(props){
+    this.ops={delete:()=>{p.parentElement.removeChild(p)},"console this":()=>{new Console({parent:this.dataSource[this.name],id:`${this.id}${this.name}n`,dataSource:this.dataSource}).create()}}
+buttons[0].setB("delete",)
+buttons[0].setB("console this",)
+
+  }
+}
+export class Value2 extends Component {
+  constructor(props) {
+      super(props)
+      this.id=props.id
+      this.dataSource=props.dataSource
+      this.name=props.name
+      this.value=props.value
+
+  }
+  componentDidMount(){
+    this.elem=document.getElementById(this.id)
+    this.keyElem=document.getElementById(this.id)
+    this.valueElem=document.getElementById(this.id)
+    this.keyElem.addEventListener("keyup",()=>{this.name=this.keyElem.textContent; this.update()})
+    $(this.keyElem).attr('contenteditable',"true")
+    $(this.valueElem).attr('contenteditable',"true")
+    this.valueElem.addEventListener("keypress",(ev)=>{
+      if(ev.key=="Enter"&&this.valueElem.value!=""&&typeof this.dataSource[this.name]!="object"){
+        this.dataSource[this.name]=this.valueElem.value}})
+  }
+  render() {
+           return (
+          <p id={this.id} style={{height:"max-content"}}>
+              <span id={this.id+"key"} textContent={this.name} contenteditable={"true"}/>
+              <span id={this.id+"sper"} textContent={": "}/>
+              <span id={this.id+"value"} textContent={"null"} contenteditable={"true"} style={{whiteSpace: "pre-line"}}/>
+          </p>)  
+}
+
+update(value){
+  console.log(this)
+  if(value!=undefined){
+    this.valueElem.textContent=value
+  }
+  else if(this.dataSource[this.name]==undefined){
+    this.valueElem.textContent=stringfy(this.dataSource[this.name],300)
+  }
+  else{
+    console.log(this.dataSource[this.name])
+    this.valueElem.textContent=stringfy(this.dataSource[this.name],300)
+  }
+}
+
+}
 export class Console extends Component {
   constructor(props) {
       super(props)
