@@ -107,32 +107,9 @@ export class Data extends Component {
     }
   }
 }
-class forceData{
-  constructor(props){
-    this.id=props.id+"F"
-    this.value=props.value
-    this.vx=0
-    this.vy=0
-    this.angle=0
-    this.length=0
-  }
-}
 
-class PhysicBody{
-  constructor(props){
-    //forces
-    this.forces=[]
-    this.forcesApplyed=[]
-    this.TotalForce=0
-    //mass
-    this.m=1
-    //gravity
-  }
-  updateForces=()=>{
 
-  }
-  //updateForces
-}
+
 export class Body extends Component {
   constructor(props){
     super(props)
@@ -522,7 +499,7 @@ export class Point extends Cir{
 export class Force extends Line {
   constructor(props){
     super(props)
-    this.Fdata=new forceData({angle:props.angle,F:props.f,id:this.id})
+    // this.Fdata=new forceData({angle:props.angle,F:props.f,id:this.id})
     Object.defineProperty(this,"angle",{
       get(){return this.Fdata.angle},
       set(num){
