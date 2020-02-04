@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import {createElement,mouseElem,log} from './functions.js'
+import {data} from "./dataBase";
 import $ from  "jquery";
 import "jquery-ui/ui/effects/effect-slide";
 import "jquery-ui/ui/widgets/draggable";
@@ -32,26 +33,26 @@ export class Value2 extends Component {
       this.id=props.id
       this.dataSource=props.dataSource
       this.name=props.name
-      this.value=props.value
-      
+      data.add(this.id,this)
   }
   componentDidMount(){
     this.elem=document.getElementById(this.id)
-    this.keyElem=document.getElementById(this.id)
-    this.valueElem=document.getElementById(this.id)
+    this.keyElem=document.getElementById(this.id+"key")
+    this.valueElem=document.getElementById(this.id+"value")
+    console.log(this)
     this.keyElem.addEventListener("keyup",()=>{this.name=this.keyElem.textContent; this.update()})
     $(this.keyElem).attr('contenteditable',"true")
     $(this.valueElem).attr('contenteditable',"true")
     this.valueElem.addEventListener("keypress",(ev)=>{
       if(ev.key=="Enter"&&this.valueElem.value!=""&&typeof this.dataSource[this.name]!="object"){
         this.dataSource[this.name]=this.valueElem.value}})
-
+    this.elem.addEventListener("mouse",()=>{this.name=this.keyElem.textContent; this.update()})
       this.ops={delete:()=>{this.elem.parentElement.removeChild(this.elem)},
       "console this":()=>{new Console({parent:this.dataSource[this.name],id:`${this.id}${this.name}n`,dataSource:this.dataSource}).create()}}
       }
   render() {
            return (
-          <p id={this.id} style={{height:"max-content"}}>
+          <p id={this.id} style={{height:"max-content"}} key={this.id+"k"}>
               <span id={this.id+"key"} textContent={this.name} contenteditable={"true"}/>
               <span id={this.id+"sper"} textContent={": "}/>
               <span id={this.id+"value"} textContent={"null"} contenteditable={"true"} style={{whiteSpace: "pre-line"}}/>
@@ -59,7 +60,6 @@ export class Value2 extends Component {
 }
 
 update(value){
-  console.log(this)
   if(value!=undefined){
     this.valueElem.textContent=value
   }
@@ -67,7 +67,6 @@ update(value){
     this.valueElem.textContent=stringfy(this.dataSource[this.name],300)
   }
   else{
-    console.log(this.dataSource[this.name])
     this.valueElem.textContent=stringfy(this.dataSource[this.name],300)
   }
 }
@@ -80,6 +79,10 @@ export class Console extends Component {
       this.side=props.side
       this.children=[]
       this.dataSource=props.dataSource
+      console.log(data)
+      if(typeof this.dataSource=="string"){
+        this.dataSource=data.get(this.dataSource)
+      }
       this.values=props.values
       this.width=props.width
       this.height=props.height
@@ -119,26 +122,45 @@ export class Console extends Component {
         this.top=this.Vparent.y+"px"
       }
   }
-  render() {this.onMountCreateMe=true;return (null)}
+  render() {
+
+    for(let i=0;i<this.values.length;i++){
+      this.children.push(new Value2({id:this.id+this.values[i],dataSource:this.dataSource,name:this.values[i]}))
+      console.log(this.id+this.values[i])
+      this.dataSource.registerListener(()=>this.children[i].update())
+    }
+    // this.children.push(this.text)
+    console.log(this.children)
+    let f=<div id={this.id} className={"dataPoints"} name={"drag"} title={"item"} style={{left: this.left, top: this.top, zIndex: 201, width: this.width,height: this.height, maxWidth:"200px",maxHeight:"400px",overflow:"scroll"}} key={"1"}>
+      <div>{this.children.map((a)=>{console.log(a);a.render()})}</div>
+    
+</div>
+console.log(f)
+    return(
+      f
+        
+
+      
+
+    )}
   componentDidMount(){
-    console.log("comps start")
+    this.elem=document.getElementById(this.id)
+    this.elem.ops={
+    "add":()=>{
+      console.log("f")
+      // let key=null;
+      // let child=new Value2({id:this.id+key,name:"null",value:this.dataSource});
+      // this.children.push(child);
+      // el.append(child.create());
+      // this.values["null"]=this.dataSource;
+      // this.parent.registerListener(()=>child.update());
+    },
+    "update":()=>{for(let value of this.children){value.update()}},
+    "console this":()=>{console.log(this)},
+    "delete this":()=>{this.elem.remove()}}
     for(let el of this.children){
       el.componentDidMount()
     }
-    if(this.onMountCreateMe){
-      console.log("comps bad")
-
-      this.onMountCreateMe=false
-      this.parent=this.parent()
-      this.parent.toConsole(this)
-    }
-    else{
-      console.log("comps good")
-    this.element=document.getElementById(this.id)
-    console.log($(`#${this.id}`))
-    console.log($(`${this.id}`))
-    console.log(this.element)
-    console.log(this.id)
     $(`#${this.id}`).resizable();
       $(`#${this.id}`).draggable({
 snap: `snapTo:not(#${this.id}):not(#${this.id}>snapTo)`,
@@ -148,77 +170,78 @@ snapTolerance: 10
 }).dblclick(function() {
   $(this).draggable({ disabled: true });
 });;
-    }
+    
   }
 
   create(ops){
-    let el=createElement("div",{id:this.id,className:"dataPoints",name:"drag",title:"item",style:`left: ${this.left}; top: ${this.top}; z-index: 201; width: ${this.width};height: ${this.height}; max-width:200px;max-height:400px;overflow:scroll;`})
-    this.element=el
-      el.append(this.text)
-if(this.values==undefined){
-  for (let key in this.parent) {
-    let child=new
-    Value({id:this.id+key,name:key,value:this.parent[key],dataSource:this.dataSource})
-    this.children.push(child) 
-    el.append(child.create())
-    this.parent.registerListener(()=>child.update())
-    // let val=document.getElementById(this.id+key)
-  }
-}else{
-      for (let key in this.values) {
-        let child=new 
-        Value({id:this.id+key,name:key,value:this.values[key],dataSource:this.dataSource})
-        this.children.push(child) 
-        el.append(child.create())
-        this.parent.registerListener(()=>child.update())
-        // let val=document.getElementById(this.id+key)
-      }
-    }
+    console.log("create")
+    // let el=createElement("div",{id:this.id,className:"dataPoints",name:"drag",title:"item",style:`left: ${this.left}; top: ${this.top}; z-index: 201; width: ${this.width};height: ${this.height}; max-width:200px;max-height:400px;overflow:scroll;`})
+    // this.element=el
+      // el.append()
+// if(this.values==undefined){
+//   for (let key in this.parent) {
+//     let child=new
+//     Value({id:this.id+key,name:key,value:this.parent[key],dataSource:this.dataSource})
+//     this.children.push(child) 
+//     el.append(child.create())
+//     this.parent.registerListener(()=>child.update())
+//     // let val=document.getElementById(this.id+key)
+//   }
+// }else{
+//       for (let key in this.values) {
+//         let child=new 
+//         Value({id:this.id+key,name:key,value:this.values[key],dataSource:this.dataSource})
+//         this.children.push(child) 
+//         el.append(child.create())
+//         this.parent.registerListener(()=>child.update())
+//         // let val=document.getElementById(this.id+key)
+//       }
+//     }
 
-let ms=createElement("div",{id:this.id+"S",style:`z-index:202;height:auto;position:absolute;background-color:green;width:min-content;left:-100%;top:0px;text-align:center;visibility:hidden;`})
-el.append(ms)
-let buttons=[]
-for(let i=0;i<5;i++){
-  buttons[i]=createElement("button",{id:this.id+"SB"+i,style:`width:90%;height:auto;margin-bottom: 10%;`})
-  buttons[i].func=function(){console.log(this.func)}
-  buttons[i].addEventListener("click",buttons[i].func)
-  ms.append(buttons[i])
-  buttons[i]["setB"]=function(text,func){
-    this.textContent=text
-    this.removeEventListener("click",this.func)
-    this.func=func
-    this.addEventListener("click",this.func)
-  }
-}
-buttons[0].setB("add",()=>{let key=null;let child=new Value({id:this.id+key,name:"null",value:this.dataSource});this.children.push(child);el.append(child.create());this.values["null"]=this.dataSource;this.parent.registerListener(()=>child.update());});
-buttons[1].setB("update",()=>{for(let value of this.children){value.update()}})
-  buttons[2].setB("console this",()=>{console.log(this)});
-  buttons[3].setB("delete this",()=>{this.element.remove()});
-  dis(ms)
-document.addEventListener("mouseup",()=>{
-    ms.style.visibility="hidden"
-  });
+// let ms=createElement("div",{id:this.id+"S",style:`z-index:202;height:auto;position:absolute;background-color:green;width:min-content;left:-100%;top:0px;text-align:center;visibility:hidden;`})
+// el.append(ms)
+// let buttons=[]
+// for(let i=0;i<5;i++){
+//   buttons[i]=createElement("button",{id:this.id+"SB"+i,style:`width:90%;height:auto;margin-bottom: 10%;`})
+//   buttons[i].func=function(){console.log(this.func)}
+//   buttons[i].addEventListener("click",buttons[i].func)
+//   ms.append(buttons[i])
+//   buttons[i]["setB"]=function(text,func){
+//     this.textContent=text
+//     this.removeEventListener("click",this.func)
+//     this.func=func
+//     this.addEventListener("click",this.func)
+//   }
+// }
+// buttons[0].setB("add",()=>{let key=null;let child=new Value({id:this.id+key,name:"null",value:this.dataSource});this.children.push(child);el.append(child.create());this.values["null"]=this.dataSource;this.parent.registerListener(()=>child.update());});
+// buttons[1].setB("update",()=>{for(let value of this.children){value.update()}})
+//   buttons[2].setB("console this",()=>{console.log(this)});
+//   buttons[3].setB("delete this",()=>{this.element.remove()});
+//   dis(ms)
+// document.addEventListener("mouseup",()=>{
+//     ms.style.visibility="hidden"
+//   });
 
-el.addEventListener("mouseup",(e)=>{
-if(e.button==2&&mouseElem(e)[0].constructor.name=="HTMLDivElement"){
-    setTimeout(()=>{
-      let bor=ms.getBoundingClientRect()
-      let ber=el.getBoundingClientRect()
-      console.log()
-      ms.style.left=ber.left-bor.width+"px"
-      ms.style.top=ber.top+"px"
-      ms.style.visibility="visible"
-      $(`#${ms.id}`).show(
-      "slide", {direction: "right"},
-      200
-      );},1)
-  }})
-    if(ops=="return"){
-      return el
-    }
-      document.getElementById("sliders").append(el)
-      this.componentDidMount()
-      console.log("comp")
+// el.addEventListener("mouseup",(e)=>{
+// if(e.button==2&&mouseElem(e)[0].constructor.name=="HTMLDivElement"){
+//     setTimeout(()=>{
+//       let bor=ms.getBoundingClientRect()
+//       let ber=el.getBoundingClientRect()
+//       console.log()
+//       ms.style.left=ber.left-bor.width+"px"
+//       ms.style.top=ber.top+"px"
+//       ms.style.visibility="visible"
+//       $(`#${ms.id}`).show(
+//       "slide", {direction: "right"},
+//       200
+//       );},1)
+//   }})
+//     if(ops=="return"){
+//       return el
+//     }
+//       document.getElementById("sliders").append(el)
+//       this.componentDidMount()
+//       console.log("comp")
   }
 }
 

@@ -36,9 +36,10 @@ export default class Phy_page extends React.Component {
       <snapto id="sliders">
         <Force id={"forceTest"} P1={"x1"} angle={90} f={100} />
         <Slider id={"datass"} side={"left"} width={250} height={parseInt(window.innerHeight)}/>
-        <Slider id={"maker"} side={"right"} width={250} height={parseInt(window.innerHeight)}
-        content={[]}
-        />
+        {/* <Slider id={"maker"} side={"right"} width={250} height={parseInt(window.innerHeight)}
+        content={[]}        /> */}
+
+        <Console id={"dataConsoleTesMore"} side={"right"} width={250} height={parseInt(window.innerHeight)} dataSource={"H"} values={["id","x","y","data"]}/>
       </snapto>
       <ContextMenu id={"MainMenu"}/>
     </div>);

@@ -4,7 +4,7 @@ import {data} from "../dataBase";
 import ReactDOM from 'react-dom';
 import {queue,timeComponent,c1,animation} from "../objects/queue.js";
 import {Console,Value} from "../data";
-import {toDegrees,toRadians,createElement,mouseElem} from '../functions.js'
+import {toDegrees,toRadians,createElement,mouseElem,effShow,collapse,hideAll,showAll, runEffect} from '../functions.js'
 import $ from  "jquery";
 import "jquery-ui/ui/effects/effect-slide";
 import "jquery-ui/ui/widgets/draggable";
@@ -437,6 +437,10 @@ export class Point extends Cir{
   componentDidMount() {
     this.elem =document.getElementById(`${this.id}`);
     this.elem.me=this
+    this.elem.ops={"cosnole this":()=>{console.log(this.id); this.toConsole()},
+      "pin this":()=>{this.pind=true},
+      "unpin this":()=>this.pind=false,
+      "elems here":()=>{console.log(document.elementsFromPoint(parseInt(window.mouseX), parseInt(window.mouseY)))}}
     this.dragQueue=0
     this.elem.addEventListener("mousedown",this.mouseDown)
   }

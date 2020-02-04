@@ -3,6 +3,7 @@ import $ from  "jquery";
 import "jquery-ui/ui/widgets/draggable";
 import "jquery-ui/ui/effects/effect-slide";
 import {dis,con,updateCon,onSnap} from './functions';
+import {mouseElem,effShow,collapse,hideAll,showAll, runEffect} from './functions';
 export default class Slider extends Component {
     constructor(props) {
         super(props)
@@ -70,6 +71,22 @@ export default class Slider extends Component {
     }
     componentDidMount(){
       this.element=document.getElementById(this.id)
+      this.element.ops={
+        "cosnole this":()=>{console.dir(this.element);},
+        "hide":()=>{runEffect(`#${this.id}`)},
+        "no show for you":()=>console.log("i said no!"),
+        "elems here":()=>console.log(document.elementsFromPoint(parseInt(window.mouseX), parseInt(window.mouseY))),
+        "hide all":()=>hideAll(),
+        "show all":()=>showAll()
+      }
+document.getElementById(this.id+"con").ops={     
+            "cosnole this":()=>{console.dir(document.getElementById(this.id+"con"));},
+            "hide":()=>{runEffect(`#${this.id.slice(0,this.id.length-3)}`)},
+            "show":()=>effShow(`#${this.id.slice(0,this.id.length-3)}`),
+            "elems here":()=>console.log(document.elementsFromPoint(parseInt(window.mouseX), parseInt(window.mouseY))),
+            "hide all":()=>hideAll(),
+            "show all":()=>showAll()
+}
       this.element.addEventListener("mousedown",this.mouseDown)
       this.element.addEventListener("mouseup",this.mouseUp)
       $(`#${this.id}`).resizable();
