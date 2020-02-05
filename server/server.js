@@ -1,28 +1,20 @@
-var http = require('http'),
-    fs = require('fs'),
-    // NEVER use a Sync function except at start-up!
-    index = fs.readFileSync(__dirname + '/index.html');
-
-// Send index.html to all requests
-var app = http.createServer(function(req, res) {
+var http = require('http');
+http.createServer(function (req, res) {
     res.writeHead(200, {'Content-Type': 'text/html'});
-    res.end(index);
-});
-
-// Socket.io server listens to our app
-var io = require('socket.io').listen(app);
-
-// Send current time to all connected clients
-function sendTime() {
-    io.emit('time', { time: new Date().toJSON() });
-}
-
-// Emit welcome message on connection
-io.on('connection', function(socket) {
-    // Use socket to communicate with this particular client only, sending it it's own id
-    socket.emit('welcome', { message: 'Welcome!', id: socket.id });
-
-    socket.on('i am client', console.log);
-});
-
-app.listen(3001);
+    res.end('Hello World!');
+    console.log(res)
+  }).listen(8080);
+  http.log = function(level, message) {
+    var levels = ['info', 'warn', 'error'];
+    if (levels.indexOf(level) <= levels.indexOf(logger.debugLevel) ) {
+      if (typeof message !== 'string') {
+        message = JSON.stringify(message);
+      };
+      console.log(level+': '+message);
+    }
+  }
+  var http = require('./logger');
+  http.debugLevel = 'warn';
+http.log('info', 'Everything started properly.');
+http.log('warn', 'Running out of memory...');
+http.log('error', { error: 'flagrant'});

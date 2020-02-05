@@ -5,7 +5,7 @@ let equs={
 
     a:new phyEq("a","m/s^2",
         [
-            Mequ(Mfunc(["a"]),Mfunc(["v"]))
+            "a=v/t"
         ]
     ),
     v:new phyEq("v","m/s",
@@ -19,7 +19,9 @@ let equs={
     g,
     N,
     t,
-    w
+    w,
+    j,
+    f:["Fu=u*N","F=ma","Fc=m*v^2/r"]
 
 
 }

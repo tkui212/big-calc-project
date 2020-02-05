@@ -25,13 +25,20 @@ class Forces{
       getForces(){}
       initFs(){}
 }
+class P{
+  constructor(){
+    this.x
+    this.y
+    this.cons=[]
+    
+  }
+}
 class PhysicBody{
     constructor(props){
       //forces
       this.forces=new Forces
       //mass
-      this.m=1
-      //gravity
+      this.m=new phyVar("m",1)
     }
     updateForces=()=>{}
     init(){}
@@ -47,4 +54,7 @@ class chain{
     constructor(props){
         this.bodys=[]
     }
+}
+class rotator{
+
 }
