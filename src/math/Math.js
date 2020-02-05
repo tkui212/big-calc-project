@@ -1,4 +1,5 @@
-export class deg{
+import {O} from "../objects/obj"
+export class deg extends O{
     constructor(de){
         this.value=de
     }
@@ -7,7 +8,7 @@ export class deg{
     sin(){}//?
     toString(){return this.value}
 }
-export class frac{
+export class frac extends O{
     constructor(uper,down){
         this.a=uper
         this.b=down
@@ -18,20 +19,20 @@ export class frac{
 
 }
 /** mathematical function */
-export class Mfunc{
+export class Mfunc extends O{
     constructor(ar){
         this.value=ar
     }
     toString(){return this.value}
 }
 /** mathematical equisen */
-export class Mequ{
+export class Mequ extends O{
     constructor(a,b){
         this.sideA=a
         this.sideB=b
     }
 }
-export class Meth{
+export class Meth extends O{
     StringCalc(st){
         // if(st=="^")
     }//exactmath
@@ -50,13 +51,13 @@ export class Meth{
     collisenCalc(a,b){}
 }
 /** when you get some "a" in a f(x) and its sayd its a number */
-export class Mvar{
+export class Mvar extends O{
     constructor(n,v){
         this.name=n
         this.value=v
     }
 }
-export class phyVar{
+export class phyVar extends O{
     constructor(n,v){
         /** a,v,x,u,m,g,N,t,w */
         this.name=n
@@ -72,7 +73,7 @@ export class phyVar{
         this.units
     }
 }
-export class Eqs{
+export class Eqs extends O{
     /** pVs: array of phyvar's */
     findEqWith(pVs){}
     calc(eq,values){}
