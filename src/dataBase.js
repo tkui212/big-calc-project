@@ -1,6 +1,6 @@
 export var data={bodys:{},elements:{},consoles:{},internals:{}}
 window["data"]=data;
-data["add"]=function(id,value){
+data.add=function(id,value){
     let names=getNames(value)
     for(let i=0;i<names.length;i++){
         if(data[names[i]]==undefined){
@@ -17,7 +17,7 @@ data["add"]=function(id,value){
         data[names[i]][id]=value
     }
 }
-data["remove"]=function(id){
+data.remove=function(id){
     for(let key in data){
         if(typeof data[key]=="object"){
             for(let key1 in data[key]){
@@ -28,7 +28,7 @@ data["remove"]=function(id){
         }
     }
 }
-data["get"]=function(id){
+data.get=function(id){
     for(let key in data){
         if(typeof data[key]=="object"){
             if(data[key][id]!=undefined){

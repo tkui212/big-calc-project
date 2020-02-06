@@ -1,9 +1,123 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <script src="test.js"></script>
-    <script src="WolframAlphaAPI.js"></script>
-    <script src=""></script>
+    <script>
+
+function bris(st,index){
+  let i=index
+  let Bcount=0
+              let text=""
+              for(let j=i-1;j>-1;j--){
+                // console.log(st[j])
+                if(st[j]==")"){
+                  Bcount++
+                  text=st[j]+text
+                }
+                else if(st[j]=="("){
+                  Bcount--
+                  text=st[j]+text
+                }
+                else{
+                  text=st[j]+text
+                }
+                if(Bcount==0){
+                  return text
+                }
+              }
+              return false
+}
+function Meth(st){
+        console.log(st)
+        let hold=st
+        let a=""
+
+          // let index=hold.indexOf("^0.5")
+          // console.log(index)
+          // let powerd=bris(hold,index)
+          // console.log(powerd)
+          // hold=hold.replace(`${powerd}^0.5`,`pow(${powerd},0.5)`)
+          // console.log(hold)
+          // index=hold.indexOf("^2")
+          // console.log(index)
+          // powerd=bris(hold,index)
+          // console.log(powerd)
+          // hold=hold.replace(`${powerd}^2`,`pow(${powerd},2)`)
+          // console.log(hold)
+
+        while(hold.indexOf("^0.5")>0){
+          let index=hold.indexOf("^0.5")
+          console.log(index)
+          let powerd=bris(hold,index)
+          hold=hold.replace(`${powerd}^0.5`,`pow(${powerd},0.5)`)
+        }
+        while(hold.indexOf("^2")>0){
+          let index=hold.indexOf("^2")
+          console.log(index)
+          let powerd=bris(hold,index)
+          hold=hold.replace(`${powerd}^2`,`pow(${powerd},2)`)
+        }
+        // a=bris(st)
+        // for(let i=0;i<st.length;i++){
+        //     // console.log(st[i])
+        //     if(st[i]=="^"){
+        //       let powerd
+        //       let power
+        //       let Bcount=0
+        //       let text=""
+        //       for(let j=i-1;j>-1;j--){
+        //         if(st[j]==")"){
+        //           Bcount++
+        //           text=st[j]+text
+        //         }
+        //         else if(st[j]=="("){
+        //           Bcount--
+        //           text=st[j]+text
+        //         }
+        //         else{
+        //           text=st[j]+text
+        //         }
+        //         if(Bcount==0){
+        //           powerd=text
+        //           console.log("")
+        //           console.log(hold)
+                  
+        //           console.log(hold)
+        //           console.log("")
+        //           break
+        //         }
+        //       }
+
+        //       if(st[i+1]=="2"){
+        //         power=2
+        //         i++
+        //       }else if(st[i+1]=="0"&&st[i+2]=="."&&st[i+3]=="5"){
+        //         power=0.5
+        //         i=i+3
+        //       }
+        //       else{
+        //         console.error("the power is not programed in")
+        //         console.error("go to math to solve the problem")
+        //       }
+              
+        //       hold=hold+` pow(${powerd},${power}) `
+        //     }
+        //     else{
+        //       hold=hold+st[i]
+        //     }
+            
+        // }
+        return hold
+        // if(st=="^")
+    //exactmath
+  }
+console.log(Meth("((100)^2+(100)^2)^0.5"))
+console.log("")
+console.log(Meth("(100)^2+(100)^2"))
+    
+    
+    
+    
+    </script>
 
     <title>Mathhhh</title>
   </head>

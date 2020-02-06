@@ -19,5 +19,10 @@
 		  "prefix": [".add"],
 		  "body": [".add(`${1:name}`,${2:value})"],
 		  "description": "Add variable"
-		}
+		},
+		"define": {
+			"prefix": ["define"],
+			"body": ["define(this,`${1:id}`,${2:get},${3:set})"],
+			"description": "Add variable"
+		  }
 }

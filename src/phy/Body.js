@@ -9,6 +9,8 @@ import $ from  "jquery";
 import "jquery-ui/ui/effects/effect-slide";
 import "jquery-ui/ui/widgets/draggable";
 import F from "./F.png"
+import {cNum,define} from "../objects/obj"
+import {Meth} from "../math/Math"
 // import "./jquery-ui-1.12.1/jquery-ui.js";
 
 export class Data extends Component {
@@ -23,7 +25,7 @@ export class Data extends Component {
   constructor(props){//{x,y,id}
     super(props)
     // console.log(typeof props)
-    if(typeof props=="Data"){
+    if(props.constructor.name=="Data"){
       throw("make me")
     }
     else{
@@ -31,22 +33,8 @@ export class Data extends Component {
     if(props.x==undefined){
       throw("x sappose to be defined")
     }
-    document.getElementById("all").style.setProperty(`--${this.id}-x`,`${props.x}`)
-    document.getElementById("all").style.setProperty(`--${this.id}-y`,`${props.y}`)
-    Object.defineProperty(this,"x",{
-      get(){return document.getElementById("all").style.getPropertyValue(`--${this.id}-x`)},
-      set(num){document.getElementById("all").style.setProperty(`--${this.id}-x`,`${num}`)
-      this.event(this.Listeners)
-    },
-    enumerable:true
-    })
-    Object.defineProperty(this,"y",{
-      get(){return document.getElementById("all").style.getPropertyValue(`--${this.id}-y`)},
-      set(num){document.getElementById("all").style.setProperty(`--${this.id}-y`,`${num}`)
-      this.event(this.Listeners)
-    },
-    enumerable:true
-    })
+    cNum(this,this.id,"x",props.x)
+    cNum(this,this.id,"y",props.y)
     this.unpdatindgsTimeOut=true
     // this.transSpeed=0.5
     this.cx=`var(--${this.id}-x)`
@@ -60,9 +48,9 @@ export class Data extends Component {
   }
   data.add(this.id,this)
   }
-  event(ar){
+  event(){
     if(this.unpdatindgsTimeOut){
-      ar.forEach(Fun => {
+      this.Listeners.forEach(Fun => {
         Fun.call()
       });
       this.unpdatindgsTimeOut=false
@@ -127,9 +115,13 @@ export class Body extends Component {
     this.Listeners.push(listener)
   }
   event(){
-    this.Listeners.forEach(Fun => {
+    if(this.unpdatindgsTimeOut){
+      this.Listeners.forEach(Fun => {
         Fun.call()
       });
+      this.unpdatindgsTimeOut=false
+      setTimeout(()=>{this.unpdatindgsTimeOut=true},1)
+    }
   }
   removeListener(id){
     this.Listeners=this.Listeners.filter((value)=>value.id!=id)
@@ -150,6 +142,7 @@ export class Body extends Component {
 export class Cir extends Body {
   constructor(props){
     super(props)
+    this.radius=props.radius
     this.DataHolder=new Data({x:props.x,y:props.y,id:this.id})
     
     Object.defineProperty(this,"data",{
@@ -182,14 +175,8 @@ export class Cir extends Body {
         }
       }
     })
-  Object.defineProperty(this,"y",{
-    get(){return this.data.y},
-    set(num){ this.data.y=num;}
-  })
-  Object.defineProperty(this,"x",{
-    get(){return this.data.x},
-    set(num){ this.data.x=num;}
-  })
+  define(this,`x`,()=>{return this.data.x},(num)=>{this.data.x=num})
+  define(this,`y`,()=>{return this.data.y},(num)=>{this.data.y=num})
 }
 componentDidMount() {
   this.elem = document.getElementById(`${this.id}`);
@@ -226,7 +213,15 @@ toConsole(copy){
   // this.data.registerListener(()=>{})
 }
 render(){
-  return(<circle id={this.id} cx={this.x} cy={this.y} r={10} stroke={"white"} strokeWidth={0} fill={"white"} style={{cx:`${this.data.cx}`,cy:`${this.data.cy}`}} />)
+  return(<circle id={this.id} 
+    cx={this.cx} 
+    cy={this.cy} 
+    r={this.radius} 
+    stroke={this.color} 
+    strokeWidth={0} 
+    fill={this.color} 
+    style={{cx:`${this.data.cx}`,cy:`${this.data.cy}`}}
+     />)
 }
 toSimple(){
   return {x:parseInt(this.x),y:parseInt(this.y),vx:this.vx,vy:this.vy,id:this.id,me:this}
@@ -271,26 +266,30 @@ export class Line extends Body{
           this.valueChange()
           }
       })
-      Object.defineProperty(this,"y1",{
-        get(){return parseInt(this.data.y)},
-        set(num){ this.data.y=num;}
-      })
-      Object.defineProperty(this,"x1",{
-        get(){return parseInt(this.data.x)},
-        set(num){ this.data.x=num;}
-      })
-      Object.defineProperty(this,"y2",{
-        get(){return parseInt(this.data2.y)},
-        set(num){ this.data2.y=num;}
-      })
-      Object.defineProperty(this,"x2",{
-        get(){return parseInt(this.data2.x)},
-        set(num){ this.data2.x=num;}
-      })
-    Object.defineProperty(this,"path",{
-      get(){return `var(--${this.id}-path)`},
-      set(num){ document.getElementById("all").style.setProperty(`--${this.id}-path`,`${num}`)}
-    })
+      define(this,"y1",
+      ()=>{return parseInt(this.data.y)},
+      (num)=>{ this.data.y=num;})
+
+      define(this,"x1",
+        ()=>{return parseInt(this.data.x)},
+        (num)=>{ this.data.x=num;})
+
+      define(this,"y2",
+        ()=>{return parseInt(this.data2.y)},
+        (num)=>{ this.data2.y=num;})
+
+      define(this,"x2",
+        ()=>{return parseInt(this.data2.x)},
+        (num)=>{ this.data2.x=num;})
+
+
+        // define(this,"length",
+        // ()=>{return Math.sqrt(exactMath.formula(``))},
+        // ()=>{console.log("no")})
+
+      define(this,"path",
+      ()=>{return `var(--${this.id}-path)`},
+      (num)=>{document.getElementById("all").style.setProperty(`--${this.id}-path`,`${num}`)})
 
     if(typeof props.x=="number"&&typeof props.y=="number"){
       this.point1.x=props.x
@@ -311,6 +310,10 @@ export class Line extends Body{
     this.data2=data.Body[props.P2].data
   }
   this.point2.data=this.data2
+  console.log(Meth.StringCalc("(1+(1+2)+1)"))
+  console.log(Meth.StringCalc(
+    `((${this.x1}-${this.x2})^2+(${this.y1}-${this.y2})^2)^0.5`
+  ))
   }
   
   componentDidMount(){
@@ -320,6 +323,21 @@ export class Line extends Body{
     this.elem = document.getElementById(`${this.id}`);
     this.elem.me=this
     this.elem.addEventListener("mousedown",this.mouseDown)
+    this.elem.addEventListener("mouseover",this.over)
+  }
+  over=(e)=>{
+    this.elem.addEventListener("mousemove",this.moveOver)
+    this.elem.addEventListener("mouseout",this.out)
+    let obj={id:this.id+"console",text:this.id+"C",values:{length:this,angle:this},parent:this,left:e.x,top:e.y,dataSource:this}
+    this.console=new Console(obj)
+    this.console.create()
+  }
+  moveOver=(e)=>{
+    this.console.elem.style.top=e.y+10+"px"
+    this.console.elem.style.left=e.x+10+"px"
+  }
+  out=(e)=>{
+    this.console.delete()
   }
   mouseDown = (ev,ui) => {
     console.log(this.id)
@@ -527,14 +545,20 @@ export class Force extends Line {
     let obj={id:this.id+"console",text:this.id+"C",values:{F:this,angle:this},parent:this,left:e.x,top:e.y,dataSource:this}
     this.console=new Console(obj)
     this.console.create()
+    // console.log(this)
   }
   moveOver=(e)=>{
-    this.console.element.style.top=e.y+10+"px"
-    this.console.element.style.left=e.x+10+"px"
+    this.console.elem.style.top=e.y+10+"px"
+    this.console.elem.style.left=e.x+10+"px"
   }
   out=(e)=>{
-    $(this.console.element).remove()
+    $(this.console.elem).remove()
+    let id=this.console.id
+    console.log(data.get(id))
     delete this.console
+    console.log(data.get(id))
+
+
   }
   toConsole(){
     let obj={id:this.id+"console",text:this.id+"C",values:{x:this,y:this,id:this},parent:this,left:parseInt(this.x)+50,top:parseInt(this.y)+50,dataSource:this}

@@ -1,6 +1,8 @@
 import React, { Component } from "react";
 import {createElement,mouseElem,log} from './functions.js'
 import {data} from "./dataBase";
+import ReactDOM from 'react-dom';
+
 import $ from  "jquery";
 import "jquery-ui/ui/effects/effect-slide";
 import "jquery-ui/ui/widgets/draggable";
@@ -27,6 +29,14 @@ var dis = (child) => {
       $("#sliders")[0].appendChild(child)
   }
 }
+var renderToHtml=(re)=>{
+  let el=createElement("div",{})
+  ReactDOM.render(re,el)
+  let ret=el.firstChild
+  el.remove()
+  return ret
+  
+}
 export class Value2 extends Component {
   constructor(props) {
       super(props)
@@ -37,25 +47,25 @@ export class Value2 extends Component {
   }
   componentDidMount(){
     this.elem=document.getElementById(this.id)
+    this.elem.me=this
     this.keyElem=document.getElementById(this.id+"key")
     this.valueElem=document.getElementById(this.id+"value")
-    console.log(this)
     this.keyElem.addEventListener("keyup",()=>{this.name=this.keyElem.textContent; this.update()})
-    $(this.keyElem).attr('contenteditable',"true")
-    $(this.valueElem).attr('contenteditable',"true")
+    // $(this.keyElem).attr('contenteditable',"true")
+    // $(this.valueElem).attr('contenteditable',"true")
     this.valueElem.addEventListener("keypress",(ev)=>{
       if(ev.key=="Enter"&&this.valueElem.value!=""&&typeof this.dataSource[this.name]!="object"){
         this.dataSource[this.name]=this.valueElem.value}})
     this.elem.addEventListener("mouse",()=>{this.name=this.keyElem.textContent; this.update()})
-      this.ops={delete:()=>{this.elem.parentElement.removeChild(this.elem)},
+      this.elem.ops={delete:()=>{this.elem.parentElement.removeChild(this.elem)},
       "console this":()=>{new Console({parent:this.dataSource[this.name],id:`${this.id}${this.name}n`,dataSource:this.dataSource}).create()}}
       }
   render() {
            return (
           <p id={this.id} style={{height:"max-content"}} key={this.id+"k"}>
-              <span id={this.id+"key"} textContent={this.name} contenteditable={"true"}/>
-              <span id={this.id+"sper"} textContent={": "}/>
-              <span id={this.id+"value"} textContent={"null"} contenteditable={"true"} style={{whiteSpace: "pre-line"}}/>
+              <span id={this.id+"key"} contentEditable={"true"}>{this.name}</span>
+              <span id={this.id+"sper"} >{": "}</span>
+              <span id={this.id+"value"} contentEditable={"true"} style={{whiteSpace: "pre-line"}}>{stringfy(this.dataSource[this.name],300)}</span>
           </p>)  
 }
 
@@ -79,7 +89,6 @@ export class Console extends Component {
       this.side=props.side
       this.children=[]
       this.dataSource=props.dataSource
-      console.log(data)
       if(typeof this.dataSource=="string"){
         this.dataSource=data.get(this.dataSource)
       }
@@ -121,18 +130,29 @@ export class Console extends Component {
         this.left=this.Vparent.x+"px"
         this.top=this.Vparent.y+"px"
       }
+      data.add(this.id,this)
   }
   render() {
-
+    let rendereds=[]
+    if(this.values.constructor.name=="Object"){
+      for(let key in this.values){
+        let child=new Value2({id:this.id+key,dataSource:this.dataSource,name:key})
+        this.children.push(child)
+        this.dataSource.registerListener(()=>child.update())
+        rendereds.push(child.render())
+      }
+    }else{
     for(let i=0;i<this.values.length;i++){
       this.children.push(new Value2({id:this.id+this.values[i],dataSource:this.dataSource,name:this.values[i]}))
       console.log(this.id+this.values[i])
       this.dataSource.registerListener(()=>this.children[i].update())
+      rendereds.push(this.children[i].render())
     }
+  }
     // this.children.push(this.text)
     console.log(this.children)
     let f=<div id={this.id} className={"dataPoints"} name={"drag"} title={"item"} style={{left: this.left, top: this.top, zIndex: 201, width: this.width,height: this.height, maxWidth:"200px",maxHeight:"400px",overflow:"scroll"}} key={"1"}>
-      <div>{this.children.map((a)=>{console.log(a);a.render()})}</div>
+      {rendereds}
     
 </div>
 console.log(f)
@@ -147,6 +167,7 @@ console.log(f)
     this.elem=document.getElementById(this.id)
     this.elem.ops={
     "add":()=>{
+      
       console.log("f")
       // let key=null;
       // let child=new Value2({id:this.id+key,name:"null",value:this.dataSource});
@@ -173,8 +194,13 @@ snapTolerance: 10
     
   }
 
-  create(ops){
+  create(){
     console.log("create")
+    let sliders=document.getElementById('sliders')
+    sliders.appendChild(renderToHtml(this.render()))
+    
+    this.componentDidMount()
+    console.log(this)
     // let el=createElement("div",{id:this.id,className:"dataPoints",name:"drag",title:"item",style:`left: ${this.left}; top: ${this.top}; z-index: 201; width: ${this.width};height: ${this.height}; max-width:200px;max-height:400px;overflow:scroll;`})
     // this.element=el
       // el.append()
@@ -242,6 +268,15 @@ snapTolerance: 10
 //       document.getElementById("sliders").append(el)
 //       this.componentDidMount()
 //       console.log("comp")
+  }
+  delete(){
+    $(this.elem).remove()
+    // console.log(this.children[0].id)
+    for(let child of this.children){
+      data.remove(child.id)
+    }
+    data.remove(this.id)
+    delete this
   }
 }
 

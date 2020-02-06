@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import $ from  "jquery";
+import $ from "jquery";
 import "jquery-ui/ui/widgets/draggable";
 import "jquery-ui/ui/effects/effect-slide";
 import {dis,con,updateCon,onSnap} from './functions';
