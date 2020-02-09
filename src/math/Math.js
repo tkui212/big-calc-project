@@ -33,60 +33,53 @@ export class Mequ extends O{
         this.sideB=b
     }
 }
-function bris(st){
-    let ret=[]
-    let hold=""
-    let Bcount=1
-    for(let i=0;i<st.length;i++){
-        if(st[i]=="("){
-            ret.concat(bris(st.slice(i+1,st.length)))
-        }
-        else if(st[i]==")"){
-            Bcount--
-            if(Bcount<0){
-                throw("f in a mathamicak way")
-            }
-            ret.push(`(${hold})`)
-        }
-        else{
-            hold=hold+st[i]
-        }
-    }
-    return ret
+function bris(st,index){
+    let i=index
+    let Bcount=0
+                let text=""
+                for(let j=i-1;j>-1;j--){
+                  // console.log(st[j])
+                  if(st[j]==")"){
+                    Bcount++
+                    text=st[j]+text
+                  }
+                  else if(st[j]=="("){
+                    Bcount--
+                    text=st[j]+text
+                  }
+                  else{
+                    text=st[j]+text
+                  }
+                  if(Bcount==0){
+                    return text
+                  }
+                }
+                return false
 }
 export var Meth={
     StringCalc(st){
         console.log(st)
-        let a=[]
-        let hold=""
-        let b=[]
-        // a=bris(st)
-        // for(let i=0;i<st.length;i++){
-        //     console.log(st[i])
-        //     if(st[i]=="("){
-        //         for(let j=i;j<st.length;j++){
-                
-        //         }
-        //     }
-        //     if(st[i]=="("||st[i]==")"){
-        //         if(hold!=""){
-        //             a.push(hold)
-        //             hold=""
-        //         }
-                
-        //         a.push(st[i])
-        //     }
-        //     else{
-        //         hold=hold+st[i]
-        //     }
-        //     console.log(Number.parseInt(hold))
+        let hold=st
+        while(hold.indexOf("^2")>0){
+            let index=hold.indexOf("^2")
+            console.log(index)
+            let powerd=bris(hold,index)
+            let p =exactMath.formula(powerd)
+  
+            hold=hold.replace(`${powerd}^2`,Math.abs(exactMath.pow(p,2)))
+          }
+        while(hold.indexOf("^0.5")>0){
+          let index=hold.indexOf("^0.5")
+          console.log(index)
+          let powerd=bris(hold,index)
+          console.log(powerd)
+          let p =exactMath.formula(powerd)
+            console.log(p)
+          hold=hold.replace(`${powerd}^0.5`,Math.sqrt(p))
+        }
 
-        // }
-        // if(hold!=""){
-        //     a.push(hold)
-        // }
-        console.log(exactMath.pow(2,2))
-        return a
+      
+        return hold
         // if(st=="^")
     },//exactmath
     /** calc with spacel math values/object */

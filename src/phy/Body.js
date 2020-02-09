@@ -11,6 +11,7 @@ import "jquery-ui/ui/widgets/draggable";
 import F from "./F.png"
 import {cNum,define} from "../objects/obj"
 import {Meth} from "../math/Math"
+import {evaluate,atan} from 'mathjs'
 // import "./jquery-ui-1.12.1/jquery-ui.js";
 
 export class Data extends Component {
@@ -283,9 +284,13 @@ export class Line extends Body{
         (num)=>{ this.data2.x=num;})
 
 
-        // define(this,"length",
-        // ()=>{return Math.sqrt(exactMath.formula(``))},
-        // ()=>{console.log("no")})
+        define(this,"length",
+        ()=>{return evaluate(`((${this.x1}-${this.x2})^2+(${this.y1}-${this.y2})^2)^0.5`)},
+        ()=>{console.log("no")})
+
+        define(this,"angle",
+        ()=>{return toDegrees(atan(evaluate(`(${this.x1}-${this.x2})/(${this.y1}-${this.y2})`)))},
+        ()=>{console.log("no")})
 
       define(this,"path",
       ()=>{return `var(--${this.id}-path)`},
@@ -310,10 +315,7 @@ export class Line extends Body{
     this.data2=data.Body[props.P2].data
   }
   this.point2.data=this.data2
-  console.log(Meth.StringCalc("(1+(1+2)+1)"))
-  console.log(Meth.StringCalc(
-    `((${this.x1}-${this.x2})^2+(${this.y1}-${this.y2})^2)^0.5`
-  ))
+  console.log(evaluate(`((${this.x1}-${this.x2})^2+(${this.y1}-${this.y2})^2)^0.5`))
   }
   
   componentDidMount(){
