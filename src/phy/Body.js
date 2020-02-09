@@ -8,7 +8,7 @@ import {toDegrees,toRadians,createElement,mouseElem,effShow,collapse,hideAll,sho
 import $ from  "jquery";
 import "jquery-ui/ui/effects/effect-slide";
 import "jquery-ui/ui/widgets/draggable";
-import F from "./F.png"
+import F from "./F2.png"
 import {cNum,define} from "../objects/obj"
 import {Meth} from "../math/Math"
 import {Forces,Force} from "../math/Force"
@@ -606,7 +606,7 @@ export class ForceC extends Line {
   render(){
         let p1=this.point1.render()
         let p2=this.point2.render()
-        return ([<img id={this.id} src={F} className={"line"} style={{top:`calc(${this.data.cy}*1px)`,left:`calc(${this.data.cx}*1px)`,width:`${this.F}px`,position:` absolute`,height:` 20px`,zIndex:` 99`,transformOrigin:` left`,transform:`var(--${this.id}-deg)`, mixBlendMode: "multiply"}} key={this.id}/>,p1,p2])
+        return ([<img id={this.id} src={F} className={"line"} style={{top:`calc(${this.data.cy}*1px)`,left:`calc(${this.data.cx}*1px)`,width:`20px`,position:` absolute`,height:` ${this.F}px`,zIndex:` 99`,transformOrigin:` top`,transform:`var(--${this.id}-deg)`, mixBlendMode: "multiply"}} key={this.id}/>,p1,p2])
       }
 }
 
