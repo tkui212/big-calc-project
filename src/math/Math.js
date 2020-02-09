@@ -4,7 +4,7 @@ import {evaluate,atan} from 'mathjs'
 import {toDegrees,toRadians,createElement,mouseElem,effShow,collapse,hideAll,showAll, runEffect} from '../functions.js'
 export class deg extends O{
     constructor(de){
-        super(de)
+        super({})
         this.value=de
     }
     toRadian(){}

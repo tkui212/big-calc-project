@@ -386,9 +386,16 @@ export class Circle extends Cir {
     }
       return false
   })
-  for(let i=0;i>cons.length;i++){
-    let f=new ForceC({id:this.id+cons[i].id,f:cons[i].length,angle:cons[i].angle})
+  for(let i=0;i<cons.length;i++){
+    let f=new ForceC({id:this.id+cons[i].id,f:cons[i].length,angle:cons[i].angle,P1:this.port.id})
     this.forces.push(f)
+    let el=renderToHtml(f.render())
+    console.log(el)
+    for(;el.length>0;){
+      document.getElementById("sliders").appendChild(el[0])
+    }
+
+    f.componentDidMount()
 
   }
   }
@@ -540,9 +547,25 @@ export class Point extends Cir{
 export class ForceC extends Line {
   constructor(props){
     super(props)
-    // this.Fdata=new forceData({angle:props.angle,F:props.f,id:this.id})
-    cNum(this,this.id,"angle",props.angle)
+    // cNum(this,this.id,"angle2",props.angle)
+    define(this,"angle2",()=>{return `rotate(${props.angle}deg)`},
+    (num)=>{
+        document.getElementById("all").style.setProperty(`--${this.id}-deg`,`rotate(${num}deg)`)
+        this.event(this.Listeners);
+      })
+    // this.Fdata={}
+    // Object.defineProperty(this,"angle2",{
+    //   get(){return this.Fdata.angle},
+    //   set(num){
+    //   document.getElementById("all").style.setProperty(`--${this.id}-deg`,`rotate(${num}deg)`)
+    //   this.Fdata.angle=num;
+    //   this.event(this.Listeners);
+    // },
+    // enumerable:true
+    // })
+    this.angle2=props.angle
     this.F=props.f
+
 
   }
   componentDidMount(){
@@ -683,3 +706,12 @@ const exactMath = require("exact-math");
 //   }
   
 // } 
+var renderToHtml=(re)=>{
+// / let a=document.createElement()
+  // a.childNodes
+  let el=createElement("div",{})
+  ReactDOM.render(re,el)
+  let ret=el.childNodes
+  el.remove()
+  return ret
+}

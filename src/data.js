@@ -35,7 +35,6 @@ var renderToHtml=(re)=>{
   let ret=el.firstChild
   el.remove()
   return ret
-  
 }
 export class Value2 extends Component {
   constructor(props) {
