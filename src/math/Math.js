@@ -1,7 +1,10 @@
 import {O} from "../objects/obj"
 import exactMath from "exact-math"
+import {evaluate,atan} from 'mathjs'
+import {toDegrees,toRadians,createElement,mouseElem,effShow,collapse,hideAll,showAll, runEffect} from '../functions.js'
 export class deg extends O{
     constructor(de){
+        super(de)
         this.value=de
     }
     toRadian(){}
@@ -82,6 +85,12 @@ export var Meth={
         return hold
         // if(st=="^")
     },//exactmath
+
+    Cangle(a,b){
+        let an=evaluate(`atan2(${a},${b})`)
+        return((360+toDegrees(an)*-1)%360)
+      },
+
     /** calc with spacel math values/object */
     ArrayCalc(ar){
         let toCalcString=""
@@ -112,6 +121,7 @@ export class phyVar extends O{
     //     this.units
     // }
     constructor(props){
+        super(props)
         // /** a,v,x,u,m,g,N,t,w */
         // this.name
         // this.value

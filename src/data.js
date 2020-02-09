@@ -63,9 +63,9 @@ export class Value2 extends Component {
   render() {
            return (
           <p id={this.id} style={{height:"max-content"}} key={this.id+"k"}>
-              <span id={this.id+"key"} contentEditable={"true"}>{this.name}</span>
-              <span id={this.id+"sper"} >{": "}</span>
-              <span id={this.id+"value"} contentEditable={"true"} style={{whiteSpace: "pre-line"}}>{stringfy(this.dataSource[this.name],300)}</span>
+              <span id={this.id+"key"} contentEditable={"true"} suppressContentEditableWarning={true}>{this.name}</span>
+              <span id={this.id+"sper"} suppressContentEditableWarning={true}>{": "}</span>
+              <span id={this.id+"value"} contentEditable={"true"} style={{whiteSpace: "pre-line"}} suppressContentEditableWarning={true}>{stringfy(this.dataSource[this.name],300)}</span>
           </p>)  
 }
 

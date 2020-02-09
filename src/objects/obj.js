@@ -3,13 +3,14 @@ import React, { Component } from "react";
 /**smart object that can have events and know where he is stored and manupolate his conteiner */
 export class O{
     constructor(props){
+        console.log(props)
         this.id=props.id
         this.props=props
         this.Listeners=[]
         this.Ochilds=[]
         this.ParentsO=[]
         this.unpdatindgsTimeOut=true
-        data.add(this.id,this)
+        // data.add(this.id,this)
     }
     add(id,value){
         this[id]=value

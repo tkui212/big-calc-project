@@ -1,27 +1,28 @@
-import {phyVar} from "./Math"
+import {phyVar,deg} from "./Math"
 import {O} from "../objects/obj"
 
-class Force extends O{
+export class Force extends O{
     constructor(props){
       super(props)
-      this.id=props.id
       this.𝛴F=props.F
-      this.angle=new deg(0)
-      this.add(`Fx`,new phyVar("f",0))
-      this.add(`Fy`,new phyVar("f",0))
+      this.angle=new deg(props.angle)
+      this.Fx=0
+      this.Fy=0
+      // this.add(`Fx`,new phyVar("f",0))
+      // this.add(`Fy`,new phyVar("f",0))
         /**equation*/
       this.eq="mg*sin(a)"
       /** v,a,f */
-      this.fType
+      this.fType="f"
     }
     toF(){}
     toV(){}
   }
-class Forces extends O{
+export class Forces extends O{
     constructor(props){
-        this.id=props.id
+        super(props)
         this.forces=[]
-        this.absF=new Force()
+        this.absF=new Force({id:this.id+"absF"})
       }
       calcAbs(){}
       getForces(){}
@@ -32,9 +33,9 @@ class Forces extends O{
 
   class wire{
     constructor(props){
-        this.tensen
-        this.port1=new PhysicBody
-        this.port2=new PhysicBody
+        this.tensen=0
+        // this.port1=new PhysicBody
+        // this.port2=new PhysicBody
     }
 }
 class chain{

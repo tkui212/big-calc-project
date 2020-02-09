@@ -11,6 +11,7 @@ import "jquery-ui/ui/widgets/draggable";
 import F from "./F.png"
 import {cNum,define} from "../objects/obj"
 import {Meth} from "../math/Math"
+import {Forces,Force} from "../math/Force"
 import {evaluate,atan} from 'mathjs'
 // import "./jquery-ui-1.12.1/jquery-ui.js";
 
@@ -289,7 +290,8 @@ export class Line extends Body{
         ()=>{console.log("no")})
 
         define(this,"angle",
-        ()=>{return toDegrees(atan(evaluate(`(${this.x1}-${this.x2})/(${this.y1}-${this.y2})`)))},
+        ()=>{
+          return Meth.Cangle(`(${this.x1}-${this.x2})`,`(${this.y1}-${this.y2})`)},
         ()=>{console.log("no")})
 
       define(this,"path",
@@ -370,13 +372,32 @@ export class Circle extends Cir {
     this.port=new Point({x:this.x,y:this.y,id:`${this.id}P`});
     this.port.parent=this
     this.data=this.port.data
-    this.vx=props.vx?props.vx:0;
-    this.vy=props.vy?props.vy:0;
+    this.forces=[]
+    this.absF=new Force({id:this.id+"AF"})
+    this.m=1
     // this.forces.push(new Force({x:this.x,y:this.y,ops:{id:`${this.id}F`,F:100,angle:180,P:this.port, parent:this}}));
+  }
+  updateFs(){
+    let test=[]
+    let cons=this.data.cons
+    cons=cons.filter((v)=>{
+    if(v.constructor.name=="Line"){
+      return true
+    }
+      return false
+  })
+  for(let i=0;i>cons.length;i++){
+    let f=new ForceC({id:this.id+cons[i].id,f:cons[i].length,angle:cons[i].angle})
+    this.forces.push(f)
+
+  }
   }
   componentDidMount() {
     this.elem = document.getElementById(`${this.id}`);
     this.elem.me=this
+    this.elem.ops={"cosnole this":()=>{console.log(this.id); this.toConsole()},
+      "update forces":()=>{this.updateFs()},
+      "elems here":()=>{console.log(document.elementsFromPoint(parseInt(window.mouseX), parseInt(window.mouseY)))}}
     this.port.componentDidMount()
     this.dragQueue=true
     this.elem.addEventListener("mousedown",this.mouseDown)
@@ -516,20 +537,11 @@ export class Point extends Cir{
     return(<circle id={this.id} cx={this.x} cy={this.y} r={10} stroke={"white"} strokeWidth={5} fill={"white"} className={"point"} style={{cx:`${this.data.cx}`,cy:`${this.data.cy}`}} key={this.id} />)
     }
 }
-export class Force extends Line {
+export class ForceC extends Line {
   constructor(props){
     super(props)
     // this.Fdata=new forceData({angle:props.angle,F:props.f,id:this.id})
-    Object.defineProperty(this,"angle",{
-      get(){return this.Fdata.angle},
-      set(num){
-      document.getElementById("all").style.setProperty(`--${this.id}-deg`,`rotate(${num}deg)`)
-      this.Fdata.angle=num;
-      this.event(this.Listeners);
-    },
-    enumerable:true
-    })
-    this.angle=props.angle
+    cNum(this,this.id,"angle",props.angle)
     this.F=props.f
 
   }
